@@ -37,6 +37,9 @@ const CourseCategory = ({navigation, dispatch, route}) => {
   const gotoCourseDetails = id => {
     navigation.navigate(ScreenNames.COURSE_DETAIL, {id});
   };
+  const gotoSubCategories = data => {
+    navigation.navigate(ScreenNames.SUB_CATEGORY, {data});
+  };
   //function : imp func
   const initLoader = async () => {
     setShowLoader(true);
@@ -44,11 +47,9 @@ const CourseCategory = ({navigation, dispatch, route}) => {
     setShowLoader(false);
   };
   const renderCategory = ({item}) => {
-    console.log('item', item);
-
     return (
       <TouchableOpacity
-        onPress={() => gotoCourseDetails(item.id)}
+        onPress={() => gotoSubCategories(item)}
         style={styles.categoryContainer}>
         <Image source={{uri: item.image}} style={styles.catImg} />
         <MyText

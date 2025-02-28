@@ -22,8 +22,6 @@ import {API_Endpoints} from 'global/Service';
 const EditProfile = ({route, navigation}) => {
   //variables
   const {data} = route.params;
-  console.log('DATA', data);
-
   //hook : states
   const [editProfileData, setEditProfileData] = useState({
     name: data.name,
@@ -76,7 +74,6 @@ const EditProfile = ({route, navigation}) => {
         });
         goBack();
       }
-      console.log('response', response);
     } catch (err) {
       console.error('error in registering user', err);
     } finally {

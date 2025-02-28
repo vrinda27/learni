@@ -13,6 +13,7 @@ import BottomTab from './BottomTab/BottomTab';
 import EditProfile from 'screens/Profie/EditProfile/EditProfile';
 import CourseCategory from 'screens/CourseCategory/CourseCategory';
 import CourseDetail from 'screens/CourseDeatils/CourseDetail';
+import SubCategories from 'screens/CourseCategory/SubCategories/SubCategories';
 
 const AuthStack = () => {
   //variables
@@ -34,6 +35,7 @@ const AuthStack = () => {
         component={CourseCategory}
       />
       <Stack.Screen name={ScreenNames.COURSE_DETAIL} component={CourseDetail} />
+      <Stack.Screen name={ScreenNames.SUB_CATEGORY} component={SubCategories} />
       {/* 
      
     
