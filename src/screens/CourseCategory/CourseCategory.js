@@ -92,10 +92,14 @@ const CourseCategory = ({navigation, dispatch, route}) => {
       <ScrollView>
         <Background style={StyleSheet.absoluteFill} />
         <Header
-          showBackButton={false}
+          showBackButton={true}
+          heading={'Course Category'}
           showNotification={true}
-          showGridIcon={true}
+          showCart={false}
+          showLearneLogo={false}
+          showGridIcon={false}
         />
+
         <View style={{marginHorizontal: 12}}>
           <View style={{marginVertical: 12}}>
             <SearchWithIcon

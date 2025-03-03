@@ -15,6 +15,7 @@ import CourseCategory from 'screens/CourseCategory/CourseCategory';
 import CourseDetail from 'screens/CourseDeatils/CourseDetail';
 import SubCategories from 'screens/CourseCategory/SubCategories/SubCategories';
 import CourseList from 'screens/CourseCategory/CourseList/CourseList';
+import ChapterDetail from 'screens/CourseDeatils/ChapterDetail/ChapterDetail';
 
 const AuthStack = () => {
   //variables
@@ -36,6 +37,10 @@ const AuthStack = () => {
         component={CourseCategory}
       />
       <Stack.Screen name={ScreenNames.COURSE_DETAIL} component={CourseDetail} />
+      <Stack.Screen
+        name={ScreenNames.CHAPTER_DETAIL}
+        component={ChapterDetail}
+      />
       <Stack.Screen name={ScreenNames.SUB_CATEGORY} component={SubCategories} />
       <Stack.Screen name={ScreenNames.COURSE_LIST} component={CourseList} />
       {/* 

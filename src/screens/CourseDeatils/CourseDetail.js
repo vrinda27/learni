@@ -35,7 +35,7 @@ import {DARK_PURPLE, YELLOW} from 'global/Color';
 import {styles} from './CourseDetailStyle';
 //import : modal
 import Review from 'modals/Review/Review';
-import {Service} from 'global/index';
+import {ScreenNames, Service} from 'global/index';
 import {API_Endpoints} from 'global/Service';
 
 const CourseDetail = ({navigation, dispatch, route}) => {
@@ -52,6 +52,10 @@ const CourseDetail = ({navigation, dispatch, route}) => {
   const [review, setReview] = useState('');
   const [starRating, setStarRating] = useState(1);
   const [showReviewModal, setShowReviewModal] = useState(false);
+  //function : nav func
+  const gotoChapterDetail = () => {
+    navigation.navigate(ScreenNames.CHAPTER_DETAIL);
+  };
 
   const tags = [
     {
@@ -106,8 +110,8 @@ const CourseDetail = ({navigation, dispatch, route}) => {
   const renderChapter = ({item}) => {
     return (
       <TouchableOpacity
-        // onPress={() => changeSelectedTag(item.id)}
-        onPress={() => navigation.navigate('Disclaimers')}
+        onPress={() => gotoChapterDetail()}
+        // onPress={() => navigation.navigate('Disclaimers')}
         style={[
           styles.chapterContainer,
           // item?.id === '1'
@@ -562,7 +566,7 @@ const CourseDetail = ({navigation, dispatch, route}) => {
               />
             )}
           </View>
-          <Review
+          {/* <Review
             key={reviewRef}
             visible={showReviewModal}
             setVisibility={setShowReviewModal}
@@ -572,7 +576,7 @@ const CourseDetail = ({navigation, dispatch, route}) => {
             setReview={setReview}
             submitReview={submitReview}
             isReviewed={reviewbutton}
-          />
+          /> */}
         </View>
       </ScrollView>
     </SafeAreaView>
