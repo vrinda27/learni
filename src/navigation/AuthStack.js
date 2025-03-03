@@ -13,7 +13,11 @@ import BottomTab from './BottomTab/BottomTab';
 import EditProfile from 'screens/Profie/EditProfile/EditProfile';
 import CourseCategory from 'screens/CourseCategory/CourseCategory';
 import CourseDetail from 'screens/CourseDeatils/CourseDetail';
-
+import Disclaimers from 'screens/Disclamers/Disclamers';
+import OderHistory from 'screens/OrderHistory/OderHistory';
+import Certificate from 'screens/Certificate/Certificate';
+import Notification from 'screens/Notification/Notification';
+import Cart from 'screens/Cart/Cart';
 const AuthStack = () => {
   //variables
   const Stack = createStackNavigator();
@@ -29,11 +33,15 @@ const AuthStack = () => {
       <Stack.Screen name={ScreenNames.SIGN_UP} component={SignUp} />
       <Stack.Screen name={ScreenNames.BOTTOM_TAB} component={BottomTab} />
       <Stack.Screen name={ScreenNames.EDIT_PROFILE} component={EditProfile} />
+      <Stack.Screen name={ScreenNames.COURSE_HISTORY} component={OderHistory} />
       <Stack.Screen
         name={ScreenNames.COURSE_CATEGORY}
         component={CourseCategory}
       />
       <Stack.Screen name={ScreenNames.COURSE_DETAIL} component={CourseDetail} />
+      <Stack.Screen name={ScreenNames.CERTIFICATE} component={Certificate} />
+      <Stack.Screen name={ScreenNames.NOTIFICATION} component={Notification} />
+      <Stack.Screen name={ScreenNames.CART} component={Cart} />
       {/* 
      
     

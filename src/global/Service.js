@@ -17,6 +17,9 @@ export const API_Endpoints = {
   subcategories: 'subcategories',
   update_profile: 'update-profile',
   course_details: 'course-details',
+  notification:'notifications',
+  clearNotification:'clear-notifications',
+  cartList:'cart-list'
 };
 
 //function : imp function

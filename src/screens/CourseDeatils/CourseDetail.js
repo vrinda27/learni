@@ -31,11 +31,12 @@ import Clock from 'assets/images/clockGreen.svg';
 import {dimensions} from 'global/Constants';
 import {BLACK, EXTRA_BOLD, REGULAR} from 'global/Fonts';
 import {DARK_PURPLE, YELLOW} from 'global/Color';
+import {Colors, ScreenNames, Service} from 'global/index';
 //import : styles
 import {styles} from './CourseDetailStyle';
 //import : modal
 import Review from 'modals/Review/Review';
-import {Service} from 'global/index';
+
 import {API_Endpoints} from 'global/Service';
 
 const CourseDetail = ({navigation, dispatch, route}) => {
@@ -44,6 +45,7 @@ const CourseDetail = ({navigation, dispatch, route}) => {
   const {id} = route?.params;
   //variables
   const LINE_HEIGTH = 25;
+  const courseId=route?.params?.id
   //variables : redux
   const [courseData, setCourseData] = useState({});
   const [showLoader, setShowLoader] = useState(false);
@@ -107,7 +109,7 @@ const CourseDetail = ({navigation, dispatch, route}) => {
     return (
       <TouchableOpacity
         // onPress={() => changeSelectedTag(item.id)}
-        onPress={() => navigation.navigate('Disclaimers')}
+        onPress={() => navigation.navigate(ScreenNames.DISCLAIMERS,{data:item,courseImg:item,courseData:courseData?.lessons,courseId})}
         style={[
           styles.chapterContainer,
           // item?.id === '1'
