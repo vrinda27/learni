@@ -14,6 +14,7 @@ import EditProfile from 'screens/Profie/EditProfile/EditProfile';
 import CourseCategory from 'screens/CourseCategory/CourseCategory';
 import CourseDetail from 'screens/CourseDeatils/CourseDetail';
 import SubCategories from 'screens/CourseCategory/SubCategories/SubCategories';
+import CourseList from 'screens/CourseCategory/CourseList/CourseList';
 
 const AuthStack = () => {
   //variables
@@ -36,6 +37,7 @@ const AuthStack = () => {
       />
       <Stack.Screen name={ScreenNames.COURSE_DETAIL} component={CourseDetail} />
       <Stack.Screen name={ScreenNames.SUB_CATEGORY} component={SubCategories} />
+      <Stack.Screen name={ScreenNames.COURSE_LIST} component={CourseList} />
       {/* 
      
     

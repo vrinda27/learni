@@ -8,4 +8,5 @@ export const EDIT_PROFILE = 'EDIT_PROFILE';
 
 export const COURSE_CATEGORY = 'COURSE_CATEGORY';
 export const SUB_CATEGORY = 'SUB_CATEGORY';
+export const COURSE_LIST = 'COURSE_LIST';
 export const COURSE_DETAIL = 'COURSE_DETAIL';

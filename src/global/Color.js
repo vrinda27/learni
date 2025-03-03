@@ -12,18 +12,20 @@ export const LIGHT_GREY = '#6A6A6A';
 
 export const DARK_GREY = '#455A64';
 
-export const BARK='#132A3A';
+export const BARK = '#132A3A';
 
-export const DARK_PURPLE='#5E4AF7';
+export const DARK_PURPLE = '#5E4AF7';
 
-export const LIGHT_PURPLE='#CCCCFF';
+export const LIGHT_PURPLE = '#CCCCFF';
 
-export const YELLOW='#FF8615'
+export const YELLOW = '#FF8615';
 
-export const GREEN='#00B44B';
+export const GREEN = '#00B44B';
 
-export const GRAY='#8F93A0'
+export const PINK = '#FF40FF';
 
-export const LIGHT_GRAY='#E0E0E0'
+export const GRAY = '#8F93A0';
 
-export const CYAN='#00FEFF'
+export const LIGHT_GRAY = '#E0E0E0';
+
+export const CYAN = '#00FEFF';

@@ -1,27 +1,31 @@
 //import : react component
 import React, {useEffect, useState} from 'react';
-import {View, Text, FlatList, TouchableOpacity} from 'react-native';
+import {View, FlatList, TouchableOpacity} from 'react-native';
 //import : custom components
 import Header from 'component/Header/Header';
+import MyText from 'component/MyText/MyText';
+import SearchWithIcon from 'component/SearchWithIcon/SearchWithIcon';
+import SizeBox from 'component/SizeBox/SizeBox';
 //import : third party
 import AsyncStorage from '@react-native-async-storage/async-storage';
 //import : utils
 import {API_Endpoints} from 'global/Service';
-import {Colors, Service} from 'global/index';
+import {Colors, ScreenNames, Service} from 'global/index';
 import RightSvg from 'assets/svgs/right-arrow.svg';
 //import : styles
 import {styles} from './SubCategoriesStyle';
-import MyText from 'component/MyText/MyText';
-import SearchWithIcon from 'component/SearchWithIcon/SearchWithIcon';
-import SizeBox from 'component/SizeBox/SizeBox';
 //import : modals
 //import : redux
 
-const SubCategories = ({route}) => {
+const SubCategories = ({route, navigation}) => {
   //variables
   const {data} = route.params;
   //hook : states
   const [subCategoriesData, setSubCategoriesData] = useState([]);
+  //function : nav func
+  const gotoCourseList = postData => {
+    navigation.navigate(ScreenNames.COURSE_LIST, {data: postData});
+  };
   //function : serv func
   const getSubCategories = async (name = '') => {
     try {
@@ -35,8 +39,6 @@ const SubCategories = ({route}) => {
         token,
         paramsData,
       );
-      console.log('response', response, status);
-
       if (status) {
         setSubCategoriesData(response.data);
       }
@@ -73,7 +75,12 @@ const SubCategories = ({route}) => {
         <FlatList
           data={subCategoriesData}
           renderItem={({item, index}) => {
-            return <SubCategoriesCard name={item.name} />;
+            return (
+              <SubCategoriesCard
+                name={item.name}
+                onPress={() => gotoCourseList(item)}
+              />
+            );
           }}
           ItemSeparatorComponent={() => <SizeBox height={10} />}
           keyExtractor={(item, index) => item + index}
@@ -85,9 +92,10 @@ const SubCategories = ({route}) => {
 
 export default SubCategories;
 
-const SubCategoriesCard = ({name}) => {
+const SubCategoriesCard = ({name, onPress = () => {}}) => {
   return (
     <TouchableOpacity
+      onPress={onPress}
       style={{
         width: '98%',
         paddingVertical: 10,

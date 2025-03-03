@@ -17,6 +17,9 @@ export const API_Endpoints = {
   subcategories: 'subcategories',
   update_profile: 'update-profile',
   course_details: 'course-details',
+  courses: 'courses',
+  add_wishlist: 'add-wishlist',
+  wishlist: 'wishlist',
 };
 
 //function : imp function
