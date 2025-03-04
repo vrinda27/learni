@@ -7,14 +7,17 @@ import CourseCard from 'component/CourseCard/CourseCard';
 import Header from 'component/Header/Header';
 import MyText from 'component/MyText/MyText';
 import SearchWithIcon from 'component/SearchWithIcon/SearchWithIcon';
+import SizeBox from 'component/SizeBox/SizeBox';
+import Loader from 'component/loader/Loader';
 //import : third party
+import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 //import : utils
 import Background from 'assets/svgs/background.svg';
 import {API_Endpoints} from 'global/Service';
 import {Service} from 'global/index';
-import SizeBox from 'component/SizeBox/SizeBox';
 //import : styles
+import {styles} from './WishListStyle';
 //import : modals
 //import : redux
 
@@ -23,11 +26,45 @@ const WishList = ({navigation}) => {
   const isFocused = useIsFocused();
   //hook : states
   const [wishlistData, setWishlistData] = useState([]);
+  //hook : modal states
+  const [showLoader, setShowLoader] = useState(false);
   //variables : redux variables
   const gotoTrendingCourses = () => {
     // navigation.navigate(ScreenNames.TRENDING_COURSES);
   };
+  //function : imp func
+  const initLoader = async () => {
+    setShowLoader(true);
+    await getWishlist();
+    setShowLoader(false);
+  };
   //function : serv func
+  const addToWishlist = async id => {
+    try {
+      setShowLoader(true);
+      const postData = {
+        id: id,
+        type: 1,
+      };
+      const token = await AsyncStorage.getItem('token');
+      const {response, status} = await Service.postAPI(
+        API_Endpoints.add_wishlist,
+        postData,
+        token,
+      );
+      if (status) {
+        Toast.show({
+          type: 'success',
+          text1: response?.message,
+        });
+        getWishlist();
+      }
+    } catch (err) {
+      console.error('error in registering user', err);
+    } finally {
+      setShowLoader(false);
+    }
+  };
   const getWishlist = async () => {
     try {
       const paramsData = {
@@ -48,21 +85,20 @@ const WishList = ({navigation}) => {
   };
   //hook : useEffect
   useEffect(() => {
-    getWishlist();
+    initLoader();
 
     return () => {};
   }, [isFocused]);
 
   //UI
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <View style={styles.container}>
       <Background style={StyleSheet.absoluteFill} />
       <Header
         showBackButton={false}
         showNotification={true}
         showGridIcon={true}
       />
-
       <FlatList
         data={wishlistData || []}
         showsVerticalScrollIndicator={false}
@@ -110,7 +146,8 @@ const WishList = ({navigation}) => {
         }
       />
       <SizeBox height={30} />
-    </SafeAreaView>
+      <Loader visible={showLoader} />
+    </View>
   );
 };
 

@@ -31,14 +31,13 @@ import Clock from 'assets/images/clockGreen.svg';
 import {dimensions} from 'global/Constants';
 import {BLACK, EXTRA_BOLD, REGULAR} from 'global/Fonts';
 import {DARK_PURPLE, YELLOW} from 'global/Color';
-import {Colors, ScreenNames, Service} from 'global/index';
 //import : styles
 import {styles} from './CourseDetailStyle';
 //import : modal
 import Review from 'modals/Review/Review';
-import {ScreenNames, Service} from 'global/index';
 
 import {API_Endpoints} from 'global/Service';
+import {ScreenNames, Service} from 'global/index';
 
 const CourseDetail = ({navigation, dispatch, route}) => {
   // variables : ref
@@ -46,7 +45,7 @@ const CourseDetail = ({navigation, dispatch, route}) => {
   const {id} = route?.params;
   //variables
   const LINE_HEIGTH = 25;
-  const courseId=route?.params?.id
+  const courseId = route?.params?.id;
   //variables : redux
   const [courseData, setCourseData] = useState({});
   const [showLoader, setShowLoader] = useState(false);
@@ -116,7 +115,14 @@ const CourseDetail = ({navigation, dispatch, route}) => {
         // onPress={() => gotoChapterDetail()}
         // onPress={() => navigation.navigate('Disclaimers')}
         // onPress={() => changeSelectedTag(item.id)}
-        onPress={() => navigation.navigate(ScreenNames.DISCLAIMERS,{data:item,courseImg:item,courseData:courseData?.lessons,courseId})}
+        onPress={() =>
+          navigation.navigate(ScreenNames.DISCLAIMERS, {
+            data: item,
+            courseImg: item,
+            courseData: courseData?.lessons,
+            courseId,
+          })
+        }
         style={[
           styles.chapterContainer,
           // item?.id === '1'
