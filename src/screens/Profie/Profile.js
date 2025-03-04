@@ -1,5 +1,5 @@
 //import : react components
-import {View, StyleSheet, Image, ScrollView} from 'react-native';
+import {View, StyleSheet, Image, ScrollView, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useIsFocused} from '@react-navigation/native';
 //import : components
@@ -43,6 +43,54 @@ const Profile = ({navigation}) => {
     } catch (error) {
       console.error('error in getProfile', error);
     }
+  };
+
+  //refrence 
+  const gotoTabs = (title) => {
+    {console.log('my title--->>>',title)}
+    title==='Order History'?
+    navigation.navigate(ScreenNames.COURSE_HISTORY):
+    title==='Certificate'?
+
+    navigation.navigate(ScreenNames.CERTIFICATE):
+    title==='Notifications'?
+    navigation.navigate(ScreenNames.NOTIFICATION):
+    navigation.navigate(ScreenNames.CART)
+     // Ensure 'EditProfile' is a valid screen
+  };
+
+  const ProfileItem = ({icon, title}) => {
+    return (
+      <TouchableOpacity
+  
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          shadowColor: '#000',
+          shadowOffset: {width: 0, height: 2},
+          shadowOpacity: 0.5,
+          shadowRadius: 2,
+          elevation: 2,
+          backgroundColor: Colors.WHITE,
+          padding: 10,
+          marginVertical: 5,
+          borderRadius: 5,
+        }}
+        onPress={()=>gotoTabs(title)}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            columnGap: 10,
+          }}>
+          {icon}
+          <MyText text={title} />
+        </View>
+  
+        <RightSvg />
+      </TouchableOpacity>
+    );
   };
   //hook : useffect
   useEffect(() => {
@@ -115,7 +163,7 @@ const Profile = ({navigation}) => {
               backgroundColor={Colors.DARK_PURPLE}
             />
           </View>
-          <ProfileItem icon={<BagSvg />} title={'Order History'} />
+          <ProfileItem icon={<BagSvg />} title={'Order History'}  />
           <ProfileItem icon={<MedalSvg />} title={'Certificate'} />
           <ProfileItem icon={<NotiSvg />} title={'Notifications'} />
           <ProfileItem icon={<DollarSvg />} title={'Billing'} />
@@ -128,37 +176,7 @@ const Profile = ({navigation}) => {
 
 export default Profile;
 
-const ProfileItem = ({icon, title}) => {
-  return (
-    <View
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        shadowColor: '#000',
-        shadowOffset: {width: 0, height: 2},
-        shadowOpacity: 0.5,
-        shadowRadius: 2,
-        elevation: 2,
-        backgroundColor: Colors.WHITE,
-        padding: 10,
-        marginVertical: 5,
-        borderRadius: 5,
-      }}>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          columnGap: 10,
-        }}>
-        {icon}
-        <MyText text={title} />
-      </View>
 
-      <RightSvg />
-    </View>
-  );
-};
 
 const styles = StyleSheet.create({
   container: {

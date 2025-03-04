@@ -39,7 +39,7 @@ const MySearchBarForHome = ({
         gap: 5,
         display: 'flex',
         justifyContent: 'space-between',
-        marginBottom: 15,
+        marginBottom: 0,
         alignSelf: 'center',
       }}>
       <TextInput

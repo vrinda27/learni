@@ -20,6 +20,9 @@ export const API_Endpoints = {
   courses: 'courses',
   add_wishlist: 'add-wishlist',
   wishlist: 'wishlist',
+  notification:'notifications',
+  clearNotification:'clear-notifications',
+  cartList:'cart-list'
 };
 
 //function : imp function

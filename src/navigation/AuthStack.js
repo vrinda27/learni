@@ -17,6 +17,11 @@ import SubCategories from 'screens/CourseCategory/SubCategories/SubCategories';
 import CourseList from 'screens/CourseCategory/CourseList/CourseList';
 import ChapterDetail from 'screens/CourseDeatils/ChapterDetail/ChapterDetail';
 
+import Disclaimers from 'screens/Disclamers/Disclamers';
+import OderHistory from 'screens/OrderHistory/OderHistory';
+import Certificate from 'screens/Certificate/Certificate';
+import Notification from 'screens/Notification/Notification';
+import Cart from 'screens/Cart/Cart';
 const AuthStack = () => {
   //variables
   const Stack = createStackNavigator();
@@ -32,6 +37,7 @@ const AuthStack = () => {
       <Stack.Screen name={ScreenNames.SIGN_UP} component={SignUp} />
       <Stack.Screen name={ScreenNames.BOTTOM_TAB} component={BottomTab} />
       <Stack.Screen name={ScreenNames.EDIT_PROFILE} component={EditProfile} />
+      <Stack.Screen name={ScreenNames.COURSE_HISTORY} component={OderHistory} />
       <Stack.Screen
         name={ScreenNames.COURSE_CATEGORY}
         component={CourseCategory}
@@ -43,6 +49,9 @@ const AuthStack = () => {
       />
       <Stack.Screen name={ScreenNames.SUB_CATEGORY} component={SubCategories} />
       <Stack.Screen name={ScreenNames.COURSE_LIST} component={CourseList} />
+      <Stack.Screen name={ScreenNames.CERTIFICATE} component={Certificate} />
+      <Stack.Screen name={ScreenNames.NOTIFICATION} component={Notification} />
+      <Stack.Screen name={ScreenNames.CART} component={Cart} />
       {/* 
      
     
