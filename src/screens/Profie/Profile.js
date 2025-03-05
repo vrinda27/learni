@@ -1,5 +1,11 @@
 //import : react components
-import {View, StyleSheet, Image, ScrollView, TouchableOpacity} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useIsFocused} from '@react-navigation/native';
 //import : components
@@ -45,24 +51,21 @@ const Profile = ({navigation}) => {
     }
   };
 
-  //refrence 
-  const gotoTabs = (title) => {
-    {console.log('my title--->>>',title)}
-    title==='Order History'?
-    navigation.navigate(ScreenNames.COURSE_HISTORY):
-    title==='Certificate'?
-
-    navigation.navigate(ScreenNames.CERTIFICATE):
-    title==='Notifications'?
-    navigation.navigate(ScreenNames.NOTIFICATION):
-    navigation.navigate(ScreenNames.CART)
-     // Ensure 'EditProfile' is a valid screen
+  //refrence
+  const gotoTabs = title => {
+    title === 'Order History'
+      ? navigation.navigate(ScreenNames.COURSE_HISTORY)
+      : title === 'Certificate'
+      ? navigation.navigate(ScreenNames.CERTIFICATE)
+      : title === 'Notifications'
+      ? navigation.navigate(ScreenNames.NOTIFICATION)
+      : navigation.navigate(ScreenNames.CART);
+    // Ensure 'EditProfile' is a valid screen
   };
 
   const ProfileItem = ({icon, title}) => {
     return (
       <TouchableOpacity
-  
         style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -77,7 +80,7 @@ const Profile = ({navigation}) => {
           marginVertical: 5,
           borderRadius: 5,
         }}
-        onPress={()=>gotoTabs(title)}>
+        onPress={() => gotoTabs(title)}>
         <View
           style={{
             flexDirection: 'row',
@@ -87,7 +90,7 @@ const Profile = ({navigation}) => {
           {icon}
           <MyText text={title} />
         </View>
-  
+
         <RightSvg />
       </TouchableOpacity>
     );
@@ -163,7 +166,7 @@ const Profile = ({navigation}) => {
               backgroundColor={Colors.DARK_PURPLE}
             />
           </View>
-          <ProfileItem icon={<BagSvg />} title={'Order History'}  />
+          <ProfileItem icon={<BagSvg />} title={'Order History'} />
           <ProfileItem icon={<MedalSvg />} title={'Certificate'} />
           <ProfileItem icon={<NotiSvg />} title={'Notifications'} />
           <ProfileItem icon={<DollarSvg />} title={'Billing'} />
@@ -175,8 +178,6 @@ const Profile = ({navigation}) => {
 };
 
 export default Profile;
-
-
 
 const styles = StyleSheet.create({
   container: {

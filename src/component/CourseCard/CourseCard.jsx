@@ -19,6 +19,8 @@ import {Colors, MyIcon} from 'global/index';
 //import : redux
 
 const CourseCard = ({item, onPress = () => {}, heartPress = () => {}}) => {
+  console.log(item);
+
   //UI
   return (
     <TouchableOpacity onPress={onPress} style={styles.courseContainer}>

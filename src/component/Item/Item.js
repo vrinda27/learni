@@ -39,10 +39,6 @@ const Item = ({
   shippingDetails = [],
   disabledBtn = false,
 }) => {
-  {
-    console.log('item in utem scrennn----?>', item);
-  }
-
   const userToken = useSelector(state => state.user.userToken);
   // const couponIconPath = Image.resolveAssetSource(couponIcon).uri;
   // const rightArrowIconPath = Image.resolveAssetSource(rightArrowIcon).uri;
@@ -90,9 +86,7 @@ const Item = ({
           }
           onChangeQuantity();
         }
-      } catch (err) {
-        console.log('remove course', err.message);
-      }
+      } catch (err) {}
       return;
     }
     const oldQuantity = Number(item?.quantity);
@@ -130,9 +124,7 @@ const Item = ({
       } else {
         Toast.show({text1: resp?.data?.message});
       }
-    } catch (error) {
-      console.log('error in removeFromCart', error);
-    }
+    } catch (error) {}
   };
 
   const updateQuantity = async (item, change) => {
@@ -147,7 +139,6 @@ const Item = ({
         Service.UPDATE_PRODUCT_QUANTITY,
         postData,
       );
-      console.log('updateQuantity resp', resp?.data);
       if (resp?.data?.status) {
         if (coupon.applied) {
           await Service.postApiWithToken(
@@ -160,9 +151,7 @@ const Item = ({
       } else {
         Toast.show({text1: resp?.data?.message});
       }
-    } catch (error) {
-      console.log('error in updateQuantity', error);
-    }
+    } catch (error) {}
   };
 
   const shippingBtnHandler = () => {
@@ -172,7 +161,6 @@ const Item = ({
   const getCartCount = async () => {
     try {
       const resp = await Service.getApiWithToken(userToken, Service.CART_COUNT);
-      console.log('getCartCount resp', resp?.data);
       if (resp?.data?.status) {
         dispatch(setCartCount(resp?.data?.data));
         await AsyncStorage.setItem(
@@ -191,9 +179,7 @@ const Item = ({
       } else {
         Toast.show({text1: resp.data.message});
       }
-    } catch (error) {
-      console.log('error in getCartCount', error);
-    }
+    } catch (error) {}
   };
   const resetIndexGoToBottomTab = CommonActions.reset({
     index: 1,

@@ -1,6 +1,6 @@
 //import : react component
 import React from 'react';
-import {View, TouchableOpacity} from 'react-native';
+import {View, TouchableOpacity, Image} from 'react-native';
 //import : custom components
 import MyText from 'component/MyText/MyText';
 //import : third party
@@ -99,9 +99,16 @@ const HomeCourseCard = ({item, onPress = () => {}}) => {
           },
         ]}>
         <View style={{flexDirection: 'row'}}>
-          <Profile height={24} width={24}></Profile>
+          <Image
+            source={{uri: item.creator_profile}}
+            style={{
+              height: 30,
+              width: 30,
+              borderRadius: 100,
+            }}
+          />
           <MyText
-            text={'Jane Doe'}
+            text={item.creator_name}
             fontFamily={REGULAR}
             fontSize={13}
             textColor={Colors.BLACK}

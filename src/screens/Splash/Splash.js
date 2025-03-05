@@ -25,7 +25,6 @@ const Splash = ({navigation}) => {
   };
 
   const getUserData = async token => {
-    console.log('GET URL=>',token)
     try {
       const {response, status} = await Service.getAPI(
         API_Endpoints.profile,
@@ -33,7 +32,6 @@ const Splash = ({navigation}) => {
       );
       if (response?.data?.status) {
         const data = response?.data?.data;
-        console.log('my data--->>>>',data)
         dispatch(
           setUser({
             isAuth: token,
@@ -46,7 +44,7 @@ const Splash = ({navigation}) => {
             profile: data?.profile,
           }),
         );
-        {console.log('does it come in betgween')}
+
         gotoBottomTab();
       }
     } catch (err) {

@@ -3,6 +3,7 @@ import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   courseContainer: {
+    justifyContent: 'space-between',
     width: (dimensions.SCREEN_WIDTH - 40) * 0.66,
 
     borderRadius: 10,

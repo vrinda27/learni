@@ -104,8 +104,6 @@ const WishList = ({navigation}) => {
         showsVerticalScrollIndicator={false}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item, index}) => {
-          console.log('jhgyug', item);
-
           return (
             <CourseCard
               item={item}

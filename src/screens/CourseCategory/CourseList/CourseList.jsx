@@ -110,6 +110,10 @@ const CourseList = ({route, navigation}) => {
         <SizeBox height={10} />
         <FlatList
           data={coursesData}
+          contentContainerStyle={{
+            paddingBottom: '50%',
+          }}
+          showsVerticalScrollIndicator={false}
           renderItem={({item, index}) => {
             return (
               <CourseCard

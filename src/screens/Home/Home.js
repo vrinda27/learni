@@ -19,7 +19,6 @@ import {API_Endpoints} from 'global/Service';
 
 const Home = ({navigation}) => {
   //hook : states
-  console.log('reached home screem')
   const [homeData, setHomeData] = useState({
     categories: [],
     courses: [],

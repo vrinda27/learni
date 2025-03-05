@@ -112,17 +112,17 @@ const CourseDetail = ({navigation, dispatch, route}) => {
   const renderChapter = ({item}) => {
     return (
       <TouchableOpacity
-        // onPress={() => gotoChapterDetail()}
+        onPress={() => gotoChapterDetail()}
         // onPress={() => navigation.navigate('Disclaimers')}
         // onPress={() => changeSelectedTag(item.id)}
-        onPress={() =>
-          navigation.navigate(ScreenNames.DISCLAIMERS, {
-            data: item,
-            courseImg: item,
-            courseData: courseData?.lessons,
-            courseId,
-          })
-        }
+        // onPress={() =>
+        //   navigation.navigate(ScreenNames.DISCLAIMERS, {
+        //     data: item,
+        //     courseImg: item,
+        //     courseData: courseData?.lessons,
+        //     courseId,
+        //   })
+        // }
         style={[
           styles.chapterContainer,
           // item?.id === '1'
