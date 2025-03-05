@@ -1,24 +1,58 @@
 //import : react component
-import React from 'react';
+import React, {useState} from 'react';
 import {View, TouchableOpacity, Image} from 'react-native';
 //import : custom components
 import MyText from 'component/MyText/MyText';
 //import : third party
 import FastImage from 'react-native-fast-image';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
 //import : utils
-import Like from 'assets/images/like.svg';
 import Share from 'assets/images/share.svg';
 import Rating from 'assets/images/rating.svg';
-import Profile from 'assets/images/profilePerson.svg';
-import {Colors} from 'global/index';
+import {Colors, MyIcon, Service} from 'global/index';
 import {REGULAR} from 'global/Fonts';
 import {dimensions} from 'global/Constants';
 //import : styles
 import {styles} from './HomeCourseCardStyle';
+import {API_Endpoints} from 'global/Service';
 //import : modals
 //import : redux
 
-const HomeCourseCard = ({item, onPress = () => {}}) => {
+const HomeCourseCard = ({
+  item,
+  setShowLoader = () => {},
+  onPress = () => {},
+  nextFunction = () => {},
+}) => {
+  //hook : states
+  //function : serv function
+  const addToWishlist = async () => {
+    try {
+      setShowLoader(true);
+      const postData = {
+        id: item.id,
+        type: 1,
+      };
+      const token = await AsyncStorage.getItem('token');
+      const {response, status} = await Service.postAPI(
+        API_Endpoints.add_wishlist,
+        postData,
+        token,
+      );
+      if (status) {
+        Toast.show({
+          type: 'success',
+          text1: response?.message,
+        });
+        nextFunction();
+      }
+    } catch (err) {
+      console.error('error in registering user', err);
+    } finally {
+      setShowLoader(false);
+    }
+  };
   //UI
   return (
     <TouchableOpacity onPress={onPress} style={styles.courseContainer}>
@@ -118,7 +152,16 @@ const HomeCourseCard = ({item, onPress = () => {}}) => {
         </View>
 
         <View style={{flexDirection: 'row'}}>
-          <Like></Like>
+          <TouchableOpacity
+            onPress={() => {
+              addToWishlist();
+            }}>
+            <MyIcon.Ionicons
+              name={item.wishlist ? 'heart' : 'heart-outline'}
+              size={26}
+              color={Colors.PINK}
+            />
+          </TouchableOpacity>
           <Share></Share>
         </View>
       </View>

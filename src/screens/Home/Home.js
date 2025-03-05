@@ -16,6 +16,7 @@ import Background from 'assets/svgs/background.svg';
 import {dimensions} from 'global/Constants';
 import {ScreenNames, Service} from 'global/index';
 import {API_Endpoints} from 'global/Service';
+import Loader from 'component/loader/Loader';
 
 const Home = ({navigation}) => {
   //hook : states
@@ -25,6 +26,7 @@ const Home = ({navigation}) => {
     products: [],
     sub_categories: [],
   });
+  const [showLoader, setShowLoader] = useState(false);
   //function : nav func
   const gotoCourseCategory = () => {
     navigation.navigate(ScreenNames.COURSE_CATEGORY);
@@ -118,7 +120,9 @@ const Home = ({navigation}) => {
                   renderItem={({item}) => (
                     <HomeCourseCard
                       item={item}
+                      setShowLoader={setShowLoader}
                       onPress={() => gotoCourseDetails(item.id)}
+                      nextFunction={() => getHome()}
                     />
                   )}
                   onEndReached={''}
@@ -174,6 +178,7 @@ const Home = ({navigation}) => {
         </View>
         <View height={dimensions.SCREEN_HEIGHT * 0.2}></View>
       </ScrollView>
+      <Loader visible={showLoader} />
     </SafeAreaView>
   );
 };

@@ -1,126 +1,86 @@
-//import : react components
-import React, {useRef, useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  TextInput,
-  Keyboard,
-  KeyboardAvoidingView,
-  TouchableWithoutFeedback,
-} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+//import : react component
+import React, {useState} from 'react';
+import {View, Text, Modal, TouchableOpacity, TextInput} from 'react-native';
 //import : custom components
-import MyText from '../../component/MyText/MyText';
-//import : globals
-// import {Colors, Constant, MyIcon, ScreenNames} from 'global/Index';
+import MyText from 'component/MyText/MyText';
+//import : third party
+//import : utils
+import {BLACK} from 'global/Fonts';
+import {Colors, MyIcon} from 'global/index';
 //import : styles
 import {styles} from './ReviewStyle';
-import Modal from 'react-native-modal';
-import MyButton from '../../component/MyButton/MyButton';
-import {width} from '../../global/Constant';
-import {dimensions} from '../../global/Constants';
+import MyButton from 'component/MyButton/MyButton';
+import SizeBox from 'component/SizeBox/SizeBox';
+//import : modals
+//import : redux
 
-const Review = ({
-  visible,
-  setVisibility,
-  starRating,
-  setStarRating,
-  review,
-  setReview,
-  submitReview,
-  isReviewed = 'false',
-}) => {
-  //variables : navigation
-  const navigation = useNavigation();
-  //function : navigation function
-  //function : modal function
+const Review = ({visible, setVisibility}) => {
+  //variables
+  let starArray = [1, 2, 3, 4, 5];
+  //hook : states
+  const [selectedStar, setSelectedStar] = useState(1);
+  const [reviewMsg, setReviewMsg] = useState('');
+  //function : modal func
   const closeModal = () => {
     setVisibility(false);
   };
-  const Stars = () => {
-    return (
-      <View style={styles.starRow}>
-        {[...Array(5).keys()]?.map((item, index) => (
-          <TouchableWithoutFeedback
-            onPress={() => {
-              setStarRating(index + 1);
-            }}>
-            {/* <Image
-              source={
-                index < starRating
-                  ? require('assets/images/selected-star.png')
-                  : require('assets/images/unselected-star.png')
-              }
-              style={{marginRight: index + 1 === 5 ? 0 : 8}}
-            /> */}
-          </TouchableWithoutFeedback>
-        ))}
-      </View>
-    );
-  };
-
   //UI
   return (
-    <Modal
-      isVisible={visible}
-      swipeDirection="down"
-      onBackdropPress={() => setVisibility(false)}
-      onSwipeComplete={e => {
-        setVisibility(false);
-      }}
-      onModalWillHide={() => {
-        setStarRating(1);
-        setReview('');
-      }}
-      scrollTo={() => {}}
-      scrollOffset={1}
-      propagateSwipe={true}
-      coverScreen={false}
-      backdropColor="transparent"
-      style={styles.modal}>
-      <KeyboardAvoidingView
-      // style={styles.modal}
-      // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-        <View style={styles.modalContent}>
+    <Modal visible={visible} transparent animationType="slide">
+      <View style={styles.container}>
+        <TouchableOpacity
+          style={styles.blurView}
+          onPress={() => closeModal()}
+        />
+        <View style={styles.mainView}>
           <MyText
-            text="Review & Rating"
+            text={'Review & Rating'}
+            fontFamily={BLACK}
+            fontSize={18}
             textColor={'black'}
-            fontSize={20}
             textAlign="center"
-            style={{marginBottom: 20}}
+            style={{width: '95%'}}
           />
-          <MyText
-            text="Select stars according to your overall experience"
-            textColor={'gray'}
-            fontSize={14}
-            fontFamily="regular"
-            style={{marginBottom: 23}}
-          />
-          <Stars />
+
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              alignSelf: 'center',
+              columnGap: 10,
+              marginVertical: 10,
+            }}>
+            {starArray.map((item, index) => {
+              return (
+                <TouchableOpacity
+                  onPress={() => setSelectedStar(item)}
+                  key={index.toString()}>
+                  <MyIcon.AntDesign
+                    name={item <= selectedStar ? 'star' : 'staro'}
+                    size={24}
+                    color={Colors.YELLOW}
+                  />
+                </TouchableOpacity>
+              );
+            })}
+          </View>
           <TextInput
-            style={styles.textArea}
+            value={reviewMsg}
+            style={styles.reviewInput}
             underlineColorAndroid="transparent"
             placeholder={'Type your review here…'}
             placeholderTextColor="#999999"
+            textAlignVertical="top"
             numberOfLines={10}
             multiline={true}
-            value={review}
-            onChangeText={e => setReview(e)}
+            onChangeText={e => setReviewMsg(e)}
           />
-          <MyButton
-            text={isReviewed == 'false' ? 'Submit' : 'Update'}
-            style={{
-              width: dimensions.SCREEN_WIDTH * 0.9,
-              marginBottom: 10,
-              backgroundColor: 'red',
-            }}
-            onPress={submitReview}
-          />
+          <SizeBox height={10} />
+          <MyButton text={'Submit'} />
+          <SizeBox height={10} />
+          <MyButton text={'Clear All'} backgroundColor={Colors.DARK_PURPLE} />
         </View>
-      </KeyboardAvoidingView>
+      </View>
     </Modal>
   );
 };

@@ -72,6 +72,7 @@ const Splash = ({navigation}) => {
   //hook : useEffect
   useEffect(() => {
     const timer = setTimeout(async () => {
+      // await AsyncStorage.clear();
       const token = await AsyncStorage.getItem('token');
       if (token) {
         getUserData(token);

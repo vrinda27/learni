@@ -23,13 +23,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Background from 'assets/svgs/background.svg';
 import Calendar from 'assets/images/calendar.svg';
 import Rating from 'assets/images/rating.svg';
-import Profile from 'assets/images/profilePerson.svg';
 import Chapter from 'assets/images/chapter.svg';
 import Quiz from 'assets/images/quizQues.svg';
 import Pdf from 'assets/images/pdfDocument.svg';
 import Clock from 'assets/images/clockGreen.svg';
 import {dimensions} from 'global/Constants';
-import {BLACK, EXTRA_BOLD, REGULAR} from 'global/Fonts';
+import {BLACK, BOLD, EXTRA_BOLD, REGULAR} from 'global/Fonts';
 import {DARK_PURPLE, YELLOW} from 'global/Color';
 //import : styles
 import {styles} from './CourseDetailStyle';
@@ -37,7 +36,8 @@ import {styles} from './CourseDetailStyle';
 import Review from 'modals/Review/Review';
 
 import {API_Endpoints} from 'global/Service';
-import {ScreenNames, Service} from 'global/index';
+import {Colors, ScreenNames, Service} from 'global/index';
+import SizeBox from 'component/SizeBox/SizeBox';
 
 const CourseDetail = ({navigation, dispatch, route}) => {
   // variables : ref
@@ -54,6 +54,7 @@ const CourseDetail = ({navigation, dispatch, route}) => {
   const [review, setReview] = useState('');
   const [starRating, setStarRating] = useState(1);
   const [showReviewModal, setShowReviewModal] = useState(false);
+  const [showReviewPopup, setShowReviewPopup] = useState(false);
   //function : nav func
   const gotoChapterDetail = () => {
     navigation.navigate(ScreenNames.CHAPTER_DETAIL);
@@ -235,6 +236,8 @@ const CourseDetail = ({navigation, dispatch, route}) => {
       const token = await AsyncStorage.getItem('token');
       const endPoint = `${API_Endpoints.course_details}/${id}`;
       const {response, status} = await Service.getAPI(endPoint, token);
+      console.log('response', response);
+
       if (status) {
         setCourseData(response.data);
       }
@@ -251,346 +254,312 @@ const CourseDetail = ({navigation, dispatch, route}) => {
 
   //UI
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <View style={styles.container}>
+      <Background style={StyleSheet.absoluteFill} />
+      <Header
+        showBackButton={true}
+        heading={courseData.name}
+        showNotification={true}
+        showCart={false}
+        showLearneLogo={false}
+        showGridIcon={false}
+      />
+      <Video
+        source={{uri: courseData.video}}
+        style={{
+          height: 200,
+          width: '100%',
+          backgroundColor: Colors.BLACK,
+        }}
+        controls
+      />
       <ScrollView>
-        <Background style={StyleSheet.absoluteFill} />
-
-        <Header
-          showBackButton={false}
-          showNotification={true}
-          showGridIcon={true}></Header>
-        <View>
-          <View style={styles.mainView}>
-            <Video
-              source={{uri: courseData.video}}
-              style={{
-                height: 200,
-                width: '100%',
-              }}
-              controls
+        <View style={styles.mainView}>
+          <MyText
+            text={courseData.name}
+            fontFamily={BLACK}
+            fontSize={20}
+            textColor={'black'}
+            style={{width: '95%'}}
+          />
+          <View style={{flexDirection: 'row'}}>
+            <MyText
+              text={'$'}
+              fontFamily={BLACK}
+              fontSize={20}
+              textColor={BLACK}
+              letterSpacing={0.14}
             />
-            {/* {typeof productDetails === 'object' ? (
-              <View
+            <MyText
+              text={courseData.course_fee}
+              fontFamily={BLACK}
+              fontSize={20}
+              textColor={DARK_PURPLE}
+              letterSpacing={0.14}
+              style={{}}
+            />
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                columnGap: 5,
+              }}>
+              <Calendar />
+              <MyText
+                text={courseData.created_at}
+                fontFamily={BOLD}
+                fontSize={12}
+                textColor={'black'}
+              />
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                columnGap: 5,
+              }}>
+              <Rating />
+              <MyText
+                text={courseData.rating}
+                fontFamily={BOLD}
+                fontSize={12}
+                textColor={'black'}
+              />
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                columnGap: 5,
+              }}>
+              <Image
+                source={{uri: courseData.creator_profile}}
                 style={{
-                  overflow: 'hidden',
-                  width: '100%',
-                  alignSelf: 'center',
-                  zIndex: -999,
-                  borderRadius: 20,
-                }}>
-                {sliderData?.length > 0 ? (
-                  <ImageSlider
-                    data={sliderData}
-                    autoPlay={false}
-                    closeIconColor="#ED1C24"
-                    // onItemChanged={handleItemChanged}
-                    activeIndicatorStyle={{backgroundColor: 'red'}}
-                    inActiveIndicatorStyle={{backgroundColor: '#fff'}}
-                    indicatorContainerStyle={{top: -5}}
-                    caroselImageStyle={{
-                      resizeMode: 'stretch',
-                      // height: '100%',
-                      width: dimensions.SCREEN_WIDTH * 0.98,
-                      height: dimensions.SCREEN_HEIGHT * 0.3,
-                      borderRadius: 20,
-                    }}
-                  />
-                ) : (
+                  height: 30,
+                  width: 30,
+                  borderRadius: 100,
+                }}
+              />
+              <MyText
+                text={courseData.creator_name}
+                fontFamily={BOLD}
+                fontSize={12}
+                textColor={'black'}
+              />
+            </View>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              marginVertical: 7,
+              justifyContent: 'space-between',
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                columnGap: 5,
+              }}>
+              <Chapter />
+              <MyText
+                text={`${courseData.lesson_count} Chapters`}
+                fontFamily={BOLD}
+                fontSize={12}
+                textColor={'black'}
+              />
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                columnGap: 5,
+              }}>
+              <Quiz />
+              <MyText
+                text={`${courseData.total_quiz} Quiz Questions`}
+                fontFamily={BOLD}
+                fontSize={12}
+                textColor={'black'}
+              />
+            </View>
+          </View>
+          <MyText
+            text={'Description'}
+            fontFamily={EXTRA_BOLD}
+            fontSize={16}
+            textColor={'black'}
+          />
+          <MyText
+            text={courseData.description}
+            fontFamily={REGULAR}
+            fontSize={14}
+            textColor={'black'}
+            style={{width: '95%', LINE_HEIGTH}}
+          />
+          <Divider
+            color={Colors.LIGHT_PURPLE}
+            borderBottomWidth={2}
+            marginVertical={10}
+          />
+          <View style={{flexDirection: 'row'}}>
+            <MyButton
+              text={'Add to cart'}
+              style={{flex: 1, marginRight: 10, backgroundColor: '#00B44B'}}
+            />
+            <MyButton
+              text={'Buy Now'}
+              style={{flex: 1, marginRight: 10, backgroundColor: '#5E4AF7'}}
+            />
+          </View>
+          <ViewAll text="Tags" showSeeAll={false} style={{marginTop: 20}} />
+          {tags?.length > 0 ? (
+            <FlatList
+              data={tags}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{marginTop: 11}}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={renderTags}
+            />
+          ) : (
+            <MyText
+              text={'No Tags found!'}
+              fontFamily="medium"
+              fontSize={18}
+              textAlign="center"
+              textColor={'black'}
+            />
+          )}
+          <Divider
+            color={Colors.LIGHT_PURPLE}
+            borderBottomWidth={2}
+            marginVertical={10}
+          />
+          <ViewAll text="Chapter " showSeeAll={false} style={{marginTop: 10}} />
+          {courseData?.lessons?.length > 0 ? (
+            <FlatList
+              data={courseData?.lessons}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{marginTop: 11}}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={renderChapter}
+            />
+          ) : (
+            <MyText
+              text={'No Chapters found!'}
+              fontFamily="medium"
+              fontSize={18}
+              textAlign="center"
+              textColor={'black'}
+            />
+          )}
+          <View style={styles.ratingCotainer}>
+            <Rating height={60} width={60}></Rating>
+            <View>
+              <MyText
+                text={'Rating & Review'}
+                fontFamily="medium"
+                fontSize={14}
+                textAlign="center"
+                textColor={'black'}
+              />
+              <MyText
+                text={`${courseData.rating}(${courseData?.review_list?.length})`}
+                fontFamily="medium"
+                fontSize={14}
+                textColor={YELLOW}
+              />
+            </View>
+            <TouchableOpacity
+              onPress={() => setShowReviewPopup(true)}
+              style={styles.buttonReview}>
+              <MyText
+                text={'Write your Review'}
+                fontFamily="medium"
+                fontSize={14}
+                textAlign="center"
+                textColor={'white'}
+              />
+            </TouchableOpacity>
+          </View>
+          {courseData?.review_list?.length > 0 ? (
+            courseData?.review_list?.map((item, index) => (
+              <View key={item.index?.toString()} style={styles.reviewContainer}>
+                <View style={styles.reviewTopLeftRow}>
                   <View
                     style={{
-                      backgroundColor: 'red',
-                      width: dimensions.SCREEN_WIDTH * 0.98,
-                      height: dimensions.SCREEN_HEIGHT * 0.3,
-                      borderRadius: 20,
-                      justifyContent: 'center',
+                      flexDirection: 'row',
                       alignItems: 'center',
                     }}>
-                    <Text
-                      style={{
-                        color: 'white',
-                        fontSize: 16,
-                        fontFamily: 'medium',
-                      }}>
-                      NO IMAGE FOUND
-                    </Text>
-                  </View>
-                )}
-              </View>
-            ) : null} */}
-
-            <View style={styles.topRow}>
-              <MyText
-                text={courseData.name}
-                fontFamily={BLACK}
-                fontSize={20}
-                textColor={'black'}
-                style={{width: '95%'}}
-              />
-            </View>
-            <View style={{flexDirection: 'row', marginVertical: 5}}>
-              <MyText
-                text={'$'}
-                fontFamily={BLACK}
-                fontSize={20}
-                textColor={BLACK}
-                letterSpacing={0.14}
-              />
-              <MyText
-                text={courseData.course_fee}
-                fontFamily={BLACK}
-                fontSize={20}
-                textColor={DARK_PURPLE}
-                letterSpacing={0.14}
-                style={{}}
-              />
-            </View>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                width: '89%',
-              }}>
-              <View style={{flexDirection: 'row'}}>
-                <Calendar></Calendar>
-                <MyText
-                  text={courseData.created_at}
-                  fontFamily={REGULAR}
-                  fontSize={16}
-                  textColor={'black'}
-                />
-              </View>
-              <View style={{flexDirection: 'row'}}>
-                <Rating></Rating>
-                <MyText
-                  text={'4.7'}
-                  fontFamily={REGULAR}
-                  fontSize={16}
-                  textColor={'black'}
-                />
-              </View>
-              <View style={{flexDirection: 'row'}}>
-                <Profile></Profile>
-                <MyText
-                  text={' Jane Doe'}
-                  fontFamily={REGULAR}
-                  fontSize={16}
-                  textColor={'black'}
-                />
-              </View>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                marginVertical: 7,
-                justifyContent: 'space-between',
-                width: dimensions.SCREEN_WIDTH * 0.9,
-              }}>
-              <View style={{flexDirection: 'row'}}>
-                <Chapter></Chapter>
-                <MyText
-                  text={' 3 Chapters'}
-                  fontFamily={REGULAR}
-                  fontSize={16}
-                  textColor={'black'}
-                />
-              </View>
-              <View style={{flexDirection: 'row'}}>
-                <Quiz></Quiz>
-                <MyText
-                  text={' 200+ Quiz Questions '}
-                  fontFamily={REGULAR}
-                  fontSize={16}
-                  textColor={'black'}
-                />
-              </View>
-            </View>
-            <MyText
-              text={'Description'}
-              fontFamily={EXTRA_BOLD}
-              fontSize={16}
-              textColor={'black'}
-            />
-            <MyText
-              text={courseData.description}
-              fontFamily={REGULAR}
-              fontSize={14}
-              textColor={'black'}
-              style={{width: '95%', LINE_HEIGTH}}
-            />
-            <Divider
-              style={{
-                backgroundColor: '#CCCCFF',
-                height: 2,
-                marginVertical: 10,
-              }}
-              color="#CCCCFF"></Divider>
-            <View style={styles.middleRow}>
-              <View style={styles.middleLeftRow}></View>
-            </View>
-            <View style={{flexDirection: 'row'}}>
-              <MyButton
-                text={'Add to cart'}
-                style={{flex: 1, marginRight: 10, backgroundColor: '#00B44B'}}
-              />
-              <MyButton
-                text={'Buy Now'}
-                style={{flex: 1, marginRight: 10, backgroundColor: '#5E4AF7'}}
-              />
-            </View>
-            {/* {showModal.isVisible ? (
-              <VideoModal
-                isVisible={showModal.isVisible}
-                toggleModal={toggleModal}
-                videoDetail={{...showModal?.data, url: showModal?.data?.file}}
-                // {...props}
-              />
-            ) : null} */}
-
-            <ViewAll text="Tags" showSeeAll={false} style={{marginTop: 20}} />
-            {tags?.length > 0 ? (
-              <FlatList
-                data={tags}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                style={{marginTop: 11}}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={renderTags}
-              />
-            ) : (
-              <MyText
-                text={'No Tags found!'}
-                fontFamily="medium"
-                fontSize={18}
-                textAlign="center"
-                textColor={'black'}
-              />
-            )}
-
-            <Divider
-              style={{height: 2, marginVertical: 10, marginTop: 12}}
-              color="#CCCCFF"></Divider>
-            <ViewAll
-              text="Chapter "
-              showSeeAll={false}
-              style={{marginTop: 10}}
-            />
-            {courseData?.lessons?.length > 0 ? (
-              <FlatList
-                data={courseData?.lessons}
-                verticall
-                showsHorizontalScrollIndicator={false}
-                style={{marginTop: 11}}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={renderChapter}
-              />
-            ) : (
-              <MyText
-                text={'No Tags found!'}
-                fontFamily="medium"
-                fontSize={18}
-                textAlign="center"
-                textColor={'black'}
-              />
-            )}
-
-            <View style={styles.ratingCotainer}>
-              <Rating height={60} width={60}></Rating>
-
-              <View>
-                <MyText
-                  text={'Rating & Review'}
-                  fontFamily="medium"
-                  fontSize={14}
-                  textAlign="center"
-                  textColor={'black'}
-                />
-                <MyText
-                  text={'4.7(400k +)'}
-                  fontFamily="medium"
-                  fontSize={14}
-                  textColor={YELLOW}
-                />
-              </View>
-              <View style={styles.buttonReview}>
-                <MyText
-                  text={'Write your Review'}
-                  fontFamily="medium"
-                  fontSize={14}
-                  textAlign="center"
-                  textColor={'white'}
-                />
-              </View>
-            </View>
-            {reviewAll?.length > 0 ? (
-              reviewAll?.map((item, index) => (
-                <View
-                  key={item.index?.toString()}
-                  style={styles.reviewContainer}>
-                  <View style={styles.reviewTopRow}>
-                    <View style={styles.reviewTopLeftRow}>
-                      <Image
-                        source={
-                          item?.profile_image
-                            ? {uri: item?.profile_image}
-                            : require('assets/images/ReviewPerson1.png')
-                        }
-                        style={styles.reviewImg}
-                      />
-                      <View style={{width: 210}}>
-                        <MyText
-                          text={`Robert Fox`}
-                          fontFamily={REGULAR}
-                          fontSize={16}
-                          numberOfLines={2}
-                          textColor={'black'}
-                          style={{marginLeft: 10}}
-                        />
-                      </View>
+                    <Image
+                      source={
+                        item?.review_by_profile
+                          ? {uri: item?.review_by_profile}
+                          : require('assets/images/ReviewPerson1.png')
+                      }
+                      style={styles.reviewImg}
+                    />
+                    <View style={{marginLeft: 10}}>
                       <MyText
-                        text={'1 month ago'}
-                        fontFamily="medium"
-                        fontSize={13}
-                        textColor={'gray'}
-                        textAlign={'right'}
-                        style={{marginLeft: 10}}
+                        text={item.review_by_name}
+                        fontFamily={REGULAR}
+                        fontSize={16}
+                        numberOfLines={2}
+                        textColor={'black'}
                       />
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          columnGap: 5,
+                        }}>
+                        <Rating />
+                        <MyText text={item.rating} />
+                      </View>
                     </View>
-                    <Image source={require('assets/images/ratingStar.svg')} />
                   </View>
+
                   <MyText
-                    text={'Exellent course learnt so many things'}
+                    text={item.review_on}
                     fontFamily="medium"
                     fontSize={13}
                     textColor={'gray'}
-                    style={{marginTop: 10}}
+                    textAlign={'right'}
+                    style={{marginLeft: 10}}
                   />
                 </View>
-              ))
-            ) : (
-              <MyText
-                text={'No Reviews found'}
-                fontFamily="medium"
-                fontSize={18}
-                textAlign="center"
-                textColor={'black'}
-              />
-            )}
-          </View>
-          {/* <Review
-            key={reviewRef}
-            visible={showReviewModal}
-            setVisibility={setShowReviewModal}
-            starRating={starRating}
-            setStarRating={setStarRating}
-            review={review}
-            setReview={setReview}
-            submitReview={submitReview}
-            isReviewed={reviewbutton}
-          /> */}
+                <MyText
+                  text={item.review}
+                  fontFamily="medium"
+                  fontSize={13}
+                  textColor={'gray'}
+                  style={{marginTop: 10}}
+                />
+              </View>
+            ))
+          ) : (
+            <MyText
+              text={'No Reviews found'}
+              fontFamily="medium"
+              fontSize={18}
+              textAlign="center"
+              textColor={'black'}
+            />
+          )}
+          <Review
+            visible={showReviewPopup}
+            setVisibility={setShowReviewPopup}
+          />
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

@@ -19,7 +19,7 @@ import {Colors, MyIcon} from 'global/index';
 //import : redux
 
 const CourseCard = ({item, onPress = () => {}, heartPress = () => {}}) => {
-  console.log(item);
+  console.log('ITEMS', item);
 
   //UI
   return (
@@ -152,7 +152,7 @@ const CourseCard = ({item, onPress = () => {}, heartPress = () => {}}) => {
               }}>
               <Quiz></Quiz>
               <MyText
-                text={'15 Quiz'}
+                text={`${item.total_quiz} Quiz`}
                 fontFamily={BLACK}
                 fontSize={13}
                 textColor={BLACK}
