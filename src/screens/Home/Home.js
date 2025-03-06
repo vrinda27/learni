@@ -17,6 +17,7 @@ import {dimensions} from 'global/Constants';
 import {ScreenNames, Service} from 'global/index';
 import {API_Endpoints} from 'global/Service';
 import Loader from 'component/loader/Loader';
+import {styles} from './HomeStyle';
 
 const Home = ({navigation}) => {
   //hook : states
@@ -66,15 +67,14 @@ const Home = ({navigation}) => {
   }, []);
   //UI
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <View style={styles.container}>
+      <Background style={StyleSheet.absoluteFill} />
+      <Header
+        showBackButton={false}
+        showNotification={true}
+        showGridIcon={true}
+      />
       <ScrollView>
-        <Background style={StyleSheet.absoluteFill} />
-
-        <Header
-          showBackButton={false}
-          showNotification={true}
-          showGridIcon={true}></Header>
-
         <View style={{marginHorizontal: 12}}>
           <View style={{marginVertical: 12}}>
             <MySearchBarForHome
@@ -179,7 +179,7 @@ const Home = ({navigation}) => {
         <View height={dimensions.SCREEN_HEIGHT * 0.2}></View>
       </ScrollView>
       <Loader visible={showLoader} />
-    </SafeAreaView>
+    </View>
   );
 };
 

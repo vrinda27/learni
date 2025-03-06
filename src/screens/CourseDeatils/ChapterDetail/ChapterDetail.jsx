@@ -1,12 +1,14 @@
 //import : react component
-import React from 'react';
-import {View, ScrollView, TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
+import {View, TouchableOpacity, FlatList, Image} from 'react-native';
 //import : custom components
 import Header from 'component/Header/Header';
 import MyText from 'component/MyText/MyText';
 import MyButton from 'component/MyButton/MyButton';
+import ChapterContent from 'component/ChapterContent/ChapterContent';
 //import : third party
-import Video from 'react-native-video';
+import {ScrollView} from 'react-native-virtualized-view';
+import SvgUri from 'react-native-svg-uri';
 //import : utils
 import Calendar from 'assets/images/calendar.svg';
 import Clock from 'assets/images/clockGreen.svg';
@@ -19,33 +21,35 @@ import QuizSvg from 'assets/svgs/chaptersvg/quiz.svg';
 import SurveySvg from 'assets/svgs/chaptersvg/clipboard-tick.svg';
 import NoteSvg from 'assets/svgs/chaptersvg/note.svg';
 import {BLACK, REGULAR} from 'global/Fonts';
-import {LIGHT_PURPLE} from 'global/Color';
 import {Colors} from 'global/index';
 //import : styles
 import {styles} from './ChapterDetailStyle';
 //import : modals
 //import : redux
 
-const ChapterDetail = () => {
+const ChapterDetail = ({route}) => {
+  //variables
+  const {data} = route.params;
+  console.log('DATATAT', data);
+
+  //hook : states
+  const [selectedItem, setSelectedItem] = useState(data.chapter_steps[0]);
   //UI
   return (
     <View style={styles.container}>
       <Header
         showBackButton={true}
-        heading={'Chapter 1'}
-        showNotification={true}
+        heading={data.lesson_name}
+        showNotification={false}
         showCart={false}
         showLearneLogo={false}
         showGridIcon={false}
       />
       <ScrollView>
-        <Video
-          source={{
-            uri: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-          }}
-          controls
-          style={{height: 250, width: '100%'}}
-        />
+        {Object.keys(selectedItem).length > 0 && (
+          <ChapterContent url={selectedItem?.file} type={selectedItem?.type} />
+        )}
+
         <View style={styles.mainView}>
           <MyText
             text={
@@ -61,10 +65,10 @@ const ChapterDetail = () => {
               flexDirection: 'row',
               columnGap: 20,
             }}>
-            <View style={{flexDirection: 'row'}}>
+            <View style={{flexDirection: 'row', columnGap: 5}}>
               <Calendar />
               <MyText
-                text={' 26 Dec 2024'}
+                text={data.lesson_created_at}
                 fontFamily={REGULAR}
                 fontSize={16}
                 textColor={'black'}
@@ -106,20 +110,32 @@ const ChapterDetail = () => {
             </View>
           </View>
           <MyText
-            text={
-              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus orci lorem, gravida quis risus in, imperdiet posuere elit. Fusce consectetur scelerisque tortor. Suspendisse ac ultrices dolor, ac aliquam lectus.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus orci lorem, gravida quis risus in, imperdiet posuere elit. Fusce consectetur scelerisque tortor. Suspendisse ac ultrices dolor, ac aliquam lectus.'
-            }
+            text={data?.lesson_description}
             fontFamily={REGULAR}
             fontSize={14}
             textColor={'black'}
             style={{width: '95%'}}
           />
-          <ChapterTask icon={<PdfSvg />} title={'Pdf'} />
-          <ChapterTask icon={<AssignmentSvg />} title={'Assignment'} />
+          <FlatList
+            data={data.chapter_steps}
+            renderItem={({item, index}) => {
+              return (
+                <ChapterTask
+                  icon={item.image}
+                  title={item.title}
+                  isSelected={item.title == selectedItem.title}
+                  onPress={() => setSelectedItem(item)}
+                />
+              );
+            }}
+            keyExtractor={(item, index) => index + item}
+          />
+
+          {/* <ChapterTask icon={<AssignmentSvg />} title={'Assignment'} />
           <ChapterTask icon={<VideoSvg />} title={'Video'} />
           <ChapterTask icon={<QuizSvg />} title={'Quiz'} />
           <ChapterTask icon={<SurveySvg />} title={'Survey'} />
-          <ChapterTask icon={<NoteSvg />} title={'Content'} />
+          <ChapterTask icon={<NoteSvg />} title={'Content'} /> */}
           <View
             style={{
               flexDirection: 'row',
@@ -141,21 +157,28 @@ const ChapterDetail = () => {
 
 export default ChapterDetail;
 
-const ChapterTask = ({icon, title}) => {
+const ChapterTask = ({icon, isSelected, title, onPress = () => {}}) => {
   return (
     <TouchableOpacity
+      onPress={() => onPress()}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
         columnGap: 10,
         borderRadius: 10,
         padding: 10,
-        borderColor: LIGHT_PURPLE,
+        borderColor: isSelected ? Colors.YELLOW : Colors.LIGHT_PURPLE,
         borderWidth: 1,
         backgroundColor: 'white',
         marginVertical: 6,
       }}>
-      {icon && icon}
+      <Image
+        source={{uri: icon}}
+        style={{
+          height: 30,
+          width: 30,
+        }}
+      />
       <MyText
         text={title}
         fontFamily={BLACK}

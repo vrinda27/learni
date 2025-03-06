@@ -1,7 +1,12 @@
 import {StyleSheet} from 'react-native';
 import {dimensions} from '../../global/Constants';
-import {LIGHT_PURPLE} from '../../global/Color';
+import {LIGHT_PURPLE} from 'global/Color';
+import {responsiveHeight} from 'react-native-responsive-dimensions';
+import {Colors} from 'global/index';
 export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   logoContainer: {
     position: 'absolute',
     justifyContent: 'center',
@@ -18,10 +23,7 @@ export const styles = StyleSheet.create({
     marginRight: 8,
   },
   categoryImg: {width: 48, height: 48, resizeMode: 'contain'},
-  container: {
-    flex: 1,
-    backgroundColor: Colors.SCREEN_BG,
-  },
+
   mainView: {
     padding: 20,
     paddingTop: 0,
@@ -42,7 +44,6 @@ export const styles = StyleSheet.create({
     elevation: 2,
   },
   courseContainer: {
-    width: (width - 40) * 0.66,
     paddingVertical: 10,
     borderRadius: 10,
     backgroundColor: 'white',
@@ -62,21 +63,21 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 10,
     marginBottom: 5,
-    gap:20
+    gap: 20,
   },
   topLeftRow: {
     // backgroundColor:'blue',
-    width:'75%',
+    width: '75%',
     flexDirection: 'row',
     alignItems: 'center',
   },
   topRightRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    justifyContent:'space-around',
+    justifyContent: 'space-around',
     // backgroundColor:'red',
-    width:45,
-    left:-10
+    width: 45,
+    left: -10,
   },
   crtrImg: {
     height: responsiveHeight(5),
@@ -87,7 +88,6 @@ export const styles = StyleSheet.create({
   },
   crseImg: {
     height: 167,
-    width: (width - 40) * 0.66,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -107,7 +107,6 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   categoryContainer: {
-    width: (width - 40) * 0.33,
     paddingVertical: 10,
     borderRadius: 10,
     backgroundColor: 'white',
@@ -128,7 +127,6 @@ export const styles = StyleSheet.create({
     borderRadius: 78 / 2,
   },
   productContainer: {
-    width: (width - 40) * 0.42,
     paddingBottom: 10,
     borderRadius: 10,
     backgroundColor: 'white',
@@ -147,7 +145,8 @@ export const styles = StyleSheet.create({
     position: 'absolute',
     right: 7,
     top: 7,
-    height: 18, width: 18
+    height: 18,
+    width: 18,
   },
   starView: {
     flexDirection: 'row',

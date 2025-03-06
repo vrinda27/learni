@@ -1,0 +1,88 @@
+//import : react component
+import React from 'react';
+import {View, Text, TouchableOpacity} from 'react-native';
+//import : custom components
+import MyText from 'component/MyText/MyText';
+//import : third party
+//import : utils
+import Clock from 'assets/images/clockGreen.svg';
+import {BLACK, REGULAR} from 'global/Fonts';
+import {DARK_PURPLE} from 'global/Color';
+import Pdf from 'assets/images/pdfDocument.svg';
+//import : styles
+import {styles} from './ChapterCardStyle';
+import {dimensions} from 'global/Constants';
+//import : modals
+//import : redux
+
+const ChapterCard = ({item, onPress = () => {}}) => {
+  //UI
+  return (
+    <TouchableOpacity onPress={() => onPress()} style={styles.container}>
+      <View
+        style={[
+          styles.chapterContainerow,
+          {
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: dimensions.SCREEN_WIDTH * 0.87,
+            marginTop: 14,
+          },
+        ]}>
+        <View style={{flexDirection: 'row'}}>
+          <View style={styles.serialContainer}>
+            <MyText
+              text={item?.id}
+              fontFamily={BLACK}
+              fontSize={13}
+              textColor={'white'}
+            />
+          </View>
+
+          <View style={styles.chapterTitleView}>
+            <MyText
+              text={item.lesson_name}
+              fontFamily={BLACK}
+              fontSize={13}
+              textColor={DARK_PURPLE}
+            />
+          </View>
+        </View>
+
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Clock />
+          <MyText
+            text={'10min'}
+            fontFamily={BLACK}
+            fontSize={12}
+            textColor={'#999999'}
+            style={{textAlign: 'center', marginLeft: 5}}
+          />
+        </View>
+
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Pdf />
+          <MyText
+            text={'PDF'}
+            fontFamily={BLACK}
+            fontSize={12}
+            textColor={'#999999'}
+            style={{textAlign: 'center', marginLeft: 5}}
+          />
+        </View>
+      </View>
+      <MyText
+        text={
+          'Lorem ipsum dolor sit amet, dolor is consectetur adipiscing elit.'
+        }
+        fontFamily={REGULAR}
+        fontSize={13}
+        textColor={'black'}
+        style={{width: '95%', marginHorizontal: 16, marginTop: 7}}
+      />
+    </TouchableOpacity>
+  );
+};
+
+export default ChapterCard;
