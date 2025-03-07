@@ -2,11 +2,24 @@ import {StyleSheet} from 'react-native';
 import { YELLOW,LIGHT_PURPLE } from '../../global/Color';
 export const styles = StyleSheet.create({
   searchContainer: {
+    width:'98%',
+    alignSelf:'center',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     height: 60,
     zIndex: 2,
+    backgroundColor: 'white',  // Ensure background is set
+    borderRadius: 10, // Optional for rounded corners
+
+    // iOS Shadow
+    shadowColor: '#000', // Black shadow
+    shadowOffset: { width: 0, height: 8 }, // Matches "0px 8px"
+    shadowOpacity: 0.08, // 0D in hex = ~5%–8% opacity
+    shadowRadius: 13, // Matches "13px" blur effect
+
+    // Android Shadow
+    elevation: 8, // Adjust as needed
    
   },
   inputStyle: {

@@ -1,6 +1,6 @@
 //import : react component
 import React, {useEffect, useState} from 'react';
-import {View, FlatList, TouchableOpacity} from 'react-native';
+import {View, FlatList, TouchableOpacity,SafeAreaView,ScrollView,StyleSheet} from 'react-native';
 //import : custom components
 import Header from 'component/Header/Header';
 import MyText from 'component/MyText/MyText';
@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_Endpoints} from 'global/Service';
 import {Colors, ScreenNames, Service} from 'global/index';
 import RightSvg from 'assets/svgs/right-arrow.svg';
+import Background from 'assets/svgs/background.svg';
 //import : styles
 import {styles} from './SubCategoriesStyle';
 //import : modals
@@ -55,15 +56,26 @@ const SubCategories = ({route, navigation}) => {
 
   //UI
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={{flex: 1,backgroundColor:'white'}}>
+    <ScrollView>
+      <Background style={StyleSheet.absoluteFill} />
+
       <Header
+        showNotification={false}
+        heading={data.name}
+        showLearneLogo={false}
+        showCart={false}
+        showBackButton={true}
+        ></Header>
+    {/* <View style={styles.container}> */}
+      {/* <Header
         showBackButton={true}
         heading={data.name}
         showNotification={true}
         showCart={false}
         showLearneLogo={false}
         showGridIcon={false}
-      />
+      /> */}
       <View style={styles.mainView}>
         <SearchWithIcon
           placeholder="Search by name"
@@ -74,6 +86,7 @@ const SubCategories = ({route, navigation}) => {
         <SizeBox height={10} />
         <FlatList
           data={subCategoriesData}
+          style={{marginTop:12,alignSelf:'center'}}
           renderItem={({item, index}) => {
             return (
               <SubCategoriesCard
@@ -86,7 +99,9 @@ const SubCategories = ({route, navigation}) => {
           keyExtractor={(item, index) => item + index}
         />
       </View>
-    </View>
+    {/* </View> */}
+    </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -97,7 +112,7 @@ const SubCategoriesCard = ({name, onPress = () => {}}) => {
     <TouchableOpacity
       onPress={onPress}
       style={{
-        width: '98%',
+        width: '99%',
         paddingVertical: 10,
         borderRadius: 10,
         backgroundColor: 'white',
@@ -112,8 +127,10 @@ const SubCategoriesCard = ({name, onPress = () => {}}) => {
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 10,
+        alignSelf:'center',
+   
       }}>
-      <MyText text={name} fontSize={16} />
+      <MyText text={name} fontSize={14} />
       <RightSvg />
     </TouchableOpacity>
   );

@@ -10,7 +10,7 @@ import Toast from 'react-native-toast-message';
 //import : utils
 import Share from 'assets/images/share.svg';
 import Rating from 'assets/images/rating.svg';
-import {Colors, MyIcon, Service} from 'global/index';
+import {Colors, Fonts, MyIcon, Service} from 'global/index';
 import {REGULAR} from 'global/Fonts';
 import {dimensions} from 'global/Constants';
 //import : styles
@@ -58,7 +58,7 @@ const HomeCourseCard = ({
     <TouchableOpacity onPress={onPress} style={styles.courseContainer}>
       {item?.image != null ? (
         <FastImage
-          resizeMode="contain"
+          resizeMode="cover"
           source={{uri: item?.image}}
           style={styles.crseImg}>
           <TouchableOpacity
@@ -71,14 +71,16 @@ const HomeCourseCard = ({
         </FastImage>
       ) : null}
       <View style={styles.bottomRow}>
-        <View style={{width: dimensions.SCREEN_WIDTH * 0.56}}>
-          <MyText
+         <MyText
             text={item.name}
-            fontFamily={'regular'}
+            fontFamily={Fonts.MEDIUM}
             fontSize={16}
             textColor={Colors.BLACK}
-            style={{}}
+            numberOfLines={2}
+            style={{ textAlignVertical: 'top', alignSelf: 'flex-start' }}
           />
+        <View style={{width: dimensions.SCREEN_WIDTH * 0.61,alignSelf: 'flex-start' }}>
+         
           <View
             style={[
               styles.courseNameView,
@@ -108,11 +110,11 @@ const HomeCourseCard = ({
               />
             </View>
             <View style={{flexDirection: 'row'}}>
-              <Rating style={{}}></Rating>
+              <Rating height={20}></Rating>
               <MyText
                 text={item.rating}
                 fontFamily={REGULAR}
-                fontSize={13}
+                fontSize={16}
                 textColor={Colors.DARK_PURPLE}
                 letterSpacing={0.14}
                 style={{marginLeft: 3}}
@@ -135,10 +137,12 @@ const HomeCourseCard = ({
         <View style={{flexDirection: 'row'}}>
           <Image
             source={{uri: item.creator_profile}}
+            resizeMethod='contain'
             style={{
-              height: 30,
-              width: 30,
+              height: 24,
+              width: 24,
               borderRadius: 100,
+
             }}
           />
           <MyText
@@ -162,7 +166,7 @@ const HomeCourseCard = ({
               color={Colors.PINK}
             />
           </TouchableOpacity>
-          <Share></Share>
+          <Share style={{marginLeft:4,marginTop:3}}></Share>
         </View>
       </View>
     </TouchableOpacity>

@@ -14,6 +14,7 @@ import {
 import MyText from '../MyText/MyText';
 import {styles} from './ViewAllStyle';
 import { WHITE } from '../../global/Color';
+import { REGULAR,EXTRA_BOLD ,BOLD,SEMI_BOLD,MEDIUM} from 'global/Fonts';
 
 const ViewAll = ({
   text,
@@ -26,7 +27,7 @@ const ViewAll = ({
     <View style={[styles.container, style]}>
       <MyText
         text={text}
-        fontFamily="medium"
+        fontFamily={MEDIUM}
         fontSize={18}
         // textColor={'#455A64'}
       />
@@ -34,7 +35,7 @@ const ViewAll = ({
         <TouchableOpacity onPress={onPress} style={styles.viewAll}>
           <MyText
             text={buttonText}
-            fontFamily="regular"
+            fontFamily={MEDIUM}
             fontSize={18}
              textColor={WHITE}
           />

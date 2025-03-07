@@ -75,17 +75,18 @@ const Home = ({navigation}) => {
           showNotification={true}
           showGridIcon={true}></Header>
 
-        <View style={{marginHorizontal: 12}}>
+        <View style={{marginHorizontal: 10}}>
           <View style={{marginVertical: 12}}>
             <MySearchBarForHome
               disabled
               placeHolder={'Search by course or product name'}
             />
-            <View style={{width: dimensions.SCREEN_WIDTH * 0.93}}>
+            <View style={{marginHorizontal:12}}>
+            <View style={{}}>
               <ViewAll
                 text="Courses Category"
                 onPress={() => gotoCourseCategory()}
-                style={{marginTop: 25}}
+                style={{marginTop: 15}}
               />
               <FlatList
                 data={homeData?.categories}
@@ -97,11 +98,11 @@ const Home = ({navigation}) => {
                     onPress={() => gotoSubCategories(item)}
                   />
                 )}
-                contentContainerStyle={{paddingLeft: 20, paddingVertical: 10}}
+                contentContainerStyle={{paddingVertical: 10}}
                 showsHorizontalScrollIndicator={false}
               />
             </View>
-          </View>
+          
 
           <View>
             {homeData?.courses?.length > 0 ? (
@@ -175,6 +176,8 @@ const Home = ({navigation}) => {
               />
             )}
           </View>
+        </View>
+        </View>
         </View>
         <View height={dimensions.SCREEN_HEIGHT * 0.2}></View>
       </ScrollView>

@@ -3,7 +3,7 @@ import React from 'react';
 import MyText from 'component/MyText/MyText';
 import {dimensions} from 'global/Constants';
 import {Colors} from 'global/index';
-import {REGULAR} from 'global/Fonts';
+import {REGULAR,MEDIUM} from 'global/Fonts';
 
 const CategoryCard = ({item, onPress = () => {}}) => {
   return (
@@ -35,6 +35,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 10,
     justifyContent: 'center',
+    shadowColor: 'rgba(0, 137, 207, 1)', // RGB without opacity, opacity is set separately
+    shadowOffset: { width: 0, height: 8 }, // Matches "0px 8px"
+    shadowOpacity: 0.1, // Matches "0.1" from rgba
+    shadowRadius: 13, // Matches "13px" from box-shadow
+
+    // Android Shadow
+    elevation: 8, // Approximate equivalent to iOS shadow
   },
   row: {
     flexDirection: 'row',
@@ -42,9 +49,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   categoryImg: {
-    width: 48,
-    height: 48,
-    resizeMode: 'contain',
+    width: 58,
+    height: 58,
+    resizeMode: 'cover',
     justifyContent: 'center',
+    borderRadius:50
   },
 });

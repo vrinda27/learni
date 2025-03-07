@@ -35,12 +35,13 @@ const MySearchBarForHome = ({
         //  alignSelf: "center",
         marginTop: 15,
         alignItems: 'center',
-        width: '95%',
+        width: '93%',
         gap: 5,
         display: 'flex',
         justifyContent: 'space-between',
         marginBottom: 0,
         alignSelf: 'center',
+       
       }}>
       <TextInput
         editable={!disabled}
@@ -55,7 +56,16 @@ const MySearchBarForHome = ({
             // left: 7,
             paddingHorizontal: 15,
             color: '#fff',
-            //   fontFamily: FONTFAMILY
+            backgroundColor: 'white',
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 8,
+            },
+            shadowOpacity: 0.1,
+            shadowRadius: 4.65,
+  
+            elevation: 13,
           },
           textInputStyle,
         ]}

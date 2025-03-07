@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
     marginTop: -30,
   },
   categoryContainer: {
-    width: (dimensions.SCREEN_WIDTH - 60) * 0.33,
+    width: (dimensions.SCREEN_WIDTH - 60) * 0.34,
     paddingVertical: 10,
     borderRadius: 10,
     backgroundColor: 'white',
@@ -31,7 +31,7 @@ export const styles = StyleSheet.create({
     elevation: 2,
     borderWidth:1,
     borderColor:LIGHT_PURPLE,
-    alignSelf:'center'
+    alignSelf:'center',
   },
   catImg: {
     height: 58,
