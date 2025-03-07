@@ -1,9 +1,10 @@
 //import : react components
 import React, {useEffect, useState} from 'react';
-import {View, SafeAreaView, FlatList, StyleSheet} from 'react-native';
+import {View, FlatList, StyleSheet} from 'react-native';
 // import : custom components
 import Header from 'component/Header/Header';
 import ViewAll from 'component/ViewAll/ViewAll';
+import Loader from 'component/loader/Loader';
 import MySearchBarForHome from 'component/MySearchBarForHome';
 import MyText from 'component/MyText/MyText';
 import HomeCourseCard from 'component/HomeCourseCard/HomeCourseCard';
@@ -16,7 +17,7 @@ import Background from 'assets/svgs/background.svg';
 import {dimensions} from 'global/Constants';
 import {ScreenNames, Service} from 'global/index';
 import {API_Endpoints} from 'global/Service';
-import Loader from 'component/loader/Loader';
+//import : styles
 import {styles} from './HomeStyle';
 
 const Home = ({navigation}) => {
