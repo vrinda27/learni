@@ -3,7 +3,7 @@ import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   courseContainer: {
-    width: dimensions.SCREEN_WIDTH * 0.9,
+    width: dimensions.SCREEN_WIDTH * 0.88,
     alignSelf: 'center',
     borderRadius: 10,
     backgroundColor: 'white',
@@ -47,9 +47,10 @@ export const styles = StyleSheet.create({
   },
   crseImg: {
     height: 167,
-    width: dimensions.SCREEN_WIDTH * 0.9,
+    width: dimensions.SCREEN_WIDTH * 0.87,
     justifyContent: 'center',
     alignItems: 'center',
+    alignSelf:'center'
   },
   bottomRight: {
     flexDirection: 'row',

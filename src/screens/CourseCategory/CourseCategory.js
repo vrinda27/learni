@@ -100,7 +100,7 @@ const CourseCategory = ({navigation, dispatch, route}) => {
           showGridIcon={false}
         />
 
-        <View style={{marginHorizontal: 12}}>
+        <View style={{marginHorizontal: 14,}}>
           <View style={{marginVertical: 12}}>
             <SearchWithIcon
               placeholder="Search Category"
@@ -112,7 +112,7 @@ const CourseCategory = ({navigation, dispatch, route}) => {
               <FlatList
                 data={categories}
                 numColumns={3}
-                style={{marginTop: 37}}
+                style={{marginTop: 20}}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={renderCategory}
               />

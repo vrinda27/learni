@@ -6,7 +6,7 @@ import MyText from 'component/MyText/MyText';
 //import : third party
 import FastImage from 'react-native-fast-image';
 //import : utils
-import {REGULAR} from 'global/Fonts';
+import {MEDIUM, REGULAR} from 'global/Fonts';
 import Rating from 'assets/images/rating.svg';
 import Profile from 'assets/images/profilePerson.svg';
 import Lesson from 'assets/images/lesson.svg';
@@ -70,7 +70,7 @@ const CourseCard = ({item, onPress = () => {}, heartPress = () => {}}) => {
       </View>
       {item.image != null ? (
         <FastImage
-          resizeMode="contain"
+          resizeMode="cover"
           source={{uri: item.image}}
           style={styles.crseImg}>
           <TouchableOpacity
@@ -88,7 +88,7 @@ const CourseCard = ({item, onPress = () => {}, heartPress = () => {}}) => {
         <View style={{width: '100%'}}>
           <MyText
             text={item.name}
-            fontFamily={BLACK}
+            fontFamily={MEDIUM}
             fontSize={16}
             textColor={BLACK}
             style={{}}
@@ -97,14 +97,14 @@ const CourseCard = ({item, onPress = () => {}, heartPress = () => {}}) => {
             <View style={{flexDirection: 'row'}}>
               <MyText
                 text={'$'}
-                fontFamily={BLACK}
+                fontFamily={MEDIUM}
                 fontSize={20}
                 textColor={BLACK}
                 style={{}}
               />
               <MyText
                 text={item.course_fee}
-                fontFamily={BLACK}
+                fontFamily={REGULAR}
                 fontSize={20}
                 textColor={DARK_PURPLE}
                 style={{}}
@@ -120,8 +120,8 @@ const CourseCard = ({item, onPress = () => {}, heartPress = () => {}}) => {
               <Rating />
               <MyText
                 text={item.rating}
-                fontFamily={BLACK}
-                fontSize={13}
+                fontFamily={REGULAR}
+                fontSize={16}
                 textColor={BLACK}
                 style={{}}
               />
@@ -136,8 +136,8 @@ const CourseCard = ({item, onPress = () => {}, heartPress = () => {}}) => {
               <Lesson />
               <MyText
                 text={`${item.lesson_count} Lesson`}
-                fontFamily={BLACK}
-                fontSize={13}
+                fontFamily={REGULAR}
+                fontSize={14}
                 textColor={BLACK}
                 style={{}}
               />
@@ -151,8 +151,8 @@ const CourseCard = ({item, onPress = () => {}, heartPress = () => {}}) => {
               <Quiz></Quiz>
               <MyText
                 text={`${item.total_quiz} Quiz`}
-                fontFamily={BLACK}
-                fontSize={13}
+                fontFamily={REGULAR}
+                fontSize={14}
                 textColor={BLACK}
                 style={{}}
               />

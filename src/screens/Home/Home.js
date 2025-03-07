@@ -75,105 +75,107 @@ const Home = ({navigation}) => {
         showGridIcon={true}
       />
       <ScrollView>
-        <View style={{marginHorizontal: 12}}>
+        <View style={{marginHorizontal: 10}}>
           <View style={{marginVertical: 12}}>
             <MySearchBarForHome
               disabled
               placeHolder={'Search by course or product name'}
             />
-            <View style={{width: dimensions.SCREEN_WIDTH * 0.93}}>
-              <ViewAll
-                text="Courses Category"
-                onPress={() => gotoCourseCategory()}
-                style={{marginTop: 25}}
-              />
-              <FlatList
-                data={homeData?.categories}
-                keyExtractor={item => item.id.toString()}
-                horizontal={true}
-                renderItem={({item}) => (
-                  <CategoryCard
-                    item={item}
-                    onPress={() => gotoSubCategories(item)}
+            <View style={{marginHorizontal: 12}}>
+              <View style={{}}>
+                <ViewAll
+                  text="Courses Category"
+                  onPress={() => gotoCourseCategory()}
+                  style={{marginTop: 15}}
+                />
+                <FlatList
+                  data={homeData?.categories}
+                  keyExtractor={item => item.id.toString()}
+                  horizontal={true}
+                  renderItem={({item}) => (
+                    <CategoryCard
+                      item={item}
+                      onPress={() => gotoSubCategories(item)}
+                    />
+                  )}
+                  contentContainerStyle={{paddingVertical: 10}}
+                  showsHorizontalScrollIndicator={false}
+                />
+              </View>
+
+              <View>
+                {homeData?.courses?.length > 0 ? (
+                  <View>
+                    <ViewAll
+                      text="Trending Courses"
+                      onPress={gotoTrendingCourses}
+                      style={{marginTop: 4}}
+                    />
+                    <FlatList
+                      data={homeData?.courses || []}
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      style={{marginTop: 15}}
+                      keyExtractor={(item, index) => index.toString()}
+                      renderItem={({item}) => (
+                        <HomeCourseCard
+                          item={item}
+                          setShowLoader={setShowLoader}
+                          onPress={() => gotoCourseDetails(item.id)}
+                          nextFunction={() => getHome()}
+                        />
+                      )}
+                      onEndReached={''}
+                      onEndReachedThreshold={0.1}
+                      ListFooterComponent={''}
+                    />
+                  </View>
+                ) : (
+                  <MyText
+                    text={`No Trending Courses found`}
+                    fontFamily="medium"
+                    fontSize={18}
+                    textColor={'#455A64'}
+                    style={{textAlign: 'center', marginTop: 20}}
                   />
                 )}
-                contentContainerStyle={{paddingLeft: 20, paddingVertical: 10}}
-                showsHorizontalScrollIndicator={false}
-              />
+              </View>
+              <View>
+                {homeData?.courses?.length > 0 ? (
+                  <View>
+                    <ViewAll
+                      text="Suggested Courses"
+                      onPress={gotoTrendingCourses}
+                      style={{marginTop: 25}}
+                    />
+                    <FlatList
+                      data={homeData?.courses || []}
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      style={{marginTop: 15}}
+                      keyExtractor={(item, index) => index.toString()}
+                      renderItem={({item}) => (
+                        <HomeCourseCard
+                          item={item}
+                          onPress={() => gotoCourseDetails(item.id)}
+                        />
+                      )}
+                      onEndReached={''}
+                      onEndReachedThreshold={0.1}
+                      ListFooterComponent={''}
+                    />
+                  </View>
+                ) : (
+                  <MyText
+                    text={`No Trending Courses found`}
+                    fontFamily="medium"
+                    fontSize={18}
+                    textColor={'#455A64'}
+                    style={{textAlign: 'center', marginTop: 20}}
+                  />
+                )}
+              </View>
             </View>
-          </View>
-
-          <View>
-            {homeData?.courses?.length > 0 ? (
-              <View>
-                <ViewAll
-                  text="Trending Courses"
-                  onPress={gotoTrendingCourses}
-                  style={{marginTop: 4}}
-                />
-                <FlatList
-                  data={homeData?.courses || []}
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  style={{marginTop: 15}}
-                  keyExtractor={(item, index) => index.toString()}
-                  renderItem={({item}) => (
-                    <HomeCourseCard
-                      item={item}
-                      setShowLoader={setShowLoader}
-                      onPress={() => gotoCourseDetails(item.id)}
-                      nextFunction={() => getHome()}
-                    />
-                  )}
-                  onEndReached={''}
-                  onEndReachedThreshold={0.1}
-                  ListFooterComponent={''}
-                />
-              </View>
-            ) : (
-              <MyText
-                text={`No Trending Courses found`}
-                fontFamily="medium"
-                fontSize={18}
-                textColor={'#455A64'}
-                style={{textAlign: 'center', marginTop: 20}}
-              />
-            )}
-          </View>
-          <View>
-            {homeData?.courses?.length > 0 ? (
-              <View>
-                <ViewAll
-                  text="Suggested Courses"
-                  onPress={gotoTrendingCourses}
-                  style={{marginTop: 25}}
-                />
-                <FlatList
-                  data={homeData?.courses || []}
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  style={{marginTop: 15}}
-                  keyExtractor={(item, index) => index.toString()}
-                  renderItem={({item}) => (
-                    <HomeCourseCard
-                      item={item}
-                      onPress={() => gotoCourseDetails(item.id)}
-                    />
-                  )}
-                  onEndReached={''}
-                  onEndReachedThreshold={0.1}
-                  ListFooterComponent={''}
-                />
-              </View>
-            ) : (
-              <MyText
-                text={`No Trending Courses found`}
-                fontFamily="medium"
-                fontSize={18}
-                textColor={'#455A64'}
-                style={{textAlign: 'center', marginTop: 20}}
-              />
-            )}
           </View>
         </View>
         <View height={dimensions.SCREEN_HEIGHT * 0.2}></View>

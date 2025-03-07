@@ -1,6 +1,6 @@
 //import : react component
 import React, {useEffect, useState} from 'react';
-import {FlatList, View} from 'react-native';
+import {FlatList, View,ScrollView,SafeAreaView,StyleSheet} from 'react-native';
 //import : custom components
 import Header from 'component/Header/Header';
 import SearchWithIcon from 'component/SearchWithIcon/SearchWithIcon';
@@ -15,6 +15,9 @@ import {ScreenNames, Service} from 'global/index';
 import {API_Endpoints} from 'global/Service';
 import Loader from 'component/loader/Loader';
 import Toast from 'react-native-toast-message';
+import Background from 'assets/svgs/background.svg';
+import Filter from 'assets/images/settingFilter.svg';
+import TrendingFiltersModal from 'component/SearchWithIcon/Component/CategoryFilter';
 //import : modals
 //import : redux
 
@@ -25,6 +28,7 @@ const CourseList = ({route, navigation}) => {
   const [coursesData, setCoursesData] = useState([]);
   //hook : modal states
   const [showLoader, setShowLoader] = useState(false);
+  const [showFilterModal, setShowFilterModal] = useState(false);
   //function : nav func
   const gotoCourseDetails = id => {
     navigation.navigate(ScreenNames.COURSE_DETAIL, {id});
@@ -91,22 +95,29 @@ const CourseList = ({route, navigation}) => {
 
   //UI
   return (
-    <View style={styles.container}>
-      <Header
-        showBackButton={true}
-        heading={data.name}
-        showNotification={true}
-        showCart={false}
-        showLearneLogo={false}
-        showGridIcon={false}
-      />
+    <SafeAreaView style={{flex: 1,backgroundColor:'white'}}>
+      <ScrollView>
+        <Background style={StyleSheet.absoluteFill} />
+
+        <Header
+          showNotification={true}
+          heading={data.name}
+          showLearneLogo={false}
+          showCart={false}
+          showBackButton={true}></Header>
+    <View style={styles.container}
+    onPress={()=>setShowFilterModal(true)}>
+      
       <View style={styles.mainView}>
-        <SearchWithIcon
-          placeholder="Search by name"
-          onChangeText={text => {
-            getCouseList(text);
-          }}
-        />
+      <SearchWithIcon 
+  placeholder="Search here..."
+  value={''}
+  onChangeText={''}
+  icon={<Filter></Filter>
+    
+  } // Custom icon passed
+  onPress={()=>setShowFilterModal(true)}
+/>
         <SizeBox height={10} />
         <FlatList
           data={coursesData}
@@ -128,8 +139,24 @@ const CourseList = ({route, navigation}) => {
           keyExtractor={(item, index) => item + index}
         />
       </View>
+      <TrendingFiltersModal
+          visible={showFilterModal}
+          setVisibility={setShowFilterModal}
+          courseCategries={[]}
+          tempSelectedCourseCategries={''}
+          setTempSelectedCourseCategries={''}
+          priceFilterValues={[]}
+          tempSelectedPriceFilter={''}
+          setTempSelectedPriceFilter={''}
+          tempSelectedRatingValues={''}
+          setTempSelectedRatingValues={''}
+          applyFilters={()=>{applyFilters();setApplyCheck(true)}}
+          resetFilter={''}
+        />
       <Loader visible={showLoader} />
     </View>
+    </ScrollView>
+    </SafeAreaView>
   );
 };
 
