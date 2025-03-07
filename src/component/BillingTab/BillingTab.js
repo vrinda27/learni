@@ -1,7 +1,7 @@
 //import : react components
 import React, {useEffect, useRef, useState} from 'react';
 import {
-  View, 
+  View,
   Switch,
   TouchableOpacity,
   Dimensions,
@@ -36,7 +36,7 @@ const BillingTab = ({cardList, deleteCard, openAddCardModal}) => {
       <ViewAll
         text="Saved Cards"
         buttonText="Add New"
-        style={{marginTop: 25, marginBottom: 21,marginRight:12}}
+        style={{marginTop: 25, marginBottom: 21, marginRight: 12}}
         onPress={openAddCardModal}
       />
       {cardList?.length > 0 ? (
@@ -64,14 +64,18 @@ const BillingTab = ({cardList, deleteCard, openAddCardModal}) => {
             </View>
             <TouchableOpacity
               onPress={() => {
-                Alert.alert('Delete Card', 'Are you sure you want to delee this card?', [
-                  {
-                    text: 'Cancel',
-                    onPress: () => console.log('Cancel Pressed'),
-                    style: 'cancel',
-                  },
-                  {text: 'OK', onPress: () => deleteCard(item.card_id)},
-                ]);
+                Alert.alert(
+                  'Delete Card',
+                  'Are you sure you want to delee this card?',
+                  [
+                    {
+                      text: 'Cancel',
+                      onPress: () => console.debug('Cancel Pressed'),
+                      style: 'cancel',
+                    },
+                    {text: 'OK', onPress: () => deleteCard(item.card_id)},
+                  ],
+                );
               }}>
               {/* <Image source={require('assets/images/trash.png')} /> */}
             </TouchableOpacity>
@@ -83,7 +87,7 @@ const BillingTab = ({cardList, deleteCard, openAddCardModal}) => {
           fontSize={18}
           fontFamily="regular"
           textColor={Colors.THEME_BROWN}
-          style={{textAlign:'center'}}
+          style={{textAlign: 'center'}}
         />
       )}
     </View>

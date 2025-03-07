@@ -22,6 +22,9 @@ import OderHistory from 'screens/OrderHistory/OderHistory';
 import Certificate from 'screens/Certificate/Certificate';
 import Notification from 'screens/Notification/Notification';
 import Cart from 'screens/Cart/Cart';
+import ViewPdf from 'screens/CourseDeatils/ViewPdf/ViewPdf';
+import ViewContent from 'screens/CourseDeatils/ViewContent/ViewContent';
+import AddAssignment from 'screens/CourseDeatils/AddAssignment/AddAssignment';
 const AuthStack = () => {
   //variables
   const Stack = createStackNavigator();
@@ -52,6 +55,12 @@ const AuthStack = () => {
       <Stack.Screen name={ScreenNames.CERTIFICATE} component={Certificate} />
       <Stack.Screen name={ScreenNames.NOTIFICATION} component={Notification} />
       <Stack.Screen name={ScreenNames.CART} component={Cart} />
+      <Stack.Screen name={ScreenNames.VIEW_PDF} component={ViewPdf} />
+      <Stack.Screen name={ScreenNames.VIEW_CONTENT} component={ViewContent} />
+      <Stack.Screen
+        name={ScreenNames.ADD_ASSIGNMENT}
+        component={AddAssignment}
+      />
       {/* 
      
     

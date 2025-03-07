@@ -6,19 +6,24 @@ export const SIGN_IN = 'SIGN_IN';
 export const SIGN_UP = 'SIGN_UP';
 export const EDIT_PROFILE = 'EDIT_PROFILE';
 
-
 export const COURSE_CATEGORY = 'COURSE_CATEGORY';
 export const SUB_CATEGORY = 'SUB_CATEGORY';
 export const COURSE_LIST = 'COURSE_LIST';
 export const COURSE_DETAIL = 'COURSE_DETAIL';
 export const CHAPTER_DETAIL = 'CHAPTER_DETAIL';
 
-export const COURSE_HISTORY='COURSE_HISTORY'
+export const COURSE_HISTORY = 'COURSE_HISTORY';
 
-export const DISCLAIMERS='DISCLAIMERS';
+export const DISCLAIMERS = 'DISCLAIMERS';
 
-export const CERTIFICATE='CERTIFICATE'
+export const CERTIFICATE = 'CERTIFICATE';
 
-export const NOTIFICATION='NOTIFICATION'
+export const NOTIFICATION = 'NOTIFICATION';
 
-export const CART='CART'
+export const CART = 'CART';
+
+export const VIEW_PDF = 'VIEW_PDF';
+
+export const VIEW_CONTENT = 'VIEW_CONTENT';
+
+export const ADD_ASSIGNMENT = 'ADD_ASSIGNMENT';

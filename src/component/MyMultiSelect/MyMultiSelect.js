@@ -20,14 +20,13 @@ import {MultiSelect} from 'react-native-element-dropdown';
 const MyMultiSelect = ({value, setValue, data, placeholder, style = {}}) => {
   const [isFocus, setIsFocus] = useState(false);
   const renderItem = item => {
-    console.log('item', item);
     return (
       <View style={styles.item}>
         <Text style={styles.selectedTextStyle}>{item.label}</Text>
-        {value.find(el => el === item.value) && (
-            {}
-        //   <Image source={require('assets/images/checkbox-selected.png')} />
-        )}
+        {value.find(el => el === item.value) &&
+          {}
+          //   <Image source={require('assets/images/checkbox-selected.png')} />
+        }
         {/* <AntDesign style={styles.icon} color="black" name="Safety" size={20} /> */}
       </View>
     );
@@ -51,12 +50,12 @@ const MyMultiSelect = ({value, setValue, data, placeholder, style = {}}) => {
       placeholder={placeholder}
       searchPlaceholder="Search..."
       value={value}
-      onFocus={() => {setIsFocus(true) ;
-        if(data?.length == 0){
-          Toast.show({ text1:"No orders found" });
+      onFocus={() => {
+        setIsFocus(true);
+        if (data?.length == 0) {
+          Toast.show({text1: 'No orders found'});
         }
-         
-        }}
+      }}
       onBlur={() => setIsFocus(false)}
       onChange={item => {
         setValue(item);

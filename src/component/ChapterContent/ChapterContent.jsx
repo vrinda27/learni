@@ -1,10 +1,41 @@
-import {View, Text} from 'react-native';
+//import : react component
 import React from 'react';
+import {View, Text, Image, TouchableOpacity, Linking} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+//import : custom components
+import MyText from 'component/MyText/MyText';
+//import : third party
 import Video from 'react-native-video';
-import Pdf from 'react-native-pdf';
-import {dimensions} from 'global/Constants';
+//import : utils
+import {Colors, ScreenNames} from 'global/index';
+import {BOLD} from 'global/Fonts';
+//import : styles
+//import : modals
+//import : redux
+var content_height = 250;
+const ChapterContent = ({course_img, type, url, item}) => {
+  console.log(type);
 
-const ChapterContent = ({type, url}) => {
+  //variables
+  const navigation = useNavigation();
+
+  //function : nav func
+  const gotoViewPdf = () => {
+    navigation.navigate(ScreenNames.VIEW_PDF, {url});
+  };
+  const gotoViewContent = () => {
+    navigation.navigate(ScreenNames.VIEW_CONTENT, {url});
+  };
+  const gotoAddAssignment = () => {
+    navigation.navigate(ScreenNames.ADD_ASSIGNMENT);
+  };
+  const openQuiz = () => {
+    Linking.openURL('https://www.britannica.com/quiz/browse');
+  };
+  const openViewSurvey = () => {
+    Linking.openURL('https://www.surveymonkey.com/');
+  };
+  //UI
   if (type == 'video') {
     return (
       <Video
@@ -12,18 +43,84 @@ const ChapterContent = ({type, url}) => {
           uri: url,
         }}
         controls
-        style={{height: 250, width: '100%'}}
+        style={{height: content_height, width: '100%'}}
       />
     );
   } else if (type == 'pdf') {
     return (
-      <Pdf
-        source={{uri: url}}
-        trustAllCerts={false}
-        style={{height: dimensions.SCREEN_HEIGHT / 2, width: '100%'}}
+      <OnlyViewSection
+        course_img={course_img}
+        btn_title={'View PDF'}
+        onPress={() => gotoViewPdf()}
+      />
+    );
+  } else if (type == 'quiz') {
+    return (
+      <OnlyViewSection
+        course_img={course_img}
+        btn_title={'View Quiz'}
+        onPress={() => openQuiz()}
+      />
+    );
+  } else if (type == 'assignment') {
+    return (
+      <OnlyViewSection
+        course_img={course_img}
+        btn_title={'Add Assignment'}
+        onPress={() => gotoAddAssignment()}
+      />
+    );
+  } else if (type == 'survey') {
+    return (
+      <OnlyViewSection
+        course_img={course_img}
+        btn_title={'View survey'}
+        onPress={() => openViewSurvey()}
+      />
+    );
+  } else if (type == 'content') {
+    return (
+      <OnlyViewSection
+        course_img={course_img}
+        btn_title={'View Content'}
+        onPress={() => gotoViewContent()}
       />
     );
   }
 };
 
 export default ChapterContent;
+
+const OnlyViewSection = ({btn_title, course_img, onPress = () => {}}) => {
+  return (
+    <View
+      style={{
+        height: content_height,
+        width: '100%',
+      }}>
+      <Image
+        source={{
+          uri: course_img,
+        }}
+        style={{
+          height: '100%',
+          width: '100%',
+          opacity: 0.7,
+        }}
+      />
+      <TouchableOpacity
+        onPress={() => onPress()}
+        style={{
+          position: 'absolute',
+          alignSelf: 'center',
+          top: '40%',
+          backgroundColor: Colors.DARK_PURPLE,
+          padding: 10,
+          paddingHorizontal: 20,
+          borderRadius: 10,
+        }}>
+        <MyText text={btn_title} textColor={Colors.WHITE} fontFamily={BOLD} />
+      </TouchableOpacity>
+    </View>
+  );
+};

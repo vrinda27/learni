@@ -8,18 +8,11 @@ import MyButton from 'component/MyButton/MyButton';
 import ChapterContent from 'component/ChapterContent/ChapterContent';
 //import : third party
 import {ScrollView} from 'react-native-virtualized-view';
-import SvgUri from 'react-native-svg-uri';
 //import : utils
 import Calendar from 'assets/images/calendar.svg';
 import Clock from 'assets/images/clockGreen.svg';
 import TaskSvg from 'assets/svgs/task-square.svg';
 import NotFavSvg from 'assets/svgs/note-favorite.svg';
-import PdfSvg from 'assets/svgs/chaptersvg/document-pdf.svg';
-import AssignmentSvg from 'assets/svgs/chaptersvg/document-text.svg';
-import VideoSvg from 'assets/svgs/chaptersvg/video.svg';
-import QuizSvg from 'assets/svgs/chaptersvg/quiz.svg';
-import SurveySvg from 'assets/svgs/chaptersvg/clipboard-tick.svg';
-import NoteSvg from 'assets/svgs/chaptersvg/note.svg';
 import {BLACK, REGULAR} from 'global/Fonts';
 import {Colors} from 'global/index';
 //import : styles
@@ -30,8 +23,6 @@ import {styles} from './ChapterDetailStyle';
 const ChapterDetail = ({route}) => {
   //variables
   const {data} = route.params;
-  console.log('DATATAT', data);
-
   //hook : states
   const [selectedItem, setSelectedItem] = useState(data.chapter_steps[0]);
   //UI
@@ -47,7 +38,12 @@ const ChapterDetail = ({route}) => {
       />
       <ScrollView>
         {Object.keys(selectedItem).length > 0 && (
-          <ChapterContent url={selectedItem?.file} type={selectedItem?.type} />
+          <ChapterContent
+            course_img={data.image}
+            url={selectedItem?.file}
+            type={selectedItem?.type}
+            item={selectedItem}
+          />
         )}
 
         <View style={styles.mainView}>
@@ -68,7 +64,7 @@ const ChapterDetail = ({route}) => {
             <View style={{flexDirection: 'row', columnGap: 5}}>
               <Calendar />
               <MyText
-                text={data.lesson_created_at}
+                text={data?.lesson_created_at}
                 fontFamily={REGULAR}
                 fontSize={16}
                 textColor={'black'}
@@ -116,6 +112,20 @@ const ChapterDetail = ({route}) => {
             textColor={'black'}
             style={{width: '95%'}}
           />
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginVertical: 10,
+            }}>
+            <MyButton text={'Mark Incomplete'} width="48%" />
+            <MyButton
+              text={'Continue'}
+              width="48%"
+              backgroundColor={Colors.DARK_PURPLE}
+            />
+          </View>
           <FlatList
             data={data.chapter_steps}
             renderItem={({item, index}) => {
@@ -130,25 +140,6 @@ const ChapterDetail = ({route}) => {
             }}
             keyExtractor={(item, index) => index + item}
           />
-
-          {/* <ChapterTask icon={<AssignmentSvg />} title={'Assignment'} />
-          <ChapterTask icon={<VideoSvg />} title={'Video'} />
-          <ChapterTask icon={<QuizSvg />} title={'Quiz'} />
-          <ChapterTask icon={<SurveySvg />} title={'Survey'} />
-          <ChapterTask icon={<NoteSvg />} title={'Content'} /> */}
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
-            <MyButton text={'Mark Incomplete'} width="48%" />
-            <MyButton
-              text={'Continue'}
-              width="48%"
-              backgroundColor={Colors.DARK_PURPLE}
-            />
-          </View>
         </View>
       </ScrollView>
     </View>

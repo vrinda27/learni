@@ -12,9 +12,9 @@ import Profile from 'assets/images/profilePerson.svg';
 import Lesson from 'assets/images/lesson.svg';
 import Quiz from 'assets/images/quiz.svg';
 import {BLACK, DARK_PURPLE} from 'global/Color';
+import {Colors, MyIcon} from 'global/index';
 //import : styles
 import {styles} from './CourseCardStyle';
-import {Colors, MyIcon} from 'global/index';
 //import : modals
 //import : redux
 
@@ -158,23 +158,6 @@ const CourseCard = ({item, onPress = () => {}, heartPress = () => {}}) => {
               />
             </View>
           </View>
-        </View>
-        <View style={styles.bottomRight}>
-          <View
-            style={{
-              height: 10,
-              width: 10,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}></View>
-          <MyText
-            text={item.rating}
-            fontFamily="regular"
-            fontSize={13}
-            textColor={'gray'}
-            letterSpacing={0.13}
-            style={{marginLeft: 10}}
-          />
         </View>
       </View>
     </TouchableOpacity>
