@@ -18,7 +18,6 @@ import {
   responsiveHeight,
 } from 'react-native-responsive-dimensions';
 //import : global
-import {Colors} from '../../global';
 import {API_Endpoints, GetApiWithToken, PostApi} from 'global/Service';
 import LearneLogo from 'assets/svgs/logoLearne.svg';
 import EmailLogo from 'assets/images/sms.svg';
@@ -27,6 +26,7 @@ import PasswordLogo from 'assets/images/lock.svg';
 //import : redux
 import {useDispatch} from 'react-redux';
 import {setUser} from 'reduxTooklit/UserSlice';
+import {Colors, ScreenNames} from 'global/index';
 
 const Signin = () => {
   const tokenRef = useRef('');
@@ -43,6 +43,11 @@ const Signin = () => {
     password: false,
   });
 
+  //function : nav func
+  const gotoBottomTab = () => {
+    navigation.replace(ScreenNames.BOTTOM_TAB);
+  };
+  //hook : useEffect
   useEffect(() => {
     if (isFocused) {
       setUserDetails({
@@ -144,6 +149,7 @@ const Signin = () => {
             profile: data?.user?.profile,
           }),
         );
+        gotoBottomTab();
       }
     } catch (err) {
       console.error('getting error in login', err);

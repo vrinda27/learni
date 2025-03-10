@@ -25,6 +25,8 @@ const ChapterDetail = ({route}) => {
   const {data} = route.params;
   //hook : states
   const [selectedItem, setSelectedItem] = useState(data.chapter_steps[0]);
+  console.log(selectedItem);
+
   //UI
   return (
     <View style={styles.container}>
@@ -48,15 +50,13 @@ const ChapterDetail = ({route}) => {
 
         <View style={styles.mainView}>
           <MyText
-            text={
-              'Lorem ipsum dolor sit amet, dolor is consectetur adipiscing elit.'
-            }
+            text={selectedItem.title}
             fontFamily={BLACK}
             fontSize={20}
             textColor={'black'}
             style={{width: '95%'}}
           />
-          <View
+          {/* <View
             style={{
               flexDirection: 'row',
               columnGap: 20,
@@ -79,8 +79,8 @@ const ChapterDetail = ({route}) => {
                 textColor={'black'}
               />
             </View>
-          </View>
-          <View
+          </View> */}
+          {/* <View
             style={{
               flexDirection: 'row',
               marginTop: 10,
@@ -104,9 +104,9 @@ const ChapterDetail = ({route}) => {
                 textColor={'black'}
               />
             </View>
-          </View>
+          </View> */}
           <MyText
-            text={data?.lesson_description}
+            text={selectedItem?.description}
             fontFamily={REGULAR}
             fontSize={14}
             textColor={'black'}
