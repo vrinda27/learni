@@ -21,7 +21,8 @@ import {styles} from './CategoryFilterStyle'
 import Dropdown from 'component/DropDown/DropDown';
 import MyButton from 'component/MyButton/MyButton';
 import MyMultiSelect from 'component/MyMultiSelect/MyMultiSelect';
-
+import RadioInactive from 'assets/images/radioInactive.svg'
+import RadioActive from 'assets/images/radioActive.svg'
 const TrendingFiltersModal = ({
   visible,
   setVisibility,
@@ -144,14 +145,14 @@ const TrendingFiltersModal = ({
                   }
                 }}>
                 <View style={styles.statusView}>
-                  {/* <Image
+                  <Image
                     source={
                       tempSelectedPriceFilter === el?.id
-                        ? require('assets/images/selected-2.png')
-                        : require('assets/images/not-selected.png')
+                        ? require('assets/images/ActiveRadio.png')
+                        : require('assets/images/InactiveRadio.png')
                     }
                     style={styles.radioButton}
-                  /> */}
+                  />
                   <MyText
                     text={el?.name}
                     textColor={Colors.DARK_GREY}
@@ -182,14 +183,14 @@ const TrendingFiltersModal = ({
                   }
                 }}>
                 <View style={styles.statusView}>
-                  {/* <Image
+                  <Image
                     source={
                       tempSelectedRatingValues.includes(el)
-                        ? require('assets/images/selected-2.png')
-                        : require('assets/images/not-selected.png')
+                        ? require('assets/images/ActiveChckBox.png')
+                        : require('assets/images/InactiveCheckBox.png')
                     }
                     style={styles.radioButton}
-                  /> */}
+                  />
                   <MyText
                     text={`${el} and more`}
                     textColor={Colors.DARK_GREY}
