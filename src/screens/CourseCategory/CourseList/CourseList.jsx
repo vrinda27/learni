@@ -1,6 +1,6 @@
-//Amit Kumar  07 mar fix UI , pagination and fix filler issues 
+//Amit Kumar  07 mar fix UI , pagination and fix filler issues
 //import : react components
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   ScrollView,
@@ -16,21 +16,21 @@ import {
   SafeAreaView,
   StatusBar,
   RefreshControl,
-  StyleSheet
+  StyleSheet,
 } from 'react-native';
-import { useIsFocused } from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 //import : custom components
 import Header from 'component/Header/Header';
 import MyText from 'component/MyText/MyText';
 import Loader from 'component/loader/Loader';
 //import : third parties
 import LinearGradient from 'react-native-linear-gradient';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Toast from 'react-native-toast-message';
 //import : global
-import { Colors } from 'global/index';
+import {Colors} from 'global/index';
 //import : styles
-import { styles } from '../CourseCategoryStyle';
+import {styles} from '../CourseCategoryStyle';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ScreenNames, Service} from 'global/index';
 import {API_Endpoints} from 'global/Service';
@@ -38,27 +38,27 @@ import CourseCard from 'component/CourseCard/CourseCard';
 
 //import : modal
 //import : redux
-import { connect, useSelector } from 'react-redux';
-import { width, height } from 'global/Constant';
+import {connect, useSelector} from 'react-redux';
+import {width, height} from 'global/Constant';
 import Divider from 'component/Divider/Divider';
 
 import SearchWithIcon from 'component/SearchWithIcon/SearchWithIcon';
 import Background from 'assets/svgs/background.svg';
 import TrendingFiltersModal from 'component/SearchWithIcon/Component/CategoryFilter';
 import VideoModal from 'component/VideoModal/VideoModal';
-import Cross from 'assets/images/closecircle.svg'
+import Cross from 'assets/images/closecircle.svg';
 // import { shareItemHandler } from '../../../global/globalMethod';
-import { responsiveHeight } from 'react-native-responsive-dimensions';
-import { dimensions } from 'global/Constants';
+import {responsiveHeight} from 'react-native-responsive-dimensions';
+import {dimensions} from 'global/Constants';
 // import defaultImg from 'assets/images/profilePerson.svg';
 
 let timeoutId;
 let count = 0;
-const CourseList = ({ navigation, dispatch,route }) => {
+const CourseList = ({navigation, dispatch, route}) => {
   const {data} = route.params;
   // const defaultImgPath = Image.resolveAssetSource(defaultImg).uri;
-   //variables : ref
-   const scrollRef = useRef();
+  //variables : ref
+  const scrollRef = useRef();
   //variables
   const LINE_HEIGTH = 25;
   //variables : redux
@@ -68,7 +68,7 @@ const CourseList = ({ navigation, dispatch,route }) => {
   const [searchValue, setSearchValue] = useState('');
   const [courseData, setCourseData] = useState([]);
   const [courseOldData, setCourseOldData] = useState([]);
-  
+
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [courseCategries, setCourseCategries] = useState([]);
   const [selectedCourseCategries, setSelectedCourseCategries] = useState([]);
@@ -89,65 +89,57 @@ const CourseList = ({ navigation, dispatch,route }) => {
   const [selectedPriceFilter, setSelectedPriceFilter] = useState('');
   const [selectedRatingValues, setSelectedRatingValues] = useState([]);
   const [tempSelectedRatingValues, setTempSelectedRatingValues] = useState([]);
-  const [showModal, setShowModal] = useState({ isVisible: false, data: null });
+  const [showModal, setShowModal] = useState({isVisible: false, data: null});
   const [refreshing, setRefreshing] = useState(false);
-  const[applyCheck,setApplyCheck]=useState(false);
-   //hook : pagination states
-   const [page, setPage] = useState(1);
-   const [lastPage, setLastPage] = useState(1);
-   const [page1, setPage1] = useState(1);
-   const [lastPage1, setLastPage1] = useState(1);
+  const [applyCheck, setApplyCheck] = useState(false);
+  //hook : pagination states
+  const [page, setPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+  const [page1, setPage1] = useState(1);
+  const [lastPage1, setLastPage1] = useState(1);
   const [paginationDetails, setPaginationDetails] = useState({
     last_page_no: 1,
     current_page: 1,
   });
   const [isDataLoading, setIsDataLoading] = useState(false);
   const focused = useIsFocused();
- 
+
   const renderFooter = () => {
-    //  console.log("renderFooter loader fun calling ........");
     return (
-      <>{ isDataLoading ? (
-      <View style={{ paddingVertical: 20 }}>
-        <ActivityIndicator animating={true} size="large" color="#0000ff" />
-      </View>
-    ) : null
-      }
-    </>
-    )
+      <>
+        {isDataLoading ? (
+          <View style={{paddingVertical: 20}}>
+            <ActivityIndicator animating={true} size="large" color="#0000ff" />
+          </View>
+        ) : null}
+      </>
+    );
   };
   const initLoader = async () => {
-    console.log("initLoader fun calling!!!!");
     setShowLoader(true);
     await getCourses();
     setShowLoader(false);
   };
   const loadMore = async () => {
-    console.log("loadMore fun calling page lastpage",page,lastPage);
-    console.log("applyCheck VALUE check====",applyCheck);
-    console.log("loadMore fun calling AppltFilter page1 lastpage1",page1,lastPage1);
     if (page <= lastPage) {
-      console.log("loadMore fun getCourses calling!!!!");
       setIsDataLoading(true);
       await getCourses();
-      setIsDataLoading(false)
+      setIsDataLoading(false);
       // if (applyCheck == true) {
-      //   console.log("loadMore fun applyFilters calling!!!!");
       //   if(page1 <= lastPage1){
       //     await applyFilters();
       //   }else{
       //     removeFilter()
       //   }
-        
+
       // }
       // else{
-      //   console.log("loadMore fun getCourses calling!!!!");
       //   setIsDataLoading(true);
       //   await getCourses();
       //   setIsDataLoading(false)
       // }
       // setIsDataLoading(true);
-      
+
       // setIsDataLoading(false);
     }
   };
@@ -157,27 +149,26 @@ const CourseList = ({ navigation, dispatch,route }) => {
 
   useEffect(() => {
     setApplyCheck(false);
-    setSearchValue('')
-      setCourseData([]);
-      setSelectedCourseCategries([])
-      setTempSelectedCourseCategries([])
-      setSelectedPriceFilter('')
-      setTempSelectedPriceFilter('')
-      setSelectedRatingValues('')
-      setTempSelectedRatingValues('');
-      setApplyCheck(false);
-      initLoader();
-       
+    setSearchValue('');
+    setCourseData([]);
+    setSelectedCourseCategries([]);
+    setTempSelectedCourseCategries([]);
+    setSelectedPriceFilter('');
+    setTempSelectedPriceFilter('');
+    setSelectedRatingValues('');
+    setTempSelectedRatingValues('');
+    setApplyCheck(false);
+    initLoader();
   }, [focused]);
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      setSearchValue('')
+      setSearchValue('');
       setCourseData([]);
-      setSelectedCourseCategries([])
-      setTempSelectedCourseCategries([])
-      setSelectedPriceFilter('')
-      setTempSelectedPriceFilter('')
-      setSelectedRatingValues('')
+      setSelectedCourseCategries([]);
+      setTempSelectedCourseCategries([]);
+      setSelectedPriceFilter('');
+      setTempSelectedPriceFilter('');
+      setSelectedRatingValues('');
       setTempSelectedRatingValues('');
       setPage(1);
       setLastPage(1);
@@ -201,23 +192,21 @@ const CourseList = ({ navigation, dispatch,route }) => {
   const onRefresh = React.useCallback(() => {
     setSearchValue('');
     checkcon();
-   
+
     wait(2000).then(() => {
       setRefreshing(false);
     });
   }, []);
   let paramsData = {}; // Global variable to store filter params
   const getCourses = async (searchedName = '') => {
-
     try {
-       paramsData = {
-            ...paramsData,
+      paramsData = {
+        ...paramsData,
         name: searchedName,
         sub_category_id: data.id,
       };
-      console.log('my paams data---->>>',paramsData)
       const token = await AsyncStorage.getItem('token');
-      {console.log('my auth token--->>>',token)}
+
       const {response, status} = await Service.getAPI(
         API_Endpoints.courses,
         token,
@@ -241,40 +230,35 @@ const CourseList = ({ navigation, dispatch,route }) => {
   //       `trending-course?page=${page}`,
   //       postData,
   //     );
-  //     // console.log('getCourses resp', resp?.data);
-  //     console.log(resp?.data?.last_page_no,"paginationDetails.current_page",page);
   //     if (resp?.data?.status == true) {
   //       if (page == 1) {
   //         setLastPage(resp?.data?.last_page_no);
-  //         console.log("page 1",resp?.data?.data.length);
   //         // const updatedData = await generateThumb(resp?.data?.data);
   //         setCourseData(resp?.data?.data);
   //         setCourseOldData(resp?.data?.data);
   //       }
   //       else {
-  //         console.log("page greater than 1",resp?.data?.data.length);
   //         // const updatedData = await generateThumb(resp?.data?.data);
   //         setCourseData([...courseData, ...resp?.data?.data]);
   //         setCourseOldData(...courseOldData,resp?.data?.data);
   //       }
   //       // if(resp?.data?.last_page_no >= paginationDetails.current_page ){
-       
+
   //       //   setPaginationDetails({
   //       //     last_page_no: resp?.data?.last_page_no,
   //       //     current_page: paginationDetails.current_page + 1,
   //       //   });
   //       // }else{
-       
+
   //       //   setPaginationDetails({
   //       //     last_page_no: resp?.data?.last_page_no,
   //       //     current_page: paginationDetails.current_page - 1,
   //       //   });
   //       // }
-       
 
   //       if (courseCategries.length > 0) {
   //         setCourseCategries([
-  //           // ...courseCategries, 
+  //           // ...courseCategries,
   //           ...resp?.data?.category?.map(el => ({
   //             id: el?.id,
   //             name: el?.category_name,
@@ -290,10 +274,10 @@ const CourseList = ({ navigation, dispatch,route }) => {
   //           })),
   //         );
   //       }
-      
+
   //       // const updatedData = await generateThumb(resp?.data?.data);
   //       // if (courseData.length > 0) {
-       
+
   //       //   // setCourseData(updatedData);
   //       //   setCourseData(preData => ([
   //       //     ...preData,
@@ -301,7 +285,7 @@ const CourseList = ({ navigation, dispatch,route }) => {
   //       //   ]));
   //       // }
   //       // else if (courseData.length == 0) {
-        
+
   //       //   // setCourseData(preData => ([
   //       //   //   ...preData,
   //       //   //   ...updatedData,
@@ -313,20 +297,19 @@ const CourseList = ({ navigation, dispatch,route }) => {
   //       Toast.show({ text1: resp.data.message });
   //     }
   //   } catch (error) {
-  //     console.log('error in getCourses', error);
   //   } finally {
   //     // setIsDataLoading(false);
   //     // setShowLoader(false);
   //   }
   // };
- 
+
   // const generateThumb = async data => {
   //   setShowLoader(true);
   //   let updatedData = [];
   //   try {
   //     updatedData = await Promise.all(
   //       data?.map?.(async el => {
-          
+
   //         const thumb = await createThumbnail({
   //           url: el.introduction_video,
   //           timeStamp: 1000,
@@ -348,35 +331,30 @@ const CourseList = ({ navigation, dispatch,route }) => {
     setPage(1);
     setLastPage(1);
     setShowLoader(true);
-    
+
     const formdata = new FormData();
     formdata.append('type', type);
     formdata.append('id', id);
     formdata.append('status', status == '1' ? '0' : '1');
-    console.log('onLike formdata', formdata);
     const endPoint =
       status == '1' ? Service.UNLIKE_OBJECT_TYPE : Service.LIKE_OBJECT_TYPE;
-    console.log('onLike endPoint', endPoint);
     try {
       const resp = await Service.postApiWithToken(
         userToken,
         endPoint,
         formdata,
       );
-      // console.log('onLike resp', resp?.data);
       if (resp?.data?.status) {
-        Toast.show({ text1: resp.data.message });
-       getCourses();
+        Toast.show({text1: resp.data.message});
+        getCourses();
       } else {
-        Toast.show({ text1: resp.data.message });
+        Toast.show({text1: resp.data.message});
       }
-    } catch (error) {
-      console.log('error in onLike', error);
-    }
+    } catch (error) {}
     showLoader && setShowLoader(false);
   };
   const gotoCourseDetails = (id, type) => {
-    navigation.navigate(ScreenNames.COURSE_DETAILS, { id, type });
+    navigation.navigate(ScreenNames.COURSE_DETAILS, {id, type});
   };
   const isFilterApplied = () => {
     if (selectedCourseCategries?.length > 0) {
@@ -390,7 +368,8 @@ const CourseList = ({ navigation, dispatch,route }) => {
   };
   const ShowSelectedFilters = () => {
     return (
-      <View style={{flexWrap:'wrap', flexDirection: 'row',paddingVertical:10}}>
+      <View
+        style={{flexWrap: 'wrap', flexDirection: 'row', paddingVertical: 10}}>
         {selectedCourseCategries?.length > 0 ? (
           <View
             style={{
@@ -431,7 +410,7 @@ const CourseList = ({ navigation, dispatch,route }) => {
                     marginLeft: 5,
                     marginTop: 3,
                   }}>
-                     <Cross></Cross>
+                  <Cross></Cross>
                   {/* <Image
                     source={require('assets/images/trash.png')}
                     style={{ height: 16, width: 16 }}
@@ -475,7 +454,7 @@ const CourseList = ({ navigation, dispatch,route }) => {
                 marginLeft: 5,
                 marginTop: 3,
               }}>
-                 <Cross></Cross>
+              <Cross></Cross>
               {/* <Image
                 source={require('assets/images/trash.png')}
                 style={{ height: 16, width: 16 }}
@@ -554,8 +533,7 @@ const CourseList = ({ navigation, dispatch,route }) => {
     setSelectedPriceFilter(tempSelectedPriceFilter);
     setSelectedRatingValues(tempSelectedRatingValues);
   };
-  const applyFilters = async (searchParam = '',) => {
-   console.log("apply filter 1 in trendig courses")
+  const applyFilters = async (searchParam = '') => {
     setCourseData([]);
     setPage(1);
     setLastPage(1);
@@ -570,7 +548,7 @@ const CourseList = ({ navigation, dispatch,route }) => {
       catIds?.map(el => postData.append('category[]', el));
     }
     if (catIds?.length > 0) {
-      catIds?.map(el => paramsData.category =  el); // Adds multiple category IDs
+      catIds?.map(el => (paramsData.category = el)); // Adds multiple category IDs
     }
     if (tempSelectedPriceFilter !== '') {
       // postData.append('highlow', tempSelectedPriceFilter);
@@ -580,18 +558,10 @@ const CourseList = ({ navigation, dispatch,route }) => {
     //   tempSelectedRatingValues?.map(el => postData.append('ratings', el));
     // }
     if (tempSelectedRatingValues?.length > 0) {
-      
       paramsData.ratings = [...tempSelectedRatingValues]; // ✅ Save ratings in paramsData as an array
-  }
+    }
     const isSearchTermExists = searchParam?.toString()?.trim()?.length > 0;
     const isSearchValueExists = searchValue?.toString()?.trim()?.length > 0;
-    // console.log(
-    //   'isSearchTermExists, isSearchValueExists',
-    //   isSearchTermExists,
-    //   isSearchValueExists,
-    // );
-    // console.log('searchTerm', searchParam);
-    // console.log('searchValue', searchValue);
     if (isSearchTermExists || isSearchValueExists) {
       // handling special case: while deleting last character of search, since search state would not update fast, so using searchParam instead of search state (searchValue)
       if (
@@ -609,9 +579,6 @@ const CourseList = ({ navigation, dispatch,route }) => {
       }
     }
     // postData.append('limit', 10);
-    // console.log('applyFilters postData-TRENDING-courses', JSON.stringify(postData));
-    // // setShowLoader(true);
-    // console.log("Page1 and last page1 value- APPLY FILTER",page1,lastPage1);
     try {
       const token = await AsyncStorage.getItem('token');
       const {response, status} = await Service.getAPI(
@@ -619,23 +586,19 @@ const CourseList = ({ navigation, dispatch,route }) => {
         token,
         paramsData,
       );
-      console.log('my console data after filter--->>',response.data)
       setShowFilterModal(false);
-      setCourseData(response.data)
-      // console.log('applyFilters resp', resp?.data);
+      setCourseData(response.data);
       // if (resp?.data?.status == true) {
       //   setShowFilterModal(false);
       //   // const updatedData = await generateThumb(resp?.data?.data);
       //   // setCourseData(updatedData);
       //   if (page1 == 1) {
       //     setLastPage1(resp?.data?.last_page_no);
-      //     console.log("APPLY FILTER-page 1",resp?.data?.data.length);
       //     // const updatedData = await generateThumb(resp?.data?.data);
       //     setCourseData(resp?.data?.data);
-          
+
       //   }
       //   else {
-      //     console.log("APPLY FILTER-page greater than 1",resp?.data?.data.length);
       //     // const updatedData = await generateThumb(resp?.data?.data);
       //     setCourseData([...courseData, ...resp?.data?.data]);
       //   }
@@ -644,13 +607,12 @@ const CourseList = ({ navigation, dispatch,route }) => {
       //   Toast.show({ text1: resp.data.message });
       // }
     } catch (error) {
-      console.log('error in applyFilters', error);
+      console.error('error in applyFilters', error);
     }
     setShowLoader(false);
   };
   const applyFilters2 = async (searchParam = '') => {
     setCourseData([]);
-    // console.log({ searchParam })
     const isDeletingLastCharacterInSearch =
       searchValue?.toString()?.trim()?.length === 1 &&
       searchParam?.toString()?.trim()?.length === 0;
@@ -673,13 +635,6 @@ const CourseList = ({ navigation, dispatch,route }) => {
     }
     const isSearchTermExists = searchParam?.toString()?.trim()?.length > 0;
     const isSearchValueExists = searchValue?.toString()?.trim()?.length > 0;
-    // console.log(
-    //   'isSearchTermExists, isSearchValueExists',
-    //   isSearchTermExists,
-    //   isSearchValueExists,
-    // );
-    // console.log('searchTerm', searchParam);
-    // console.log('searchValue', searchValue);
     if (isSearchTermExists || isSearchValueExists) {
       // handling special case: while deleting last character of search, since search state would not update fast, so using searchParam instead of search state (searchValue)
       if (
@@ -691,44 +646,37 @@ const CourseList = ({ navigation, dispatch,route }) => {
         // preferring to check searchParam first, because it has the most recent search value fast. But it is not always passed, in else case using searchValue
         if (isSearchTermExists) {
           paramsData.name = searchParam?.toString()?.trim();
-      } else {
+        } else {
           paramsData.name = searchValue?.toString()?.trim();
-      }
+        }
       }
     }
-    console.log('applyFilters2 postData', JSON.stringify(postData));
     postData.append('limit', 10);
     try {
       setShowLoader(true);
       const token = await AsyncStorage.getItem('token');
-      {console.log('my autj token----??',token)}
       const {response, status} = await Service.getAPI(
         API_Endpoints.courses,
         token,
         paramsData,
       );
-      console.log('my console data after filter-- fff->>',response,API_Endpoints.courses)
+
       setShowFilterModal(false);
-      setCourseData(response.data)
-      // console.log('applyFilters resp', resp?.data);
+      setCourseData(response.data);
       // if (resp?.data?.status == true) {
-      //   {console.log('my data for api--->>>',resp?.data?.data)}
       //   setShowFilterModal(false);
-      //   {console.log('my data for api--->>>',resp?.data?.data)}
       //   // const updatedData = await generateThumb(resp?.data?.data);
-      //   // console.log({ updatedData })
       //   setCourseData(resp?.data?.data);
       // } else {
       //   Toast.show({ text1: resp.data.message });
       // }
     } catch (error) {
-      console.log('error in applyFilters', error);
+      console.error('error in applyFilters', error);
     } finally {
       setShowLoader(false);
     }
   };
   const resetFilter = async () => {
-    // console.log("reset filter")
     setShowFilterModal(false);
     setPage(1);
     setLastPage(1);
@@ -747,16 +695,12 @@ const CourseList = ({ navigation, dispatch,route }) => {
     await initLoader();
   };
   const removeFilter = async (filterType, item) => {
-    
-    // console.log('============filterType======courseCategries==================',);
-    // console.log(filterType);
     let remainingSelectedCategories = selectedCourseCategries;
-    // console.log('selectedCourseCategries', selectedCourseCategries, item);
     if (filterType === 'cat') {
       remainingSelectedCategories = selectedCourseCategries?.filter(
         el => el !== item,
       );
-     
+
       setSelectedCourseCategries([...remainingSelectedCategories]);
       setTempSelectedCourseCategries([...remainingSelectedCategories]);
     }
@@ -781,7 +725,6 @@ const CourseList = ({ navigation, dispatch,route }) => {
       ?.filter(el => remainingSelectedCategories?.includes(el?.name))
       ?.map(el => el?.id);
 
-      // console.log(postData?._parts?.length,"catIds",catIds);
     if (catIds?.length > 0) {
       catIds?.map(el => postData.append('category[]', el));
     }
@@ -792,8 +735,6 @@ const CourseList = ({ navigation, dispatch,route }) => {
       remainingselectedRatingValues?.map(el => postData.append('rating[]', el));
     }
     postData.append('limit', 10);
-    console.log('removeFilter postData-Trending courses', JSON.stringify(postData?._parts?.length));
-    // console.log("Page1 and last page1 value- Remove FILTER",page1,lastPage1);
     setShowLoader(true);
     try {
       const resp = await Service.postApiWithToken(
@@ -801,42 +742,34 @@ const CourseList = ({ navigation, dispatch,route }) => {
         `trending-course`,
         postData?._parts?.length === 0 ? {} : postData,
       );
-      // console.log('removeFilter resp', resp?.data);
       if (resp?.data?.status == true) {
         setShowFilterModal(false);
-        if(postData?._parts?.length === 1 ){
+        if (postData?._parts?.length === 1) {
           setPage(1);
           await initLoader();
-        }else{
+        } else {
           // const updatedData = await generateThumb(resp?.data?.data);
           setCourseData(resp?.data?.data);
         }
-       
-        
+
         // if (page1 == 1) {
         //   setLastPage1(resp?.data?.last_page_no);
-        //   console.log("removeFilter-page1== 1",resp?.data?.data.length);
         //   const updatedData = await generateThumb(resp?.data?.data);
         //   setCourseData(updatedData);
-          
+
         // }
         // else {
-        //   console.log("removeFilter-page1 greater than 1",resp?.data?.data.length);
         //   const updatedData = await generateThumb(resp?.data?.data);
         //   setCourseData([...courseData, ...updatedData]);
         // }
         // setPage1(1);
+      } else {
+        Toast.show({text1: resp.data.message});
       }
-       else {
-        Toast.show({ text1: resp.data.message });
-      }
-    } catch (error) {
-      // console.log('error in removeFilter', error);
-    }
+    } catch (error) {}
     setShowLoader(false);
   };
 
-  
   const toggleModal = state => {
     setShowModal({
       isVisible: state.isVisible,
@@ -845,15 +778,13 @@ const CourseList = ({ navigation, dispatch,route }) => {
   };
 
   // const paginationHandler = () => {
-  //   console.log("paginationHandler",paginationDetails.current_page <= paginationDetails.last_page_no && searchValue.length === 0);
   //    if((paginationDetails.current_page <= paginationDetails.last_page_no  && searchValue.length === 0)){
   //     getCourses();
   //   }
-     
+
   // };
 
   const debounceHandler = (getData, delay = 400) => {
-
     return function (args) {
       if (timeoutId) {
         clearTimeout(timeoutId);
@@ -874,7 +805,6 @@ const CourseList = ({ navigation, dispatch,route }) => {
     };
   };
 
-
   const debounce = debounceHandler(applyFilters2, 400);
 
   // const onSearch = (text) => {
@@ -886,109 +816,106 @@ const CourseList = ({ navigation, dispatch,route }) => {
   //     });
   //     setCourseData(tempList);
   //   }
-    
+
   // }
-  // console.log(count++, showLoader);
   //UI
   return (
     <SafeAreaView style={{flex: 1}}>
-    <ScrollView>
-      <Background style={StyleSheet.absoluteFill} />
+      <ScrollView>
+        <Background style={StyleSheet.absoluteFill} />
 
-      <Header
-        showNotification={true}
-        heading={'Notifications'}
-        showLearneLogo={false}
-        showCart={false}
-        showBackButton={true}></Header>
-        <KeyboardAwareScrollView style={{padding:0}}>
-        <View style={{ flex: 1 }}>
-        
-          {/* <ScrollView  
+        <Header
+          showNotification={true}
+          heading={'Notifications'}
+          showLearneLogo={false}
+          showCart={false}
+          showBackButton={true}></Header>
+        <KeyboardAwareScrollView style={{padding: 0}}>
+          <View style={{flex: 1}}>
+            {/* <ScrollView  
             showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
             style={styles.mainView}> */}
-            <View style={{width:dimensions.SCREEN_WIDTH*0.90,alignSelf:'center'}}>
-            <SearchWithIcon
-              value={searchValue}
-              setValue={setSearchValue}
-              placeholder="Search by Title"
-              onChangeText={e => {
-                setSearchValue(e);
-                // onSearch(e)
-                debounce(e);
-              }}
-              onPress={openFilterModal}
-              icon={
-              // <Image source={require('assets/images/filter.png')} />
-            <Image source={require('assets/images/settingFilter.svg')}></Image>
-            }
-              style={{ marginTop: 10 }}
-              showDot={isFilterApplied}
-            />
+            <View
+              style={{
+                width: dimensions.SCREEN_WIDTH * 0.9,
+                alignSelf: 'center',
+              }}>
+              <SearchWithIcon
+                value={searchValue}
+                setValue={setSearchValue}
+                placeholder="Search by Title"
+                onChangeText={e => {
+                  setSearchValue(e);
+                  // onSearch(e)
+                  debounce(e);
+                }}
+                onPress={openFilterModal}
+                icon={
+                  // <Image source={require('assets/images/filter.png')} />
+                  <Image
+                    source={require('assets/images/settingFilter.svg')}></Image>
+                }
+                style={{marginTop: 10}}
+                showDot={isFilterApplied}
+              />
             </View>
-           
+
             {showModal.isVisible ? (
               <VideoModal
                 isVisible={showModal.isVisible}
                 toggleModal={toggleModal}
-                videoDetail={{ ...showModal?.data, url: showModal?.data?.introduction_video }}
-              // {...props}
+                videoDetail={{
+                  ...showModal?.data,
+                  url: showModal?.data?.introduction_video,
+                }}
+                // {...props}
               />
             ) : null}
             <ShowSelectedFilters />
             <FlatList
-            ref={scrollRef}
-            key={'#'}
-            data={courseData}
-            // style={{ marginTop: responsiveHeight(5), height: responsiveHeight(65), }}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-            // keyExtractor={(item, index) => index.toString()}
-            renderItem={({item, index}) => {
-              {console.log()}
-              return (
-                <CourseCard
-                  item={item}
-                  image={item.image}
-                  heartPress={() => addToWishlist(item.id)}
-                  onPress={() => gotoCourseDetails(item.id)}
-                />
-              );
-            }}
-            // onEndReached={paginationHandler}
-            onEndReachedThreshold={0.9}
-            onEndReached={loadMore}
-            keyExtractor={item => item.id}
-            contentContainerStyle={{paddingBottom: '30%'}}
-            // onEndReachedThreshold={0.3}
-            ListFooterComponent={renderFooter}
-            ListEmptyComponent={() => (
-              <View style={{ alignItems: 'center', marginTop: 50 }}>
-                {/* <Image source={require('assets/images/no-data.png')} /> */}
-                <MyText
-                  text={'No Trending Courses found'}
-                  fontFamily="medium"
-                  fontSize={40}
-                  textAlign="center"
-                  textColor={'black'}
-                />
-              </View>
-            )}
-          />
-          {/* </ScrollView> */}
-         
-          {/* {
-            console.log("courseData.length",courseData.length)
-          } */}
-          
-         
-         
-         
-        </View>
+              ref={scrollRef}
+              key={'#'}
+              data={courseData}
+              // style={{ marginTop: responsiveHeight(5), height: responsiveHeight(65), }}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+              // keyExtractor={(item, index) => index.toString()}
+              renderItem={({item, index}) => {
+                return (
+                  <CourseCard
+                    item={item}
+                    image={item.image}
+                    heartPress={() => addToWishlist(item.id)}
+                    onPress={() => gotoCourseDetails(item.id)}
+                  />
+                );
+              }}
+              // onEndReached={paginationHandler}
+              onEndReachedThreshold={0.9}
+              onEndReached={loadMore}
+              keyExtractor={item => item.id}
+              contentContainerStyle={{paddingBottom: '30%'}}
+              // onEndReachedThreshold={0.3}
+              ListFooterComponent={renderFooter}
+              ListEmptyComponent={() => (
+                <View style={{alignItems: 'center', marginTop: 50}}>
+                  {/* <Image source={require('assets/images/no-data.png')} /> */}
+                  <MyText
+                    text={'No Trending Courses found'}
+                    fontFamily="medium"
+                    fontSize={40}
+                    textAlign="center"
+                    textColor={'black'}
+                  />
+                </View>
+              )}
+            />
+            {/* </ScrollView> */}
+          </View>
         </KeyboardAwareScrollView>
         <TrendingFiltersModal
           visible={showFilterModal}
@@ -1001,11 +928,14 @@ const CourseList = ({ navigation, dispatch,route }) => {
           setTempSelectedPriceFilter={setTempSelectedPriceFilter}
           tempSelectedRatingValues={tempSelectedRatingValues}
           setTempSelectedRatingValues={setTempSelectedRatingValues}
-          applyFilters={()=>{applyFilters();setApplyCheck(true)}}
+          applyFilters={() => {
+            applyFilters();
+            setApplyCheck(true);
+          }}
           resetFilter={resetFilter}
         />
       </ScrollView>
-     
+
       {/* <CustomLoader showLoader={showLoader} /> */}
       {/* {courseData.length === 0 && <CustomLoader showLoader={showLoader} />} */}
     </SafeAreaView>

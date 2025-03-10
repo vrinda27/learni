@@ -20,9 +20,9 @@ export const API_Endpoints = {
   courses: 'courses',
   add_wishlist: 'add-wishlist',
   wishlist: 'wishlist',
-  notification:'notifications',
-  clearNotification:'clear-notifications',
-  cartList:'cart-list'
+  notification: 'notifications',
+  clearNotification: 'clear-notifications',
+  cartList: 'cart-list',
 };
 
 //function : imp function
@@ -166,8 +166,6 @@ export const postAPI = async (endPoint, data, token = '') => {
       return {response: res?.data, status: res?.data?.status};
     })
     .catch(err => {
-      // console.log('data', String(err?.response?.data).substring(0, 300));
-      // console.log('status', err?.response?.status);
       return {
         response: String(err?.response?.data).substring(0, 300),
         status: false,

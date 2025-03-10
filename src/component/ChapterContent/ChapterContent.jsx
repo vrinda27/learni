@@ -14,8 +14,6 @@ import {BOLD} from 'global/Fonts';
 //import : redux
 var content_height = 250;
 const ChapterContent = ({course_img, type, url, item}) => {
-  console.log(type);
-
   //variables
   const navigation = useNavigation();
 

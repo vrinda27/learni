@@ -25,7 +25,6 @@ const ChapterDetail = ({route}) => {
   const {data} = route.params;
   //hook : states
   const [selectedItem, setSelectedItem] = useState(data.chapter_steps[0]);
-  console.log(selectedItem);
 
   //UI
   return (

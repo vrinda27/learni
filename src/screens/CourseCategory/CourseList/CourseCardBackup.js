@@ -1,6 +1,12 @@
 //import : react component
 import React, {useEffect, useState} from 'react';
-import {FlatList, View,ScrollView,SafeAreaView,StyleSheet} from 'react-native';
+import {
+  FlatList,
+  View,
+  ScrollView,
+  SafeAreaView,
+  StyleSheet,
+} from 'react-native';
 //import : custom components
 import Header from 'component/Header/Header';
 import SearchWithIcon from 'component/SearchWithIcon/SearchWithIcon';
@@ -30,27 +36,27 @@ const CourseList = ({route, navigation}) => {
   const [showLoader, setShowLoader] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [priceFilterValues, setPriceFilterValues] = useState([
-      {
-        id: '1',
-        name: 'High to Low',
-      },
-      {
-        id: '2',
-        name: 'Low to High',
-      },
-    ]);
-    const [tempSelectedPriceFilter, setTempSelectedPriceFilter] = useState('');
+    {
+      id: '1',
+      name: 'High to Low',
+    },
+    {
+      id: '2',
+      name: 'Low to High',
+    },
+  ]);
+  const [tempSelectedPriceFilter, setTempSelectedPriceFilter] = useState('');
   const [selectedPriceFilter, setSelectedPriceFilter] = useState('');
   const [selectedRatingValues, setSelectedRatingValues] = useState([]);
   const [tempSelectedRatingValues, setTempSelectedRatingValues] = useState([]);
-  const [showModal, setShowModal] = useState({ isVisible: false, data: null });
+  const [showModal, setShowModal] = useState({isVisible: false, data: null});
   const [refreshing, setRefreshing] = useState(false);
-  const[applyCheck,setApplyCheck]=useState(false);
-   //hook : pagination states
-   const [page, setPage] = useState(1);
-   const [lastPage, setLastPage] = useState(1);
-   const [page1, setPage1] = useState(1);
-   const [lastPage1, setLastPage1] = useState(1);
+  const [applyCheck, setApplyCheck] = useState(false);
+  //hook : pagination states
+  const [page, setPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+  const [page1, setPage1] = useState(1);
+  const [lastPage1, setLastPage1] = useState(1);
   const [paginationDetails, setPaginationDetails] = useState({
     last_page_no: 1,
     current_page: 1,
@@ -114,7 +120,6 @@ const CourseList = ({route, navigation}) => {
     }
   };
 
-
   ///filer data
   const isFilterApplied = () => {
     if (selectedCourseCategries?.length > 0) {
@@ -132,9 +137,10 @@ const CourseList = ({route, navigation}) => {
 
     return () => {};
   }, []);
-const ShowSelectedFilters = () => {
+  const ShowSelectedFilters = () => {
     return (
-      <View style={{flexWrap:'wrap', flexDirection: 'row',paddingVertical:10}}>
+      <View
+        style={{flexWrap: 'wrap', flexDirection: 'row', paddingVertical: 10}}>
         {selectedCourseCategries?.length > 0 ? (
           <View
             style={{
@@ -295,8 +301,7 @@ const ShowSelectedFilters = () => {
     setSelectedPriceFilter(tempSelectedPriceFilter);
     setSelectedRatingValues(tempSelectedRatingValues);
   };
-  const applyFilters = async (searchParam = '',) => {
-    // console.log("apply filter 1 in trendig courses")
+  const applyFilters = async (searchParam = '') => {
     setCourseData([]);
     setPage(1);
     setLastPage(1);
@@ -318,13 +323,6 @@ const ShowSelectedFilters = () => {
     }
     const isSearchTermExists = searchParam?.toString()?.trim()?.length > 0;
     const isSearchValueExists = searchValue?.toString()?.trim()?.length > 0;
-    // console.log(
-    //   'isSearchTermExists, isSearchValueExists',
-    //   isSearchTermExists,
-    //   isSearchValueExists,
-    // );
-    // console.log('searchTerm', searchParam);
-    // console.log('searchValue', searchValue);
     if (isSearchTermExists || isSearchValueExists) {
       // handling special case: while deleting last character of search, since search state would not update fast, so using searchParam instead of search state (searchValue)
       if (
@@ -342,44 +340,37 @@ const ShowSelectedFilters = () => {
       }
     }
     postData.append('limit', 10);
-    console.log('applyFilters postData-TRENDING-courses', JSON.stringify(postData));
+
     // setShowLoader(true);
-    console.log("Page1 and last page1 value- APPLY FILTER",page1,lastPage1);
     try {
       const resp = await Service.postApiWithToken(
         userToken,
         `trending-course?page=${page1}`,
         postData,
       );
-      // console.log('applyFilters resp', resp?.data);
       if (resp?.data?.status == true) {
         setShowFilterModal(false);
         // const updatedData = await generateThumb(resp?.data?.data);
         // setCourseData(updatedData);
         if (page1 == 1) {
           setLastPage1(resp?.data?.last_page_no);
-          console.log("APPLY FILTER-page 1",resp?.data?.data.length);
           // const updatedData = await generateThumb(resp?.data?.data);
           setCourseData(resp?.data?.data);
-          
-        }
-        else {
-          console.log("APPLY FILTER-page greater than 1",resp?.data?.data.length);
+        } else {
           // const updatedData = await generateThumb(resp?.data?.data);
           setCourseData([...courseData, ...resp?.data?.data]);
         }
         setPage1(page1 + 1);
       } else {
-        Toast.show({ text1: resp.data.message });
+        Toast.show({text1: resp.data.message});
       }
     } catch (error) {
-      console.log('error in applyFilters', error);
+      console.error('error in applyFilters', error);
     }
     setShowLoader(false);
   };
   const applyFilters2 = async (searchParam = '') => {
     setCourseData([]);
-    // console.log({ searchParam })
     const isDeletingLastCharacterInSearch =
       searchValue?.toString()?.trim()?.length === 1 &&
       searchParam?.toString()?.trim()?.length === 0;
@@ -402,13 +393,6 @@ const ShowSelectedFilters = () => {
     }
     const isSearchTermExists = searchParam?.toString()?.trim()?.length > 0;
     const isSearchValueExists = searchValue?.toString()?.trim()?.length > 0;
-    // console.log(
-    //   'isSearchTermExists, isSearchValueExists',
-    //   isSearchTermExists,
-    //   isSearchValueExists,
-    // );
-    // console.log('searchTerm', searchParam);
-    // console.log('searchValue', searchValue);
     if (isSearchTermExists || isSearchValueExists) {
       // handling special case: while deleting last character of search, since search state would not update fast, so using searchParam instead of search state (searchValue)
       if (
@@ -425,7 +409,6 @@ const ShowSelectedFilters = () => {
         }
       }
     }
-    console.log('applyFilters2 postData', JSON.stringify(postData));
     postData.append('limit', 10);
     try {
       setShowLoader(true);
@@ -434,23 +417,20 @@ const ShowSelectedFilters = () => {
         Service.TRENDING_COURSE,
         postData,
       );
-      // console.log('applyFilters resp', resp?.data);
       if (resp?.data?.status == true) {
         setShowFilterModal(false);
         // const updatedData = await generateThumb(resp?.data?.data);
-        // console.log({ updatedData })
         setCourseData(resp?.data?.data);
       } else {
-        Toast.show({ text1: resp.data.message });
+        Toast.show({text1: resp.data.message});
       }
     } catch (error) {
-      console.log('error in applyFilters', error);
+      console.error('error in applyFilters', error);
     } finally {
       setShowLoader(false);
     }
   };
   const resetFilter = async () => {
-    // console.log("reset filter")
     setShowFilterModal(false);
     setPage(1);
     setLastPage(1);
@@ -469,16 +449,12 @@ const ShowSelectedFilters = () => {
     await initLoader();
   };
   const removeFilter = async (filterType, item) => {
-    
-    // console.log('============filterType======courseCategries==================',);
-    // console.log(filterType);
     let remainingSelectedCategories = selectedCourseCategries;
-    // console.log('selectedCourseCategries', selectedCourseCategries, item);
     if (filterType === 'cat') {
       remainingSelectedCategories = selectedCourseCategries?.filter(
         el => el !== item,
       );
-     
+
       setSelectedCourseCategries([...remainingSelectedCategories]);
       setTempSelectedCourseCategries([...remainingSelectedCategories]);
     }
@@ -503,7 +479,6 @@ const ShowSelectedFilters = () => {
       ?.filter(el => remainingSelectedCategories?.includes(el?.name))
       ?.map(el => el?.id);
 
-      // console.log(postData?._parts?.length,"catIds",catIds);
     if (catIds?.length > 0) {
       catIds?.map(el => postData.append('category[]', el));
     }
@@ -514,8 +489,7 @@ const ShowSelectedFilters = () => {
       remainingselectedRatingValues?.map(el => postData.append('rating[]', el));
     }
     postData.append('limit', 10);
-    console.log('removeFilter postData-Trending courses', JSON.stringify(postData?._parts?.length));
-    // console.log("Page1 and last page1 value- Remove FILTER",page1,lastPage1);
+
     setShowLoader(true);
     try {
       const resp = await Service.postApiWithToken(
@@ -523,43 +497,36 @@ const ShowSelectedFilters = () => {
         `trending-course`,
         postData?._parts?.length === 0 ? {} : postData,
       );
-      // console.log('removeFilter resp', resp?.data);
       if (resp?.data?.status == true) {
         setShowFilterModal(false);
-        if(postData?._parts?.length === 1 ){
+        if (postData?._parts?.length === 1) {
           setPage(1);
           await initLoader();
-        }else{
+        } else {
           // const updatedData = await generateThumb(resp?.data?.data);
           setCourseData(resp?.data?.data);
         }
-       
-        
+
         // if (page1 == 1) {
         //   setLastPage1(resp?.data?.last_page_no);
-        //   console.log("removeFilter-page1== 1",resp?.data?.data.length);
         //   const updatedData = await generateThumb(resp?.data?.data);
         //   setCourseData(updatedData);
-          
+
         // }
         // else {
-        //   console.log("removeFilter-page1 greater than 1",resp?.data?.data.length);
         //   const updatedData = await generateThumb(resp?.data?.data);
         //   setCourseData([...courseData, ...updatedData]);
         // }
         // setPage1(1);
+      } else {
+        Toast.show({text1: resp.data.message});
       }
-       else {
-        Toast.show({ text1: resp.data.message });
-      }
-    } catch (error) {
-      // console.log('error in removeFilter', error);
-    }
+    } catch (error) {}
     setShowLoader(false);
   };
   //UI
   return (
-    <SafeAreaView style={{flex: 1,backgroundColor:'white'}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <ScrollView>
         <Background style={StyleSheet.absoluteFill} />
 
@@ -569,57 +536,56 @@ const ShowSelectedFilters = () => {
           showLearneLogo={false}
           showCart={false}
           showBackButton={true}></Header>
-    <View style={styles.container}
-    onPress={()=>setShowFilterModal(true)}>
-      
-      <View style={styles.mainView}>
-      <SearchWithIcon 
-  placeholder="Search here..."
-  value={''}
-  onChangeText={''}
-  icon={<Filter></Filter>
-    
-  } // Custom icon passed
-  onPress={openFilterModal}
-/>
-        <SizeBox height={10} />
-        <FlatList
-          data={coursesData}
-          contentContainerStyle={{
-            paddingBottom: '50%',
-          }}
-          showsVerticalScrollIndicator={false}
-          renderItem={({item, index}) => {
-            return (
-              <CourseCard
-                item={item}
-                image={item.image}
-                heartPress={() => addToWishlist(item.id)}
-                onPress={() => gotoCourseDetails(item.id)}
-              />
-            );
-          }}
-          ItemSeparatorComponent={() => <SizeBox height={10} />}
-          keyExtractor={(item, index) => item + index}
-        />
-      </View>
-      <TrendingFiltersModal
-          visible={showFilterModal}
-          setVisibility={setShowFilterModal}
-          courseCategries={[]}
-          tempSelectedCourseCategries={''}
-          setTempSelectedCourseCategries={''}
-          priceFilterValues={priceFilterValues}
-          tempSelectedPriceFilter={''}
-          setTempSelectedPriceFilter={''}
-          tempSelectedRatingValues={''}
-          setTempSelectedRatingValues={''}
-          applyFilters={()=>{applyFilters();setApplyCheck(true)}}
-          resetFilter={''}
-        />
-      <Loader visible={showLoader} />
-    </View>
-    </ScrollView>
+        <View style={styles.container} onPress={() => setShowFilterModal(true)}>
+          <View style={styles.mainView}>
+            <SearchWithIcon
+              placeholder="Search here..."
+              value={''}
+              onChangeText={''}
+              icon={<Filter></Filter>} // Custom icon passed
+              onPress={openFilterModal}
+            />
+            <SizeBox height={10} />
+            <FlatList
+              data={coursesData}
+              contentContainerStyle={{
+                paddingBottom: '50%',
+              }}
+              showsVerticalScrollIndicator={false}
+              renderItem={({item, index}) => {
+                return (
+                  <CourseCard
+                    item={item}
+                    image={item.image}
+                    heartPress={() => addToWishlist(item.id)}
+                    onPress={() => gotoCourseDetails(item.id)}
+                  />
+                );
+              }}
+              ItemSeparatorComponent={() => <SizeBox height={10} />}
+              keyExtractor={(item, index) => item + index}
+            />
+          </View>
+          <TrendingFiltersModal
+            visible={showFilterModal}
+            setVisibility={setShowFilterModal}
+            courseCategries={[]}
+            tempSelectedCourseCategries={''}
+            setTempSelectedCourseCategries={''}
+            priceFilterValues={priceFilterValues}
+            tempSelectedPriceFilter={''}
+            setTempSelectedPriceFilter={''}
+            tempSelectedRatingValues={''}
+            setTempSelectedRatingValues={''}
+            applyFilters={() => {
+              applyFilters();
+              setApplyCheck(true);
+            }}
+            resetFilter={''}
+          />
+          <Loader visible={showLoader} />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };

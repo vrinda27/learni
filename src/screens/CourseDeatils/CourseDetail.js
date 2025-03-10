@@ -269,7 +269,7 @@ const CourseDetail = ({navigation, dispatch, route}) => {
                 }}>
                 <Chapter />
                 <MyText
-                  text={`${courseData.lesson_count} Chapters`}
+                  text={`${courseData.lesson_count} Lessons`}
                   fontFamily={BOLD}
                   fontSize={12}
                   textColor={'black'}
