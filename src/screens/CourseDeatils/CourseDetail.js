@@ -1,5 +1,5 @@
 //import : react components
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   TouchableOpacity,
@@ -16,6 +16,7 @@ import Divider from 'component/Divider/Divider';
 import ChapterCard from 'component/ChapterCard/ChapterCard';
 import CourseDetailLoader from 'component/SkeltonLoader/CourseDetailLoader';
 import TagsItem from 'component/TagsItem/TagsItem';
+import Loader from 'component/loader/Loader';
 //import : third parties
 import Video from 'react-native-video';
 import Toast from 'react-native-toast-message';
@@ -29,14 +30,14 @@ import Calendar from 'assets/images/calendar.svg';
 import Rating from 'assets/images/rating.svg';
 import Chapter from 'assets/images/chapter.svg';
 import Quiz from 'assets/images/quizQues.svg';
-import {BLACK, BOLD, EXTRA_BOLD, MEDIUM, REGULAR} from 'global/Fonts';
+import {BLACK, MEDIUM, REGULAR} from 'global/Fonts';
 import {DARK_PURPLE, YELLOW} from 'global/Color';
 //import : styles
 import {styles} from './CourseDetailStyle';
 //import : modal
 import Review from 'modals/Review/Review';
 import NotPurchase from 'modals/NotPurchase/NotPurchase';
-import Loader from 'component/loader/Loader';
+import EditReview from 'modals/EditReview/EditReview';
 
 const CourseDetail = ({navigation, dispatch, route}) => {
   // variables : ref
@@ -45,14 +46,12 @@ const CourseDetail = ({navigation, dispatch, route}) => {
   const LINE_HEIGTH = 25;
   //variables : redux
   const [courseData, setCourseData] = useState({});
-  const [showLoader, setShowLoader] = useState(false);
-  const [review, setReview] = useState('');
-  const [starRating, setStarRating] = useState(1);
-  const [showReviewModal, setShowReviewModal] = useState(false);
-  const [showReviewPopup, setShowReviewPopup] = useState(false);
   //hook : modal states
+  const [showLoader, setShowLoader] = useState(false);
+  const [showReviewPopup, setShowReviewPopup] = useState(false);
   const [showNotPurchased, setShowNotPurchased] = useState(false);
   const [showAppLoader, setShowAppLoader] = useState(false);
+  const [showEditReview, setShowEditReview] = useState(false);
   //function : nav func
   const gotoChapterDetail = data => {
     navigation.navigate(ScreenNames.CHAPTER_DETAIL, {data});
@@ -63,39 +62,6 @@ const CourseDetail = ({navigation, dispatch, route}) => {
     await getCourseDetail();
     setShowLoader(false);
   };
-
-  const submitReview = async () => {
-    if (review?.trim()?.length === 0) {
-      Toast.show({text1: 'Please enter review'});
-      return;
-    }
-    const postData = new FormData();
-    postData.append('id', route?.params?.id);
-    postData.append('type', route?.params?.type);
-    postData.append('comment', review);
-    postData.append('rating', starRating);
-    setShowLoader(true);
-    try {
-      const resp = await Service.postApiWithToken(
-        userToken,
-        Service.SUBMIT_REVIEW,
-        postData,
-      );
-      if (resp?.data?.status) {
-        Toast.show({text1: resp?.data?.message || resp?.data?.Message});
-        setStarRating(1);
-        setReview('');
-        getProductDetails();
-      } else {
-        Toast.show({text1: resp?.data?.message || resp?.data?.Message});
-      }
-    } catch (error) {
-      console.error('error in submitReview', error);
-    }
-    setShowReviewModal(false);
-    setShowLoader(false);
-  };
-
   //function : serv func
   const getCourseDetail = async () => {
     try {
@@ -416,17 +382,31 @@ const CourseDetail = ({navigation, dispatch, route}) => {
                   textColor={YELLOW}
                 />
               </View>
-              <TouchableOpacity
-                onPress={() => setShowReviewPopup(true)}
-                style={styles.buttonReview}>
-                <MyText
-                  text={'Write your Review'}
-                  fontFamily="medium"
-                  fontSize={14}
-                  textAlign="center"
-                  textColor={'white'}
-                />
-              </TouchableOpacity>
+              {courseData.is_reviewed ? (
+                <TouchableOpacity
+                  onPress={() => setShowEditReview(true)}
+                  style={styles.buttonReview}>
+                  <MyText
+                    text={'Edit your Review'}
+                    fontFamily="medium"
+                    fontSize={14}
+                    textAlign="center"
+                    textColor={'white'}
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => setShowReviewPopup(true)}
+                  style={styles.buttonReview}>
+                  <MyText
+                    text={'Write your Review'}
+                    fontFamily="medium"
+                    fontSize={14}
+                    textAlign="center"
+                    textColor={'white'}
+                  />
+                </TouchableOpacity>
+              )}
             </View>
             {courseData?.review_list?.length > 0 ? (
               courseData?.review_list?.map((item, index) => (
@@ -497,6 +477,18 @@ const CourseDetail = ({navigation, dispatch, route}) => {
           id={id}
           visible={showReviewPopup}
           setVisibility={setShowReviewPopup}
+          nextFunction={msg => {
+            Toast.show({
+              type: 'success',
+              text1: msg,
+            });
+            getCourseDetail();
+          }}
+        />
+        <EditReview
+          id={id}
+          visible={showEditReview}
+          setVisibility={setShowEditReview}
           nextFunction={msg => {
             Toast.show({
               type: 'success',

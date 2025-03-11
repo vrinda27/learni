@@ -28,6 +28,9 @@ export const API_Endpoints = {
   submit_rating: 'submit-rating',
   cartList: 'cart-list',
   get_tags: 'tags',
+  my_rating: 'my-rating',
+  mark_as_complete: 'mark-as-complete',
+  edit_rating: 'edit-rating',
 };
 
 //function : imp function
@@ -131,7 +134,7 @@ export const GetApi = async endPoint => {
 //function : get function
 export const getAPI = async (endPoint, token = '', paramsData = {}) => {
   const url = baseURL + endPoint + objToQueryString(paramsData);
-  console.log('GET URL of filterrr=>', paramsData);
+  console.log('GET URL:', url);
   return await axios
     .get(url, {
       headers: {

@@ -8,12 +8,17 @@ import MyText from 'component/MyText/MyText';
 import {BLACK, REGULAR} from 'global/Fonts';
 import {DARK_PURPLE} from 'global/Color';
 import {dimensions} from 'global/Constants';
+import Pdf from 'assets/svgs/chaptersvg/document-pdf.svg';
+import Quiz from 'assets/images/quizQues.svg';
 //import : styles
 import {styles} from './ChapterCardStyle';
+import {Colors} from 'global/index';
 //import : modals
 //import : redux
 
 const ChapterCard = ({item, index, onPress = () => {}}) => {
+  console.log(item);
+
   //UI
   return (
     <TouchableOpacity onPress={() => onPress()} style={styles.container}>
@@ -47,7 +52,21 @@ const ChapterCard = ({item, index, onPress = () => {}}) => {
             />
           </View>
         </View>
-
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            borderColor: Colors.DARK_PURPLE,
+            borderWidth: 1,
+          }}>
+          <Quiz />
+          <MyText
+            text={item.total_quiz}
+            fontFamily={BLACK}
+            fontSize={12}
+            style={{textAlign: 'center', marginLeft: 5}}
+          />
+        </View>
         {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Clock />
           <MyText
@@ -59,16 +78,7 @@ const ChapterCard = ({item, index, onPress = () => {}}) => {
           />
         </View>
 
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Pdf />
-          <MyText
-            text={'PDF'}
-            fontFamily={BLACK}
-            fontSize={12}
-            textColor={'#999999'}
-            style={{textAlign: 'center', marginLeft: 5}}
-          />
-        </View> */}
+         */}
       </View>
       <MyText
         text={item.lesson_description}

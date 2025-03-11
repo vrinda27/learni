@@ -5,7 +5,7 @@ import {View, Image} from 'react-native';
 import MyText from 'component/MyText/MyText';
 //import : third party
 //import : utils
-import {BOLD} from 'global/Fonts';
+import {BOLD, MEDIUM} from 'global/Fonts';
 import {dimensions} from 'global/Constants';
 import Rating from 'assets/images/rating.svg';
 import {Colors} from 'global/index';
@@ -24,7 +24,7 @@ const CartItem = ({item}) => {
           width: dimensions.SCREEN_WIDTH / 3,
         }}
       />
-      <View style={{width: '55%'}}>
+      <View style={{width: '55%', justifyContent: 'space-around'}}>
         <MyText text={item.name} fontFamily={BOLD} />
         <View
           style={{flexDirection: 'row', alignItems: 'center', columnGap: 20}}>
@@ -56,6 +56,22 @@ const CartItem = ({item}) => {
               style={{}}
             />
           </View>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            columnGap: 5,
+          }}>
+          <Image
+            source={{uri: item.creator_profile}}
+            style={{
+              height: 20,
+              width: 20,
+              borderRadius: 100,
+            }}
+          />
+          <MyText text={item.creator_name} fontFamily={MEDIUM} fontSize={12} />
         </View>
       </View>
     </View>

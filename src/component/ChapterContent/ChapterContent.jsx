@@ -28,10 +28,10 @@ const ChapterContent = ({course_img, type, url, item}) => {
     navigation.navigate(ScreenNames.ADD_ASSIGNMENT);
   };
   const openQuiz = () => {
-    Linking.openURL('https://www.britannica.com/quiz/browse');
+    Linking.openURL(item.quiz_url);
   };
   const openViewSurvey = () => {
-    Linking.openURL('https://www.surveymonkey.com/');
+    Linking.openURL(item.survey_url);
   };
   //UI
   if (type == 'video') {

@@ -4,8 +4,6 @@ import {useIsFocused} from '@react-navigation/native';
 //import : custom components
 import Header from 'component/Header/Header';
 import MyText from 'component/MyText/MyText';
-
-import Toast from 'react-native-toast-message';
 //import : global
 import {Colors, ScreenNames, Service} from 'global/index';
 //import : styles
@@ -78,69 +76,6 @@ const Cart = ({navigation, dispatch}) => {
     } catch (error) {
       console.error('error in getHome', error);
     }
-  };
-  const getCartList = async () => {
-    setShowLoader(true);
-    try {
-      const resp = await Service.getApiWithToken(userToken, Service.CART_LIST);
-      if (!resp?.data?.status) {
-        setCartListData({});
-      }
-      if (resp?.data?.status) {
-        const temp1 = resp?.data?.data?.items.filter(
-          item => item.is_coupon_applied === true,
-        );
-        if (temp1?.length > 0) {
-          const temp2 = temp1.map((item, index) => {
-            const myCode = item?.coupons?.filter(
-              e => e.code === item.coupon_code,
-            );
-            return {
-              applied: true,
-              item: {...myCode[0], productId: item.product_id},
-            };
-          });
-          setAllAppliedCoupons(temp2);
-        } else {
-          setAllAppliedCoupons([]);
-        }
-        if (resp?.data?.data?.shippingAddressId) {
-          const tempAddress = resp?.data?.address?.filter(
-            item => item.id === resp.data.data.shippingAddressId?.address_id,
-          );
-
-          if (tempAddress.length > 0) {
-            setAddress(tempAddress);
-          } else {
-            setAddress([]);
-          }
-        } else if (!resp?.data?.data?.shippingAddressId) {
-          setAddress([]);
-        }
-        // after removing items getCartLit function is called again, checking if no items in data, then set cart count to 0
-        if (resp?.data?.data?.length === 0) {
-          dispatch(setCartCount(resp?.data?.data?.length));
-          await AsyncStorage.setItem(
-            'cart_count',
-            JSON.stringify(resp?.data?.data?.length),
-          );
-        }
-        // const doCoursesExists = resp?.data?.data?.items.find(el => el?.type == '1');
-        const doCoursesExists = resp?.data?.type === 1;
-        if (!doCoursesExists) {
-          setCartListData(resp?.data);
-        } else {
-          // const data = await generateThumb(resp?.data?.data);
-          // resp.data.data.items = [...resp?.data?.data];
-          setCartListData(resp?.data);
-        }
-        // Toast.show({text1: resp?.data?.message})
-      } else {
-        // empty cart toast msg
-        // Toast.show({ text1: resp?.data?.message });
-      }
-    } catch (error) {}
-    setShowLoader(false);
   };
 
   const gotoShippingScreen = () => {

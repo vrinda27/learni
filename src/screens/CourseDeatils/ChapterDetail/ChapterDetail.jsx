@@ -14,9 +14,13 @@ import Clock from 'assets/images/clockGreen.svg';
 import TaskSvg from 'assets/svgs/task-square.svg';
 import NotFavSvg from 'assets/svgs/note-favorite.svg';
 import {BLACK, REGULAR} from 'global/Fonts';
-import {Colors} from 'global/index';
+import {Colors, Service} from 'global/index';
 //import : styles
 import {styles} from './ChapterDetailStyle';
+import {API_Endpoints} from 'global/Service';
+import Loader from 'component/loader/Loader';
+import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 //import : modals
 //import : redux
 
@@ -26,7 +30,43 @@ const ChapterDetail = ({route}) => {
 
   //hook : states
   const [selectedItem, setSelectedItem] = useState(data.chapter_steps[0]);
+  const [showAppLoader, setShowAppLoader] = useState(false);
+  //function : imp func
+  const handleContinuePress = () => {
+    const index = data?.chapter_steps?.findIndex(
+      e => e.step_id == selectedItem.step_id,
+    );
+    if (index == data.chapter_steps.length - 1) {
+    } else {
+      setSelectedItem(data?.chapter_steps[index + 1]);
+    }
+  };
+  //function : serv func
+  const markAsComplete = async () => {
+    try {
+      setShowAppLoader(true);
+      const postData = {
+        chapter_step_id: selectedItem.step_id,
+      };
+      const token = await AsyncStorage.getItem('token');
+      const {response, status} = await Service.postAPI(
+        API_Endpoints.mark_as_complete,
+        postData,
+        token,
+      );
 
+      if (status) {
+        Toast.show({
+          type: 'success',
+          text1: response?.message,
+        });
+      }
+    } catch (err) {
+      console.error('error in markAsComplete', err);
+    } finally {
+      setShowAppLoader(false);
+    }
+  };
   //UI
   return (
     <View style={styles.container}>
@@ -119,11 +159,16 @@ const ChapterDetail = ({route}) => {
               alignItems: 'center',
               marginVertical: 10,
             }}>
-            <MyButton text={'Mark Incomplete'} width="48%" />
+            <MyButton
+              text={'Mark as complete'}
+              width="48%"
+              onPress={() => markAsComplete()}
+            />
             <MyButton
               text={'Continue'}
               width="48%"
               backgroundColor={Colors.DARK_PURPLE}
+              onPress={() => handleContinuePress()}
             />
           </View>
           <FlatList
@@ -142,6 +187,7 @@ const ChapterDetail = ({route}) => {
           />
         </View>
       </ScrollView>
+      <Loader visible={showAppLoader} />
     </View>
   );
 };
