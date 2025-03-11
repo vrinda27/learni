@@ -20,7 +20,6 @@ import {MultiSelect} from 'react-native-element-dropdown';
 const MyMultiSelect = ({value, setValue, data, placeholder, style = {}}) => {
   const [isFocus, setIsFocus] = useState(false);
   const renderItem = item => {
-    console.log('Rendering item:', item);
     return (
       <View style={styles.item}>
         <Text style={styles.selectedTextStyle}>
@@ -58,7 +57,6 @@ const MyMultiSelect = ({value, setValue, data, placeholder, style = {}}) => {
       }}
       onBlur={() => setIsFocus(false)}
       onChange={items => {
-        console.log('Selected items:', items);
         setValue(Array.isArray(items) ? items : [items]); // Ensure it's an array
         setIsFocus(false);
       }}

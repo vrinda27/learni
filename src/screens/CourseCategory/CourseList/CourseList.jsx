@@ -67,9 +67,7 @@ const CourseList = ({navigation, dispatch, route}) => {
   const [showLoader, setShowLoader] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [courseData, setCourseData] = useState([]);
-  {
-    console.log('usestate console dataa--->>', courseData);
-  }
+
   const [courseOldData, setCourseOldData] = useState([]);
 
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -209,11 +207,8 @@ const CourseList = ({navigation, dispatch, route}) => {
         name: searchedName,
         sub_category_id: data.id,
       };
-      console.log('my paams data---->>>', paramsData);
       const token = await AsyncStorage.getItem('token');
-      {
-        console.log('my auth token--->>>', token);
-      }
+
       const {response, status} = await Service.getAPI(
         API_Endpoints.courses,
         token,
@@ -263,9 +258,6 @@ const CourseList = ({navigation, dispatch, route}) => {
     } else if (selectedPriceFilter !== '') {
       return true;
     } else if (selectedRatingValues?.length > 0) {
-      {
-        console.log('selectedRatingValues', selectedRatingValues);
-      }
       return true;
     }
 
@@ -431,7 +423,6 @@ const CourseList = ({navigation, dispatch, route}) => {
   const courseCategories = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
-      console.log('my auth token--->>>', token); // ✅ Removed unnecessary braces
 
       const {response, status} = await Service.getAPI(
         API_Endpoints.get_tags,
@@ -443,7 +434,6 @@ const CourseList = ({navigation, dispatch, route}) => {
         if (response?.data?.length > 0) {
           setCourseCategries(
             response?.data?.map(el => {
-              console.log('el-->>', el.id); // ✅ Correct placement
               return {
                 id: el?.id,
                 name: el?.name,
@@ -476,7 +466,6 @@ const CourseList = ({navigation, dispatch, route}) => {
     setSelectedRatingValues(tempSelectedRatingValues);
   };
   const applyFilters = async (searchParam = '') => {
-    console.log('apply filter 1 in trendig courses');
     setCourseData([]);
     setPage(1);
     setLastPage(1);
@@ -529,28 +518,8 @@ const CourseList = ({navigation, dispatch, route}) => {
         token,
         paramsData,
       );
-      console.log('my console data after filter-66-->>', response.data);
       setShowFilterModal(false);
       setCourseData(response?.data);
-      // console.log('applyFilters resp', resp?.data);
-      // if (resp?.data?.status == true) {
-      //   setShowFilterModal(false);
-      //   // const updatedData = await generateThumb(resp?.data?.data);
-      //   // setCourseData(updatedData);
-      //   if (page1 == 1) {
-      //     setLastPage1(resp?.data?.last_page_no);
-      //     // const updatedData = await generateThumb(resp?.data?.data);
-      //     setCourseData(resp?.data?.data);
-
-      //   }
-      //   else {
-      //     // const updatedData = await generateThumb(resp?.data?.data);
-      //     setCourseData([...courseData, ...resp?.data?.data]);
-      //   }
-      //   setPage1(page1 + 1);
-      // } else {
-      //   Toast.show({ text1: resp.data.message });
-      // }
     } catch (error) {
       console.error('error in applyFilters', error);
     }
@@ -832,9 +801,6 @@ const CourseList = ({navigation, dispatch, route}) => {
               }
               // keyExtractor={(item, index) => index.toString()}
               renderItem={({item, index}) => {
-                {
-                  console.log('', item);
-                }
                 return (
                   <CourseCard
                     item={item}
@@ -864,11 +830,6 @@ const CourseList = ({navigation, dispatch, route}) => {
                 </View>
               )}
             />
-            {/* </ScrollView> */}
-
-            {/* {
-            console.log("courseData.length",courseData.length)
-          } */}
           </View>
         </KeyboardAwareScrollView>
         <TrendingFiltersModal

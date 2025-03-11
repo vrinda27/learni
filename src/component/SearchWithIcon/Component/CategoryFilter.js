@@ -12,17 +12,17 @@ import {
 import MyText from 'component/MyText/MyText';
 
 // global
-import { Colors } from 'global/index';
+import {Colors} from 'global/index';
 //third parties
 import moment from 'moment';
 import Toast from 'react-native-toast-message';
 //styles
-import {styles} from './CategoryFilterStyle'
+import {styles} from './CategoryFilterStyle';
 import Dropdown from 'component/DropDown/DropDown';
 import MyButton from 'component/MyButton/MyButton';
 import MyMultiSelect from 'component/MyMultiSelect/MyMultiSelect';
-import RadioInactive from 'assets/images/radioInactive.svg'
-import RadioActive from 'assets/images/radioActive.svg'
+import RadioInactive from 'assets/images/radioInactive.svg';
+import RadioActive from 'assets/images/radioActive.svg';
 const TrendingFiltersModal = ({
   visible,
   setVisibility,
@@ -101,7 +101,6 @@ const TrendingFiltersModal = ({
               marginBottom={10}
               marginTop={20}
             />
-            {console.log('myCourse categiry---->>>>',courseCategries)}
             <MyMultiSelect
               data={courseCategries?.map(el => ({
                 label: el.name,
