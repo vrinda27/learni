@@ -3,26 +3,63 @@ import React, {useState} from 'react';
 import {View, Text, Modal, TouchableOpacity, TextInput} from 'react-native';
 //import : custom components
 import MyText from 'component/MyText/MyText';
-//import : third party
-//import : utils
-import {BLACK} from 'global/Fonts';
-import {Colors, MyIcon} from 'global/index';
-//import : styles
-import {styles} from './ReviewStyle';
 import MyButton from 'component/MyButton/MyButton';
 import SizeBox from 'component/SizeBox/SizeBox';
+import Loader from 'component/loader/Loader';
+//import : third party
+import AsyncStorage from '@react-native-async-storage/async-storage';
+//import : utils
+import {BLACK} from 'global/Fonts';
+import {Colors, MyIcon, Service} from 'global/index';
+import {API_Endpoints} from 'global/Service';
+//import : styles
+import {styles} from './ReviewStyle';
 //import : modals
 //import : redux
 
-const Review = ({visible, setVisibility}) => {
+const Review = ({visible, setVisibility, id, nextFunction = () => {}}) => {
   //variables
   let starArray = [1, 2, 3, 4, 5];
   //hook : states
   const [selectedStar, setSelectedStar] = useState(1);
   const [reviewMsg, setReviewMsg] = useState('');
+  //hook : modal state
+  const [showAppLoader, setShowAppLoader] = useState(false);
   //function : modal func
   const closeModal = () => {
+    setSelectedStar(1);
+    setReviewMsg('');
     setVisibility(false);
+  };
+  //function : serv func
+  const submitReview = async () => {
+    setShowAppLoader(true);
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const data = {
+        id: id,
+        type: 1,
+        rating: selectedStar,
+        review: reviewMsg,
+      };
+      const {response, status} = await Service.postAPI(
+        API_Endpoints.submit_rating,
+        data,
+        token,
+      );
+      console.log('response', response);
+
+      if (status) {
+        closeModal();
+        nextFunction(response.message);
+      } else {
+        closeModal();
+        nextFunction(response.message);
+      }
+    } catch (error) {
+      console.error('error in submitReview', error);
+    }
+    setShowAppLoader(false);
   };
   //UI
   return (
@@ -76,11 +113,16 @@ const Review = ({visible, setVisibility}) => {
             onChangeText={e => setReviewMsg(e)}
           />
           <SizeBox height={10} />
-          <MyButton text={'Submit'} />
+          <MyButton text={'Submit'} onPress={() => submitReview()} />
           <SizeBox height={10} />
-          <MyButton text={'Clear All'} backgroundColor={Colors.DARK_PURPLE} />
+          <MyButton
+            text={'Clear All'}
+            backgroundColor={Colors.DARK_PURPLE}
+            onPress={() => closeModal()}
+          />
         </View>
       </View>
+      <Loader visible={showAppLoader} />
     </Modal>
   );
 };

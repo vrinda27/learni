@@ -14,6 +14,8 @@ import ViewAll from 'component/ViewAll/ViewAll';
 import MyButton from 'component/MyButton/MyButton';
 import Divider from 'component/Divider/Divider';
 import ChapterCard from 'component/ChapterCard/ChapterCard';
+import CourseDetailLoader from 'component/SkeltonLoader/CourseDetailLoader';
+import TagsItem from 'component/TagsItem/TagsItem';
 //import : third parties
 import Video from 'react-native-video';
 import Toast from 'react-native-toast-message';
@@ -33,7 +35,8 @@ import {DARK_PURPLE, YELLOW} from 'global/Color';
 import {styles} from './CourseDetailStyle';
 //import : modal
 import Review from 'modals/Review/Review';
-import CourseDetailLoader from 'component/SkeltonLoader/CourseDetailLoader';
+import NotPurchase from 'modals/NotPurchase/NotPurchase';
+import Loader from 'component/loader/Loader';
 
 const CourseDetail = ({navigation, dispatch, route}) => {
   // variables : ref
@@ -43,11 +46,13 @@ const CourseDetail = ({navigation, dispatch, route}) => {
   //variables : redux
   const [courseData, setCourseData] = useState({});
   const [showLoader, setShowLoader] = useState(false);
-  const [selectedTag, setSelectedTag] = useState('1');
   const [review, setReview] = useState('');
   const [starRating, setStarRating] = useState(1);
   const [showReviewModal, setShowReviewModal] = useState(false);
   const [showReviewPopup, setShowReviewPopup] = useState(false);
+  //hook : modal states
+  const [showNotPurchased, setShowNotPurchased] = useState(false);
+  const [showAppLoader, setShowAppLoader] = useState(false);
   //function : nav func
   const gotoChapterDetail = data => {
     navigation.navigate(ScreenNames.CHAPTER_DETAIL, {data});
@@ -57,45 +62,6 @@ const CourseDetail = ({navigation, dispatch, route}) => {
     setShowLoader(true);
     await getCourseDetail();
     setShowLoader(false);
-  };
-  const tags = [
-    {
-      id: '1',
-      title: 'Course Tag',
-    },
-    {
-      id: '2',
-      title: 'Course Tag',
-    },
-    {
-      id: '3',
-      title: 'Course Tag',
-    },
-  ];
-  const changeSelectedTag = id => {
-    setSelectedTag(id);
-  };
-
-  const renderTags = ({item}) => {
-    return (
-      <TouchableOpacity
-        onPress={() => changeSelectedTag(item.id)}
-        style={[
-          styles.courseTypeContainer,
-          item?.id === '1'
-            ? {backgroundColor: '#FF8615'}
-            : item?.id === '2'
-            ? {backgroundColor: '#00B44B'}
-            : {backgroundColor: '#00FEFF'},
-        ]}>
-        <MyText
-          text={item?.title}
-          fontFamily="regular"
-          fontSize={14}
-          textColor={selectedTag === item.id ? 'white' : 'white'}
-        />
-      </TouchableOpacity>
-    );
   };
 
   const submitReview = async () => {
@@ -136,12 +102,59 @@ const CourseDetail = ({navigation, dispatch, route}) => {
       const token = await AsyncStorage.getItem('token');
       const endPoint = `${API_Endpoints.course_details}/${id}`;
       const {response, status} = await Service.getAPI(endPoint, token);
+      console.log('response', response);
+
       if (status) {
         setCourseData(response.data);
       }
     } catch (error) {
       console.error('error in getCourseDetail', error);
     }
+  };
+  const addCourseInToCart = async () => {
+    setShowAppLoader(true);
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const endPoint = `${API_Endpoints.add_cart}?id=${id}&type=1`;
+      const {response, status} = await Service.postAPI(endPoint, {}, token);
+      if (status) {
+        Toast.show({
+          type: 'success',
+          text1: response?.message,
+        });
+        getCourseDetail();
+      }
+    } catch (error) {
+      console.error('error in addCourseInToCart', error);
+    }
+    setShowAppLoader(false);
+  };
+  const removeCourseFromCart = async () => {
+    setShowAppLoader(true);
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const data = {
+        id: id,
+        type: 1,
+      };
+      const {response, status} = await Service.postAPI(
+        API_Endpoints.remove_cart,
+        data,
+        token,
+      );
+      console.log('remove', response);
+
+      if (status) {
+        Toast.show({
+          type: 'success',
+          text1: response?.message,
+        });
+        getCourseDetail();
+      }
+    } catch (error) {
+      console.error('error in removeCourseFromCart', error);
+    }
+    setShowAppLoader(false);
   };
   //hook : useEffect
   useEffect(() => {
@@ -308,25 +321,39 @@ const CourseDetail = ({navigation, dispatch, route}) => {
               borderBottomWidth={2}
               marginVertical={10}
             />
-            <View style={{flexDirection: 'row'}}>
-              <MyButton
-                text={'Add to cart'}
-                style={{flex: 1, marginRight: 10, backgroundColor: '#00B44B'}}
-              />
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              {courseData.in_cart ? (
+                <MyButton
+                  text={'Remove from cart'}
+                  backgroundColor="#FF0000"
+                  width="48%"
+                  onPress={() => removeCourseFromCart()}
+                />
+              ) : (
+                <MyButton
+                  text={'Add to cart'}
+                  backgroundColor="#00B44B"
+                  width="48%"
+                  onPress={() => addCourseInToCart()}
+                />
+              )}
+
               <MyButton
                 text={'Buy Now'}
-                style={{flex: 1, marginRight: 10, backgroundColor: '#5E4AF7'}}
+                backgroundColor="#5E4AF7"
+                width="48%"
               />
             </View>
             <ViewAll text="Tags" showSeeAll={false} style={{marginTop: 20}} />
-            {tags?.length > 0 ? (
+            {courseData?.tags?.length > 0 ? (
               <FlatList
-                data={tags}
+                data={courseData?.tags}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 style={{marginTop: 11}}
                 keyExtractor={(item, index) => index.toString()}
-                renderItem={renderTags}
+                renderItem={({item, index}) => <TagsItem item={item} />}
               />
             ) : (
               <MyText
@@ -355,7 +382,13 @@ const CourseDetail = ({navigation, dispatch, route}) => {
                 renderItem={({item, index}) => (
                   <ChapterCard
                     item={item}
-                    onPress={() => gotoChapterDetail(item)}
+                    onPress={() => {
+                      if (courseData.purchased) {
+                        gotoChapterDetail(item);
+                      } else {
+                        setShowNotPurchased(true);
+                      }
+                    }}
                   />
                 )}
               />
@@ -462,12 +495,25 @@ const CourseDetail = ({navigation, dispatch, route}) => {
                 textColor={'black'}
               />
             )}
-            <Review
-              visible={showReviewPopup}
-              setVisibility={setShowReviewPopup}
-            />
           </View>
         </ScrollView>
+        <Review
+          id={id}
+          visible={showReviewPopup}
+          setVisibility={setShowReviewPopup}
+          nextFunction={msg => {
+            Toast.show({
+              type: 'success',
+              text1: msg,
+            });
+            getCourseDetail();
+          }}
+        />
+        <NotPurchase
+          visible={showNotPurchased}
+          setVisibility={setShowNotPurchased}
+        />
+        <Loader visible={showAppLoader} />
       </View>
     );
   }

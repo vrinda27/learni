@@ -23,6 +23,9 @@ export const API_Endpoints = {
   notification: 'notifications',
   clearNotification: 'clear-notifications',
   cartList: 'cart-list',
+  add_cart: 'add-cart',
+  remove_cart: 'remove-cart',
+  submit_rating: 'submit-rating',
 };
 
 //function : imp function

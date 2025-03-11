@@ -6,32 +6,18 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import {
-  DrawerActions,
-  useNavigation,
-  useFocusEffect,
-  CommonActions,
-} from '@react-navigation/native';
-import React, {useContext, useEffect, useState, useCallback} from 'react';
-
+import {useNavigation} from '@react-navigation/native';
+import React, {useState} from 'react';
 import ArrowLeft from 'assets/images/arrowLeft.svg';
-
 import Notification from 'assets/images/notification.svg';
-
 import {
   responsiveFontSize,
-  responsiveHeight,
   responsiveWidth,
 } from 'react-native-responsive-dimensions';
-
-//   import {FONTFAMILYMEDIUM} from 'assets/fonts';
-import {APIEndPoints} from 'src/WebAPI/Service';
-
-import {BlurView} from '@react-native-community/blur';
-import {Image} from 'react-native-svg';
 import Drawer from 'assets/images/drawer.svg';
 import Logo from 'assets/svgs/logoLearne.svg';
 import Cart from 'assets/images/shoppingBag.svg';
+import {ScreenNames} from 'global/index';
 
 const Header = ({
   heading,
@@ -58,6 +44,9 @@ const Header = ({
   };
   const onPressNotificationHandler = () => {
     navigation.navigate('Notification');
+  };
+  const openCart = () => {
+    navigation.navigate(ScreenNames.CART);
   };
   const openDrawer = () => {
     navigation.openDrawer();
@@ -107,7 +96,7 @@ const Header = ({
         <View style={[styles.card, {paddingRight: responsiveWidth(4)}]}>
           {showCart && (
             <TouchableOpacity
-              onPress={onPressNotificationHandler}
+              onPress={openCart}
               style={{marginRight: responsiveWidth(2)}}>
               <Cart height={24} width={24} />
             </TouchableOpacity>

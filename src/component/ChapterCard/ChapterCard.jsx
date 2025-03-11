@@ -5,13 +5,11 @@ import {View, Text, TouchableOpacity} from 'react-native';
 import MyText from 'component/MyText/MyText';
 //import : third party
 //import : utils
-import Clock from 'assets/images/clockGreen.svg';
 import {BLACK, REGULAR} from 'global/Fonts';
 import {DARK_PURPLE} from 'global/Color';
-import Pdf from 'assets/images/pdfDocument.svg';
+import {dimensions} from 'global/Constants';
 //import : styles
 import {styles} from './ChapterCardStyle';
-import {dimensions} from 'global/Constants';
 //import : modals
 //import : redux
 
@@ -50,7 +48,7 @@ const ChapterCard = ({item, onPress = () => {}}) => {
           </View>
         </View>
 
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Clock />
           <MyText
             text={'10min'}
@@ -70,14 +68,13 @@ const ChapterCard = ({item, onPress = () => {}}) => {
             textColor={'#999999'}
             style={{textAlign: 'center', marginLeft: 5}}
           />
-        </View>
+        </View> */}
       </View>
       <MyText
-        text={
-          'Lorem ipsum dolor sit amet, dolor is consectetur adipiscing elit.'
-        }
+        text={item.lesson_description}
         fontFamily={REGULAR}
         fontSize={13}
+        numberOfLines={3}
         textColor={'black'}
         style={{width: '95%', marginHorizontal: 16, marginTop: 7}}
       />

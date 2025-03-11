@@ -3,12 +3,12 @@ import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   container: {
-    height: 98,
     borderRadius: 10,
     borderColor: Colors.LIGHT_PURPLE,
     borderWidth: 1,
     backgroundColor: 'white',
     marginVertical: 6,
+    padding: 5,
   },
   serialContainer: {
     width: 28,
