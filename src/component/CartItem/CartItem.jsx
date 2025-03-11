@@ -5,7 +5,7 @@ import {View, Image} from 'react-native';
 import MyText from 'component/MyText/MyText';
 //import : third party
 //import : utils
-import {BOLD} from 'global/Fonts';
+import {BOLD, MEDIUM} from 'global/Fonts';
 import {dimensions} from 'global/Constants';
 import Rating from 'assets/images/rating.svg';
 import {Colors} from 'global/index';
@@ -25,7 +25,7 @@ const CartItem = ({item}) => {
         }}
       />
       <View style={{width: '55%'}}>
-        <MyText text={item.name} fontFamily={BOLD} />
+        <MyText text={item.name} fontFamily={MEDIUM} />
         <View
           style={{flexDirection: 'row', alignItems: 'center', columnGap: 20}}>
           <View
@@ -41,7 +41,7 @@ const CartItem = ({item}) => {
             }}>
             <MyText
               text={'$'}
-              fontFamily="bold"
+              fontFamily={MEDIUM}
               fontSize={14}
               textColor={Colors.BLACK}
               letterSpacing={0.14}
@@ -49,7 +49,7 @@ const CartItem = ({item}) => {
             />
             <MyText
               text={item.total_amount}
-              fontFamily="bold"
+              fontFamily={MEDIUM}
               fontSize={14}
               textColor={Colors.DARK_PURPLE}
               letterSpacing={0.14}

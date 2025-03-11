@@ -28,6 +28,7 @@ export const API_Endpoints = {
   submit_rating: 'submit-rating',
   cartList: 'cart-list',
   get_tags: 'tags',
+  add_card:'add-card'
 };
 
 //function : imp function

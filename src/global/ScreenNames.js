@@ -29,3 +29,5 @@ export const VIEW_CONTENT = 'VIEW_CONTENT';
 export const ADD_ASSIGNMENT = 'ADD_ASSIGNMENT';
 
 export const ORDER_DETAIL = 'OrderDetail';
+
+export const BILLING='BILLING'
