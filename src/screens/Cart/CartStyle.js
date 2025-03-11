@@ -1,7 +1,12 @@
-import { Colors } from 'global/index';
-import { Platform, StyleSheet } from 'react-native';
-import { dimensions } from 'global/Constants';
-import { responsiveFontSize, responsiveWidth as wd, responsiveHeight as hg, responsiveHeight } from 'react-native-responsive-dimensions';
+import {Colors} from 'global/index';
+import {Platform, StyleSheet} from 'react-native';
+import {dimensions} from 'global/Constants';
+import {
+  responsiveFontSize,
+  responsiveWidth as wd,
+  responsiveHeight as hg,
+  responsiveHeight,
+} from 'react-native-responsive-dimensions';
 
 export const styles = StyleSheet.create({
   container: {
@@ -10,8 +15,6 @@ export const styles = StyleSheet.create({
   },
   mainView: {
     padding: 20,
-    paddingTop: 0,
-    marginTop: -30,
   },
   tabsContainer: {
     flexDirection: 'row',

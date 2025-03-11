@@ -47,8 +47,6 @@ const Review = ({visible, setVisibility, id, nextFunction = () => {}}) => {
         data,
         token,
       );
-      console.log('response', response);
-
       if (status) {
         closeModal();
         nextFunction(response.message);

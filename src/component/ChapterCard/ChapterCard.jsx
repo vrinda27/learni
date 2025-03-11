@@ -13,7 +13,7 @@ import {styles} from './ChapterCardStyle';
 //import : modals
 //import : redux
 
-const ChapterCard = ({item, onPress = () => {}}) => {
+const ChapterCard = ({item, index, onPress = () => {}}) => {
   //UI
   return (
     <TouchableOpacity onPress={() => onPress()} style={styles.container}>
@@ -31,7 +31,7 @@ const ChapterCard = ({item, onPress = () => {}}) => {
         <View style={{flexDirection: 'row'}}>
           <View style={styles.serialContainer}>
             <MyText
-              text={item?.id}
+              text={index}
               fontFamily={BLACK}
               fontSize={13}
               textColor={'white'}

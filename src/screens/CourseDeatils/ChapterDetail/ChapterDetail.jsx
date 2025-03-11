@@ -23,6 +23,7 @@ import {styles} from './ChapterDetailStyle';
 const ChapterDetail = ({route}) => {
   //variables
   const {data} = route.params;
+
   //hook : states
   const [selectedItem, setSelectedItem] = useState(data.chapter_steps[0]);
 

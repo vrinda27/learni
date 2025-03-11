@@ -29,7 +29,7 @@ import Calendar from 'assets/images/calendar.svg';
 import Rating from 'assets/images/rating.svg';
 import Chapter from 'assets/images/chapter.svg';
 import Quiz from 'assets/images/quizQues.svg';
-import {BLACK, BOLD, EXTRA_BOLD, REGULAR} from 'global/Fonts';
+import {BLACK, BOLD, EXTRA_BOLD, MEDIUM, REGULAR} from 'global/Fonts';
 import {DARK_PURPLE, YELLOW} from 'global/Color';
 //import : styles
 import {styles} from './CourseDetailStyle';
@@ -102,7 +102,7 @@ const CourseDetail = ({navigation, dispatch, route}) => {
       const token = await AsyncStorage.getItem('token');
       const endPoint = `${API_Endpoints.course_details}/${id}`;
       const {response, status} = await Service.getAPI(endPoint, token);
-      console.log('response', response);
+      console.log('RESPONSE', response);
 
       if (status) {
         setCourseData(response.data);
@@ -142,8 +142,6 @@ const CourseDetail = ({navigation, dispatch, route}) => {
         data,
         token,
       );
-      console.log('remove', response);
-
       if (status) {
         Toast.show({
           type: 'success',
@@ -190,7 +188,7 @@ const CourseDetail = ({navigation, dispatch, route}) => {
           <View style={styles.mainView}>
             <MyText
               text={courseData.name}
-              fontFamily={BLACK}
+              fontFamily={MEDIUM}
               fontSize={20}
               textColor={'black'}
               style={{width: '95%'}}
@@ -198,14 +196,14 @@ const CourseDetail = ({navigation, dispatch, route}) => {
             <View style={{flexDirection: 'row'}}>
               <MyText
                 text={'$'}
-                fontFamily={BLACK}
+                fontFamily={MEDIUM}
                 fontSize={20}
                 textColor={BLACK}
                 letterSpacing={0.14}
               />
               <MyText
                 text={courseData.course_fee}
-                fontFamily={BLACK}
+                fontFamily={MEDIUM}
                 fontSize={20}
                 textColor={DARK_PURPLE}
                 letterSpacing={0.14}
@@ -227,7 +225,7 @@ const CourseDetail = ({navigation, dispatch, route}) => {
                 <Calendar />
                 <MyText
                   text={courseData.created_at}
-                  fontFamily={BOLD}
+                  fontFamily={MEDIUM}
                   fontSize={12}
                   textColor={'black'}
                 />
@@ -241,7 +239,7 @@ const CourseDetail = ({navigation, dispatch, route}) => {
                 <Rating />
                 <MyText
                   text={courseData.rating}
-                  fontFamily={BOLD}
+                  fontFamily={MEDIUM}
                   fontSize={12}
                   textColor={'black'}
                 />
@@ -262,7 +260,7 @@ const CourseDetail = ({navigation, dispatch, route}) => {
                 />
                 <MyText
                   text={courseData.creator_name}
-                  fontFamily={BOLD}
+                  fontFamily={MEDIUM}
                   fontSize={12}
                   textColor={'black'}
                 />
@@ -283,7 +281,7 @@ const CourseDetail = ({navigation, dispatch, route}) => {
                 <Chapter />
                 <MyText
                   text={`${courseData.lesson_count} Lessons`}
-                  fontFamily={BOLD}
+                  fontFamily={MEDIUM}
                   fontSize={12}
                   textColor={'black'}
                 />
@@ -297,7 +295,7 @@ const CourseDetail = ({navigation, dispatch, route}) => {
                 <Quiz />
                 <MyText
                   text={`${courseData.total_quiz} Quiz Questions`}
-                  fontFamily={BOLD}
+                  fontFamily={MEDIUM}
                   fontSize={12}
                   textColor={'black'}
                 />
@@ -305,7 +303,7 @@ const CourseDetail = ({navigation, dispatch, route}) => {
             </View>
             <MyText
               text={'Description'}
-              fontFamily={EXTRA_BOLD}
+              fontFamily={MEDIUM}
               fontSize={16}
               textColor={'black'}
             />
@@ -370,7 +368,7 @@ const CourseDetail = ({navigation, dispatch, route}) => {
               marginVertical={10}
             />
             <ViewAll
-              text="Chapter "
+              text="Lessons "
               showSeeAll={false}
               style={{marginTop: 10}}
             />
@@ -382,12 +380,14 @@ const CourseDetail = ({navigation, dispatch, route}) => {
                 renderItem={({item, index}) => (
                   <ChapterCard
                     item={item}
+                    index={index + 1}
                     onPress={() => {
-                      if (courseData.purchased) {
-                        gotoChapterDetail(item);
-                      } else {
-                        setShowNotPurchased(true);
-                      }
+                      gotoChapterDetail(item);
+                      // if (courseData.purchased) {
+                      //   gotoChapterDetail(item);
+                      // } else {
+                      //   setShowNotPurchased(true);
+                      // }
                     }}
                   />
                 )}
@@ -432,9 +432,7 @@ const CourseDetail = ({navigation, dispatch, route}) => {
             </View>
             {courseData?.review_list?.length > 0 ? (
               courseData?.review_list?.map((item, index) => (
-                <View
-                  key={item.index?.toString()}
-                  style={styles.reviewContainer}>
+                <View key={index?.toString()} style={styles.reviewContainer}>
                   <View style={styles.reviewTopLeftRow}>
                     <View
                       style={{

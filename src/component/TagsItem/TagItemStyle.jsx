@@ -4,13 +4,12 @@ const randomColor = () =>
 export const styles = StyleSheet.create({
   courseTypeContainer: {
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 15,
     backgroundColor: randomColor(),
     marginRight: 10,
     shadowOffset: {
       width: 0,
       height: 3,
     },
-    borderRadius: 27,
   },
 });
