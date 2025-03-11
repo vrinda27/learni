@@ -94,13 +94,14 @@ const TrendingFiltersModal = ({
           <ScrollView>
             {renderHeader()}
             <MyText
-              text={'Choose Category'}
+              text={'Choose Tags'}
               textColor={Colors.DARK_GREY}
               fontSize={16}
               fontFamily="medium"
               marginBottom={10}
               marginTop={20}
             />
+            {console.log('myCourse categiry---->>>>',courseCategries)}
             <MyMultiSelect
               data={courseCategries?.map(el => ({
                 label: el.name,

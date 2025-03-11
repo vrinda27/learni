@@ -22,3 +22,5 @@ export const CERTIFICATE='CERTIFICATE'
 export const NOTIFICATION='NOTIFICATION'
 
 export const CART='CART'
+
+export const ORDER_DETAIL='OrderDetail'

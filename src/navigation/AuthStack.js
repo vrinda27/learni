@@ -21,6 +21,7 @@ import Disclaimers from 'screens/Disclamers/Disclamers';
 import OderHistory from 'screens/OrderHistory/OderHistory';
 import Certificate from 'screens/Certificate/Certificate';
 import Notification from 'screens/Notification/Notification';
+import OrderDetail from 'screens/OrderDetail/OrderDetail';
 import Cart from 'screens/Cart/Cart';
 const AuthStack = () => {
   //variables
@@ -52,6 +53,7 @@ const AuthStack = () => {
       <Stack.Screen name={ScreenNames.CERTIFICATE} component={Certificate} />
       <Stack.Screen name={ScreenNames.NOTIFICATION} component={Notification} />
       <Stack.Screen name={ScreenNames.CART} component={Cart} />
+      <Stack.Screen name={ScreenNames.ORDER_DETAIL} component={OrderDetail} />
       {/* 
      
     
