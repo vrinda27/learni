@@ -27,3 +27,5 @@ export const VIEW_PDF = 'VIEW_PDF';
 export const VIEW_CONTENT = 'VIEW_CONTENT';
 
 export const ADD_ASSIGNMENT = 'ADD_ASSIGNMENT';
+
+export const ORDER_DETAIL = 'OrderDetail';

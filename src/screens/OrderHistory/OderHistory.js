@@ -5,7 +5,7 @@ import Header from 'component/Header/Header';
 import CertificateCard from 'component/Certificate/CertificateCard';
 import OrderHistoryTab from 'component/OrderHistory/OrderHistoryTab';
 import MySearchBarForHome from 'component/MySearchBarForHome';
-const OderHistory = () => {
+  const OderHistory = ({navigation}) => {
     const [orderHistoryData, setOrderHistoryData] = useState([
         {
           id: '1',
@@ -50,6 +50,7 @@ const OderHistory = () => {
                       />
              <OrderHistoryTab
                   orderHistoryData={orderHistoryData}
+                  navigation={navigation}
                 // viewDetails={viewDetails}
                 />
           </ScrollView>

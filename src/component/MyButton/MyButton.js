@@ -12,7 +12,7 @@ import {
 //styles
 import {styles} from './MyButtonStyle';
 import MyText from '../MyText/MyText';
-import {BLACK, REGULAR} from '../../global/Fonts';
+import {BLACK, MEDIUM, REGULAR} from '../../global/Fonts';
 import {Colors} from 'global/index';
 
 const MyButton = ({
@@ -54,7 +54,7 @@ const MyButton = ({
       <MyText
         text={text}
         fontSize={14}
-        fontFamily={'bold'}
+        fontFamily={MEDIUM}
         textColor={isWhite ? 'red' : textColor}
         textAlign="center"
       />

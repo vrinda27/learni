@@ -67,6 +67,9 @@ const CourseList = ({navigation, dispatch, route}) => {
   const [showLoader, setShowLoader] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [courseData, setCourseData] = useState([]);
+  {
+    console.log('usestate console dataa--->>', courseData);
+  }
   const [courseOldData, setCourseOldData] = useState([]);
 
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -118,6 +121,7 @@ const CourseList = ({navigation, dispatch, route}) => {
   const initLoader = async () => {
     setShowLoader(true);
     await getCourses();
+    await courseCategories();
     setShowLoader(false);
   };
   const loadMore = async () => {
@@ -205,8 +209,11 @@ const CourseList = ({navigation, dispatch, route}) => {
         name: searchedName,
         sub_category_id: data.id,
       };
+      console.log('my paams data---->>>', paramsData);
       const token = await AsyncStorage.getItem('token');
-
+      {
+        console.log('my auth token--->>>', token);
+      }
       const {response, status} = await Service.getAPI(
         API_Endpoints.courses,
         token,
@@ -219,113 +226,7 @@ const CourseList = ({navigation, dispatch, route}) => {
       console.error('error in getHome', error);
     }
   };
-  // const getCourses = async () => {
-  //   setApplyCheck(false);
-  //   const postData = new FormData();
-  //   postData.append('limit', 10);
-  //   // setShowLoader(true);
-  //   try {
-  //     const resp = await Service.postApiWithToken(
-  //       userToken,
-  //       `trending-course?page=${page}`,
-  //       postData,
-  //     );
-  //     if (resp?.data?.status == true) {
-  //       if (page == 1) {
-  //         setLastPage(resp?.data?.last_page_no);
-  //         // const updatedData = await generateThumb(resp?.data?.data);
-  //         setCourseData(resp?.data?.data);
-  //         setCourseOldData(resp?.data?.data);
-  //       }
-  //       else {
-  //         // const updatedData = await generateThumb(resp?.data?.data);
-  //         setCourseData([...courseData, ...resp?.data?.data]);
-  //         setCourseOldData(...courseOldData,resp?.data?.data);
-  //       }
-  //       // if(resp?.data?.last_page_no >= paginationDetails.current_page ){
 
-  //       //   setPaginationDetails({
-  //       //     last_page_no: resp?.data?.last_page_no,
-  //       //     current_page: paginationDetails.current_page + 1,
-  //       //   });
-  //       // }else{
-
-  //       //   setPaginationDetails({
-  //       //     last_page_no: resp?.data?.last_page_no,
-  //       //     current_page: paginationDetails.current_page - 1,
-  //       //   });
-  //       // }
-
-  //       if (courseCategries.length > 0) {
-  //         setCourseCategries([
-  //           // ...courseCategries,
-  //           ...resp?.data?.category?.map(el => ({
-  //             id: el?.id,
-  //             name: el?.category_name,
-  //           })),
-  //         ]
-  //         );
-  //       }
-  //       else if (courseCategries.length === 0) {
-  //         setCourseCategries(
-  //           resp?.data?.category?.map(el => ({
-  //             id: el?.id,
-  //             name: el?.category_name,
-  //           })),
-  //         );
-  //       }
-
-  //       // const updatedData = await generateThumb(resp?.data?.data);
-  //       // if (courseData.length > 0) {
-
-  //       //   // setCourseData(updatedData);
-  //       //   setCourseData(preData => ([
-  //       //     ...preData,
-  //       //     ...updatedData,
-  //       //   ]));
-  //       // }
-  //       // else if (courseData.length == 0) {
-
-  //       //   // setCourseData(preData => ([
-  //       //   //   ...preData,
-  //       //   //   ...updatedData,
-  //       //   // ]));
-  //       //   setCourseData(updatedData);
-  //       // }
-  //       setPage(page + 1);
-  //     } else {
-  //       Toast.show({ text1: resp.data.message });
-  //     }
-  //   } catch (error) {
-  //   } finally {
-  //     // setIsDataLoading(false);
-  //     // setShowLoader(false);
-  //   }
-  // };
-
-  // const generateThumb = async data => {
-  //   setShowLoader(true);
-  //   let updatedData = [];
-  //   try {
-  //     updatedData = await Promise.all(
-  //       data?.map?.(async el => {
-
-  //         const thumb = await createThumbnail({
-  //           url: el.introduction_video,
-  //           timeStamp: 1000,
-  //         });
-  //         return {
-  //           ...el,
-  //           thumb,
-  //         };
-  //       }),
-  //     );
-  //   } catch (error) {
-  //     console.error('Error generating thumbnails:', error);
-  //   }
-  //   setShowLoader(false);
-  //   return updatedData;
-  // };
   const onLike = async (type, id, status) => {
     setCourseData([]);
     setPage(1);
@@ -362,8 +263,12 @@ const CourseList = ({navigation, dispatch, route}) => {
     } else if (selectedPriceFilter !== '') {
       return true;
     } else if (selectedRatingValues?.length > 0) {
+      {
+        console.log('selectedRatingValues', selectedRatingValues);
+      }
       return true;
     }
+
     return false;
   };
   const ShowSelectedFilters = () => {
@@ -523,6 +428,43 @@ const CourseList = ({navigation, dispatch, route}) => {
     setLastPage(1);
     setShowFilterModal(true);
   };
+  const courseCategories = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      console.log('my auth token--->>>', token); // ✅ Removed unnecessary braces
+
+      const {response, status} = await Service.getAPI(
+        API_Endpoints.get_tags,
+        token,
+        '',
+      );
+
+      if (status) {
+        if (response?.data?.length > 0) {
+          setCourseCategries(
+            response?.data?.map(el => {
+              console.log('el-->>', el.id); // ✅ Correct placement
+              return {
+                id: el?.id,
+                name: el?.name,
+              };
+            }),
+          );
+        } else if (!courseCategries || courseCategries.length === 0) {
+          // ✅ Ensuring `courseCategries` is defined before checking length
+          setCourseCategries(
+            response?.data?.category?.map(el => ({
+              id: el?.id,
+              name: el?.name,
+            })) || [], // ✅ Added fallback to empty array
+          );
+        }
+      }
+    } catch (error) {
+      console.error('error in getHome', error);
+    }
+  };
+
   const setOriginalValues = () => {
     setSelectedCourseCategries(tempSelectedCourseCategries);
     setSelectedPriceFilter(tempSelectedPriceFilter);
@@ -534,6 +476,7 @@ const CourseList = ({navigation, dispatch, route}) => {
     setSelectedRatingValues(tempSelectedRatingValues);
   };
   const applyFilters = async (searchParam = '') => {
+    console.log('apply filter 1 in trendig courses');
     setCourseData([]);
     setPage(1);
     setLastPage(1);
@@ -586,8 +529,10 @@ const CourseList = ({navigation, dispatch, route}) => {
         token,
         paramsData,
       );
+      console.log('my console data after filter-66-->>', response.data);
       setShowFilterModal(false);
-      setCourseData(response.data);
+      setCourseData(response?.data);
+      // console.log('applyFilters resp', resp?.data);
       // if (resp?.data?.status == true) {
       //   setShowFilterModal(false);
       //   // const updatedData = await generateThumb(resp?.data?.data);
@@ -611,6 +556,7 @@ const CourseList = ({navigation, dispatch, route}) => {
     }
     setShowLoader(false);
   };
+
   const applyFilters2 = async (searchParam = '') => {
     setCourseData([]);
     const isDeletingLastCharacterInSearch =
@@ -875,6 +821,7 @@ const CourseList = ({navigation, dispatch, route}) => {
               />
             ) : null}
             <ShowSelectedFilters />
+
             <FlatList
               ref={scrollRef}
               key={'#'}
@@ -885,6 +832,9 @@ const CourseList = ({navigation, dispatch, route}) => {
               }
               // keyExtractor={(item, index) => index.toString()}
               renderItem={({item, index}) => {
+                {
+                  console.log('', item);
+                }
                 return (
                   <CourseCard
                     item={item}
@@ -915,6 +865,10 @@ const CourseList = ({navigation, dispatch, route}) => {
               )}
             />
             {/* </ScrollView> */}
+
+            {/* {
+            console.log("courseData.length",courseData.length)
+          } */}
           </View>
         </KeyboardAwareScrollView>
         <TrendingFiltersModal

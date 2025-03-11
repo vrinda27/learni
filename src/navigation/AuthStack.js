@@ -21,6 +21,7 @@ import Disclaimers from 'screens/Disclamers/Disclamers';
 import OderHistory from 'screens/OrderHistory/OderHistory';
 import Certificate from 'screens/Certificate/Certificate';
 import Notification from 'screens/Notification/Notification';
+import OrderDetail from 'screens/OrderDetail/OrderDetail';
 import Cart from 'screens/Cart/Cart';
 import ViewPdf from 'screens/CourseDeatils/ViewPdf/ViewPdf';
 import ViewContent from 'screens/CourseDeatils/ViewContent/ViewContent';
@@ -61,6 +62,7 @@ const AuthStack = () => {
         name={ScreenNames.ADD_ASSIGNMENT}
         component={AddAssignment}
       />
+      <Stack.Screen name={ScreenNames.ORDER_DETAIL} component={OrderDetail} />
       {/* 
      
     
