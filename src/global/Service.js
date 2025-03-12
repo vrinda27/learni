@@ -28,7 +28,10 @@ export const API_Endpoints = {
   submit_rating: 'submit-rating',
   cartList: 'cart-list',
   get_tags: 'tags',
-  add_card:'add-card'
+  add_card:'add-card',
+  save_order:'save-order',
+  buy_now:'buy-now',
+  card_list:'card-list'
 };
 
 //function : imp function
