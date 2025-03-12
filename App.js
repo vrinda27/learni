@@ -22,7 +22,7 @@ const App = () => {
   //UI
   return (
     <>
-    <StripeProvider publishableKey={publishable}>
+    <StripeProvider publishableKey={'pk_test_51QyUTWAld9cSunswPAQF50ugZhqbxAdjEzISyxeOnKk7CcFuEZZErc9cAqCwC3AsaBM7xmb1KvbtlA8CsJAWuIlt00oXjFil7t'}>
       <Provider store={store}>
         <NavigationContainer ref={navigationRef}>
           <AuthStack />
