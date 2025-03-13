@@ -28,6 +28,7 @@ import {
 import Background from 'assets/svgs/background.svg';
 import CartItem from 'component/CartItem/CartItem';
 import SizeBox from 'component/SizeBox/SizeBox';
+import { MEDIUM } from 'global/Fonts';
 // import Item from '../../../components/Item/Item';
 // import ShippingModal from '../../../modals/ShippingModal/ShippingModal';
 
@@ -79,7 +80,7 @@ const Cart = ({navigation, dispatch}) => {
   };
 
   const gotoShippingScreen = () => {
-    navigation.navigate(ScreenNames.SHIPPING);
+    navigation.navigate(ScreenNames.BILLING);
     // if (cartListData.type === 1) {
     //   navigation.navigate(ScreenNames.PROCEED_TO_PAYMENT);
     // } else {
@@ -158,7 +159,7 @@ const Cart = ({navigation, dispatch}) => {
                         : 0
                     })`}
                     fontSize={16}
-                    fontFamily="medium"
+                    fontFamily={MEDIUM}
                     textColor={Colors.DARK_PURPLE}
                     style={{}}
                   />
@@ -169,7 +170,7 @@ const Cart = ({navigation, dispatch}) => {
                         : '$' + 0
                     }
                     fontSize={16}
-                    fontFamily="medium"
+                    fontFamily={MEDIUM}
                     textColor={Colors.DARK_PURPLE}
                     style={{}}
                   />
@@ -179,7 +180,7 @@ const Cart = ({navigation, dispatch}) => {
                   <MyText
                     text={`Tax`}
                     fontSize={14}
-                    fontFamily="medium"
+                    fontFamily={MEDIUM}
                     textColor={Colors.GREEN}
                     style={{}}
                   />
@@ -190,7 +191,7 @@ const Cart = ({navigation, dispatch}) => {
                         : '$' + 0
                     }
                     fontSize={14}
-                    fontFamily="medium"
+                    fontFamily={MEDIUM}
                     textColor={Colors.GREEN}
                     style={{}}
                   />
@@ -203,7 +204,7 @@ const Cart = ({navigation, dispatch}) => {
                   <MyText
                     text={`Total`}
                     fontSize={18}
-                    fontFamily="medium"
+                    fontFamily={MEDIUM}
                     textColor={'#292D32'}
                     style={{}}
                   />
@@ -214,7 +215,7 @@ const Cart = ({navigation, dispatch}) => {
                         : '$' + 0
                     }
                     fontSize={18}
-                    fontFamily="medium"
+                    fontFamily={MEDIUM}
                     textColor={'#292D32'}
                     style={{}}
                   />
@@ -238,7 +239,7 @@ const Cart = ({navigation, dispatch}) => {
           <View style={{alignItems: 'center', marginTop: 50}}>
             <MyText
               text={'Your cart is empty'}
-              fontFamily="medium"
+              fontFamily={MEDIUM}
               fontSize={40}
               textAlign="center"
               textColor={'black'}

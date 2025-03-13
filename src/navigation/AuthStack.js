@@ -26,6 +26,7 @@ import Cart from 'screens/Cart/Cart';
 import ViewPdf from 'screens/CourseDeatils/ViewPdf/ViewPdf';
 import ViewContent from 'screens/CourseDeatils/ViewContent/ViewContent';
 import AddAssignment from 'screens/CourseDeatils/AddAssignment/AddAssignment';
+import Billing from 'screens/Billing/Billing';
 const AuthStack = () => {
   //variables
   const Stack = createStackNavigator();
@@ -63,6 +64,7 @@ const AuthStack = () => {
         component={AddAssignment}
       />
       <Stack.Screen name={ScreenNames.ORDER_DETAIL} component={OrderDetail} />
+      <Stack.Screen name={ScreenNames.BILLING} component={Billing} />
       {/* 
      
     

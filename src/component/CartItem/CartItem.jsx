@@ -24,8 +24,8 @@ const CartItem = ({item}) => {
           width: dimensions.SCREEN_WIDTH / 3,
         }}
       />
-      <View style={{width: '55%', justifyContent: 'space-around'}}>
-        <MyText text={item.name} fontFamily={BOLD} />
+      <View style={{width: '55%'}}>
+        <MyText text={item.name} fontFamily={MEDIUM} />
         <View
           style={{flexDirection: 'row', alignItems: 'center', columnGap: 20}}>
           <View
@@ -41,7 +41,7 @@ const CartItem = ({item}) => {
             }}>
             <MyText
               text={'$'}
-              fontFamily="bold"
+              fontFamily={MEDIUM}
               fontSize={14}
               textColor={Colors.BLACK}
               letterSpacing={0.14}
@@ -49,7 +49,7 @@ const CartItem = ({item}) => {
             />
             <MyText
               text={item.total_amount}
-              fontFamily="bold"
+              fontFamily={MEDIUM}
               fontSize={14}
               textColor={Colors.DARK_PURPLE}
               letterSpacing={0.14}

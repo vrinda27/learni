@@ -31,6 +31,10 @@ export const API_Endpoints = {
   my_rating: 'my-rating',
   mark_as_complete: 'mark-as-complete',
   edit_rating: 'edit-rating',
+  add_card: 'add-card',
+  save_order: 'save-order',
+  buy_now: 'buy-now',
+  card_list: 'card-list',
 };
 
 //function : imp function
