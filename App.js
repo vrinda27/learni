@@ -11,25 +11,19 @@ import Toast from 'react-native-toast-message';
 //import : redux
 import {Provider} from 'react-redux';
 import {store} from './src/reduxTooklit/Store';
-import { StripeProvider } from "@stripe/stripe-react-native"
 
 const App = () => {
   //function
-  const publishable =
-  "pk_test_51QyUTWAld9cSunswPAQF50ugZhqbxAdjEzISyxeOnKk7CcFuEZZErc9cAqCwC3AsaBM7xmb1KvbtlA8CsJAWuIlt00oXjFil7t"
-
   const navigationRef = createNavigationContainerRef();
   //UI
   return (
     <>
-    <StripeProvider publishableKey={'pk_test_51QyUTWAld9cSunswPAQF50ugZhqbxAdjEzISyxeOnKk7CcFuEZZErc9cAqCwC3AsaBM7xmb1KvbtlA8CsJAWuIlt00oXjFil7t'}>
       <Provider store={store}>
         <NavigationContainer ref={navigationRef}>
           <AuthStack />
           <Toast />
         </NavigationContainer>
       </Provider>
-      </StripeProvider>
     </>
   );
 };

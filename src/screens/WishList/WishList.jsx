@@ -18,6 +18,7 @@ import {API_Endpoints} from 'global/Service';
 import {Service} from 'global/index';
 //import : styles
 import {styles} from './WishListStyle';
+import ListLoader from 'component/SkeltonLoader/ListLoader';
 //import : modals
 //import : redux
 
@@ -28,15 +29,16 @@ const WishList = ({navigation}) => {
   const [wishlistData, setWishlistData] = useState([]);
   //hook : modal states
   const [showLoader, setShowLoader] = useState(false);
+  const [showBaseLoader, setShowBaseLoader] = useState(false);
   //variables : redux variables
   const gotoTrendingCourses = () => {
     // navigation.navigate(ScreenNames.TRENDING_COURSES);
   };
   //function : imp func
   const initLoader = async () => {
-    setShowLoader(true);
+    setShowBaseLoader(true);
     await getWishlist();
-    setShowLoader(false);
+    setShowBaseLoader(false);
   };
   //function : serv func
   const addToWishlist = async id => {
@@ -91,62 +93,66 @@ const WishList = ({navigation}) => {
   }, [isFocused]);
 
   //UI
-  return (
-    <View style={styles.container}>
-      <Background style={StyleSheet.absoluteFill} />
-      <Header
-        showBackButton={false}
-        showNotification={true}
-        showGridIcon={true}
-      />
-      <FlatList
-        data={wishlistData || []}
-        showsVerticalScrollIndicator={false}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({item, index}) => {
-          return (
-            <CourseCard
-              item={item}
-              heartPress={() => addToWishlist(item.id)}
-              onPress={() => gotoCourseDetails(item.id)}
-            />
-          );
-        }}
-        onEndReachedThreshold={0.1}
-        nestedScrollEnabled={true} // Allows inner scrolling
-        contentContainerStyle={{
-          paddingHorizontal: 16, // Equal left-right padding
-          paddingBottom: 50, // Ensure enough space to scroll to bottom
-          flexGrow: 1, // Ensures FlatList takes full height
-        }}
-        ListHeaderComponent={() => (
-          <View style={{marginVertical: 12}}>
-            <SearchWithIcon
-              disabled
-              placeHolder={'Search by course or product name'}
-              placeholderTextColor={'#8F93A0'}
-            />
-          </View>
-        )}
-        ListFooterComponent={
-          () =>
-            wishlistData.length === 0 ? (
-              <MyText
-                text={`No Trending Courses found`}
-                fontFamily="medium"
-                fontSize={18}
-                textColor={'#455A64'}
-                style={{textAlign: 'center', marginTop: 20}}
+  if (showBaseLoader) {
+    return <ListLoader />;
+  } else {
+    return (
+      <View style={styles.container}>
+        <Background style={StyleSheet.absoluteFill} />
+        <Header
+          showBackButton={false}
+          showNotification={true}
+          showGridIcon={true}
+        />
+        <FlatList
+          data={wishlistData || []}
+          showsVerticalScrollIndicator={false}
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({item, index}) => {
+            return (
+              <CourseCard
+                item={item}
+                heartPress={() => addToWishlist(item.id)}
+                onPress={() => gotoCourseDetails(item.id)}
               />
-            ) : (
-              <View style={{height: 20}} />
-            ) // Empty space for better scrolling
-        }
-      />
-      <SizeBox height={30} />
-      <Loader visible={showLoader} />
-    </View>
-  );
+            );
+          }}
+          onEndReachedThreshold={0.1}
+          nestedScrollEnabled={true} // Allows inner scrolling
+          contentContainerStyle={{
+            paddingHorizontal: 16, // Equal left-right padding
+            paddingBottom: 50, // Ensure enough space to scroll to bottom
+            flexGrow: 1, // Ensures FlatList takes full height
+          }}
+          ListHeaderComponent={() => (
+            <View style={{marginVertical: 12}}>
+              <SearchWithIcon
+                disabled
+                placeHolder={'Search by course or product name'}
+                placeholderTextColor={'#8F93A0'}
+              />
+            </View>
+          )}
+          ListFooterComponent={
+            () =>
+              wishlistData.length === 0 ? (
+                <MyText
+                  text={`No Trending Courses found`}
+                  fontFamily="medium"
+                  fontSize={18}
+                  textColor={'#455A64'}
+                  style={{textAlign: 'center', marginTop: 20}}
+                />
+              ) : (
+                <View style={{height: 20}} />
+              ) // Empty space for better scrolling
+          }
+        />
+        <SizeBox height={30} />
+        <Loader visible={showLoader} />
+      </View>
+    );
+  }
 };
 
 export default WishList;

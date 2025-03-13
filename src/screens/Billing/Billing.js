@@ -1,5 +1,5 @@
 //import : react components
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
   Switch,
@@ -17,7 +17,7 @@ import {
   Keyboard,
   RefreshControl,
   ScrollView,
-  StyleSheet
+  StyleSheet,
 } from 'react-native';
 //import : custom components
 import MyText from 'component/MyText/MyText';
@@ -29,28 +29,25 @@ import Toast from 'react-native-toast-message';
 //import : global
 
 //import : styles
-import { styles } from './BillingStyle';
+import {styles} from './BillingStyle';
 //import : modal
 //import : redux
-import { connect, useSelector } from 'react-redux';
-import { dimensions } from 'global/Constants';
+import {connect, useSelector} from 'react-redux';
+import {dimensions} from 'global/Constants';
 import Divider from 'component/Divider/Divider';
 import MyButton from 'component/MyButton/MyButton';
 
 import ViewAll from 'component/ViewAll/ViewAll';
 import SuccessfulyPurchased from 'modals/SuccessfulyPurchased.js/SuccessfulyPurchased';
-import { CommonActions } from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
 import AddCard from 'modals/AddCard/AddCard';
-import {ScreenNames, Service,Colors} from 'global/index';
-import { CardField, useStripe } from '@stripe/stripe-react-native';
-// import { clearCart } from 'src/reduxToolkit/reducer/user';
-// import { setCartCount } from '../../../reduxToolkit/reducer/user';
+import {ScreenNames, Service, Colors} from 'global/index';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Background from 'assets/svgs/background.svg';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Header from 'component/Header/Header';
 import {API_Endpoints} from 'global/Service';
-const Billing = ({ navigation, dispatch }) => {
+const Billing = ({navigation, dispatch}) => {
   //variables
   const LINE_HEIGTH = 25;
   //variables : redux
@@ -76,24 +73,25 @@ const Billing = ({ navigation, dispatch }) => {
   ]);
   const [showAddCardModal, setShowAddCardModal] = useState(false);
   const [screenData, setScreenData] = useState({});
-  const [card, setCard] = useState( null);
-  const { initPaymentSheet, createToken, presentPaymentSheet } = useStripe();
+  const [card, setCard] = useState(null);
   const [madePayment, setMadePayment] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [showCard, setShowCard] = useState(true);
 
-useEffect(() => {
-  setTimeout(() => setShowCard(false), 5000);
-  setTimeout(() => setShowCard(true), 6000);
-}, []);
   useEffect(() => {
-   {console.log('klklklkk---')}
+    setTimeout(() => setShowCard(false), 5000);
+    setTimeout(() => setShowCard(true), 6000);
+  }, []);
+  useEffect(() => {
+    {
+      console.log('klklklkk---');
+    }
     getData();
-    getHome()
+    getHome();
   }, []);
   const checkcon = () => {
     getData();
-    getHome()
+    getHome();
   };
   const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -111,14 +109,14 @@ useEffect(() => {
         userToken,
         Service.CART_DETAILS_PAYMENT,
       );
-      
+
       if (resp?.data?.status) {
         // show message only when no cards found
         resp?.data?.data?.length === 0 &&
-          Toast.show({ text1: resp.data.message });
+          Toast.show({text1: resp.data.message});
         setScreenData(resp?.data);
       } else {
-        Toast.show({ text1: resp.data.message });
+        Toast.show({text1: resp.data.message});
       }
     } catch (error) {
       console.log('error in getData', error);
@@ -128,14 +126,18 @@ useEffect(() => {
   const getHome = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
-      {console.log('my token for data--->>',token)}
+      {
+        console.log('my token for data--->>', token);
+      }
       const {response, status} = await Service.getAPI(
         API_Endpoints.card_list,
         token,
       );
-      {console.log('my get homee--->>>',response)}
+      {
+        console.log('my get homee--->>>', response);
+      }
       if (status) {
-      console.log('my response data for card list--->>>>',response?.data)
+        console.log('my response data for card list--->>>>', response?.data);
       }
     } catch (error) {
       console.error('error in getHome', error);
@@ -143,137 +145,64 @@ useEffect(() => {
   };
   const resetIndexGoToUserBottomTab = CommonActions.reset({
     index: 1,
-    routes: [{ name: ScreenNames.BOTTOM_TAB }],
+    routes: [{name: ScreenNames.BOTTOM_TAB}],
   });
-  const handlePayClick = async (order_id, total_amount, stripeToken,cardID) => {
-   {console.log('handel pa---->>>>',order_id, total_amount, stripeToken,cardID)} 
+  const handlePayClick = async (
+    order_id,
+    total_amount,
+    stripeToken,
+    cardID,
+  ) => {
+    {
+      console.log(
+        'handel pa---->>>>',
+        order_id,
+        total_amount,
+        stripeToken,
+        cardID,
+      );
+    }
     setShowLoader(true);
     try {
       const myData = new FormData();
       myData.append('stripeToken', stripeToken);
       myData.append('order_id', order_id);
       myData.append('total_amount', Number(total_amount));
-     
+
       const token = await AsyncStorage.getItem('token');
       const {response, status} = await Service.postAPI(
-             API_Endpoints.buy_now,
-             myData,
-             token,
-           );
-           {console.log('jkjkj my response hadle-->>>',response)}
+        API_Endpoints.buy_now,
+        myData,
+        token,
+      );
+      {
+        console.log('jkjkj my response hadle-->>>', response);
+      }
       if (status) {
-             Toast.show({
-               type: 'success',
-               text1: response?.message,
-             });
-             setMadePayment(true);
-             
+        Toast.show({
+          type: 'success',
+          text1: response?.message,
+        });
+        setMadePayment(true);
+
         openSuccessfulyPurchasedModal();
-           }
-     
+      }
     } catch (error) {
       console.log('error in handlePayClick', error);
     }
     setShowLoader(false);
   };
-  const onConfirm = async () => {
-    if (madePayment) {
-      Toast.show({ text1: 'You have already made payment' });
-      return;
-    } else if (card === 0) {
-      Toast.show({ text1: 'Please enter card details' });
-      return;
-    } else if (!card?.complete) {
-      Toast.show({ text1: 'Please enter a valid card details' });
-      return;
-    }
-    const postData = new FormData();
-    // postData.append('card_id', 5);
-
-    setShowLoader(true);
-    try {
-     
-      const res = await createToken({ card, type: 'Card' });
-     {console.log(' stripe tokennn0----->>>',res?.token?.card?.id
-     )}
-      // return
-      if (res?.error) {
-        if (res?.error?.message) {
-          Toast.show({ text1: res?.error?.message });
-        } else {
-          Toast.show({ text1: 'Incorrect Card details' });
-        }
-        return;
-      }
-      // const resp = {};
-      const token = await AsyncStorage.getItem('token');
-      const {response, status} = await Service.postAPI(
-             API_Endpoints.save_order,
-             '',
-             token,
-           );
-           {console.log('my order api mrespinse',response)}
-    if (status) {
-     {console.log('did it reach here', response?.data?.order_id, response?.data?.total_amount,
-      res?.token?.id,
-      res?.token?.card?.id)}
-      handlePayClick(
-        response?.data?.order_id,
-        response?.data?.total_amount,
-           res?.token?.id,
-           res?.token?.card?.id
-           );
-       
-         }else{
-          Toast.show({
-            type: 'success',
-            text1: response?.message,
-          });
-         }
-      // if (resp?.data?.status) {
-      //   handlePayClick(
-      //     resp?.data?.order_id,
-      //     resp?.data?.total_amount,
-      //     res?.token?.id,
-      //   );
-      //   // Toast.show({text1: resp.data.message});
-      //   // openSuccessfulyPurchasedModal();
-      //   // navigation.dispatch(resetIndexGoToUserBottomTab);
-      // } else {
-      //   Toast.show({
-      //     text1: resp.data?.message,
-      //   });
-      // }
-    } catch (error) {
-      setShowLoader(false);
-      console.log('error in onConfirm', error);
-    } finally {
-      setShowLoader(false);
-    }
-  };
+  const onConfirm = async () => {};
   const handlePayPress = async () => {
-{console.log('my handl e card is caleddd---->>>>>')}
+    {
+      console.log('my handl e card is caleddd---->>>>>');
+    }
     console.log(card);
     if (!card?.complete) {
-
       Toast.show('Please enter complete card details');
       return;
     }
-    controlLoader(true)
-    const { token, error } = await createToken({
-      type: 'Card',
-      // name: 'Your Customer Name',
-    });
-
-    if (error) {
-      console.error(error);
-      Toast.show(`Error: ${error.message}`);
-    } else {
-      console.log('Token created successfully:', token);
-
-      // addCards({ stripeToken: token?.id })
-      // Send token to your backend for processing payment
-    }
+    controlLoader(true);
   };
   const openSuccessfulyPurchasedModal = () => {
     setShowSuccessfulyPurchasedModal(true);
@@ -288,7 +217,7 @@ useEffect(() => {
       {
         name: ScreenNames.BOTTOM_TAB,
         state: {
-          routes: [{ name: ScreenNames.MY_ORDERS }],
+          routes: [{name: ScreenNames.MY_ORDERS}],
         },
       },
     ],
@@ -306,10 +235,9 @@ useEffect(() => {
     // setSelectedCard(id);
   };
 
- 
   //UI
   return (
-    <View style={{flex: 1,}}>
+    <View style={{flex: 1}}>
       <Background style={StyleSheet.absoluteFill} />
       <Header
         showBackButton={false}
@@ -317,45 +245,48 @@ useEffect(() => {
         showGridIcon={true}
       />
       <ScrollView>
-      
-         
-              <KeyboardAwareScrollView style={{flex:1,}}>
-            <View style={styles.summaryContainer}>
-              <View style={[styles.row, { marginBottom: 10 }]}>
-                <MyText
-                  text={`Subtotal (${screenData?.order_count ? screenData?.order_count : 0})`}
-                  fontSize={14}
-                  fontFamily="medium"
-                  textColor={'#455A64'}
-                  style={{}}
-                />
-                <MyText
-                  // text={`$${Number(screenData?.sub_total).toFixed(2)}`}
-                  text={'$' + (screenData?.sub_total ? screenData?.sub_total : 0)}
-                  fontSize={14}
-                  fontFamily="medium"
-                  textColor={'#455A64'}
-                  style={{}}
-                />
-              </View>
-              <View style={[styles.row, { marginBottom: 10 }]}>
-                <MyText
-                  text={`Discount`}
-                  fontSize={14}
-                  fontFamily="medium"
-                  textColor={'#8F93A0'}
-                  style={{}}
-                />
-                <MyText
-                  // text={`$${Number(screenData?.discount).toFixed(2)}`}
-                  text={screenData?.discount > 0 ? ('-$' + screenData?.discount) : '$0'}
-                  fontSize={14}
-                  fontFamily="medium"
-                  textColor={'#8F93A0'}
-                  style={{}}
-                />
-              </View>
-              {screenData.type === 2 && <View style={[styles.row, { marginBottom: 10 }]}>
+        <KeyboardAwareScrollView style={{flex: 1}}>
+          <View style={styles.summaryContainer}>
+            <View style={[styles.row, {marginBottom: 10}]}>
+              <MyText
+                text={`Subtotal (${
+                  screenData?.order_count ? screenData?.order_count : 0
+                })`}
+                fontSize={14}
+                fontFamily="medium"
+                textColor={'#455A64'}
+                style={{}}
+              />
+              <MyText
+                // text={`$${Number(screenData?.sub_total).toFixed(2)}`}
+                text={'$' + (screenData?.sub_total ? screenData?.sub_total : 0)}
+                fontSize={14}
+                fontFamily="medium"
+                textColor={'#455A64'}
+                style={{}}
+              />
+            </View>
+            <View style={[styles.row, {marginBottom: 10}]}>
+              <MyText
+                text={`Discount`}
+                fontSize={14}
+                fontFamily="medium"
+                textColor={'#8F93A0'}
+                style={{}}
+              />
+              <MyText
+                // text={`$${Number(screenData?.discount).toFixed(2)}`}
+                text={
+                  screenData?.discount > 0 ? '-$' + screenData?.discount : '$0'
+                }
+                fontSize={14}
+                fontFamily="medium"
+                textColor={'#8F93A0'}
+                style={{}}
+              />
+            </View>
+            {screenData.type === 2 && (
+              <View style={[styles.row, {marginBottom: 10}]}>
                 <MyText
                   text={`Shipping Cost`}
                   fontSize={14}
@@ -364,30 +295,35 @@ useEffect(() => {
                   style={{}}
                 />
                 <MyText
-                  text={screenData?.shipping_cost > 0 ? ('+$' + screenData?.shipping_cost?.toFixed(2)) : '$0'}
-                  fontSize={14}
-                  fontFamily="medium"
-                  textColor={'#8F93A0'}
-                  style={{}}
-                />
-              </View>}
-              <View style={[styles.row, { marginBottom: 19 }]}>
-                <MyText
-                  text={`Tax`}
-                  fontSize={14}
-                  fontFamily="medium"
-                  textColor={'#8F93A0'}
-                  style={{}}
-                />
-                <MyText
-                  text={screenData?.tax > 0 ? ('+$' + screenData?.tax) : '$0'}
+                  text={
+                    screenData?.shipping_cost > 0
+                      ? '+$' + screenData?.shipping_cost?.toFixed(2)
+                      : '$0'
+                  }
                   fontSize={14}
                   fontFamily="medium"
                   textColor={'#8F93A0'}
                   style={{}}
                 />
               </View>
-              {/* <View style={[styles.row, {marginBottom: 19}]}>
+            )}
+            <View style={[styles.row, {marginBottom: 19}]}>
+              <MyText
+                text={`Tax`}
+                fontSize={14}
+                fontFamily="medium"
+                textColor={'#8F93A0'}
+                style={{}}
+              />
+              <MyText
+                text={screenData?.tax > 0 ? '+$' + screenData?.tax : '$0'}
+                fontSize={14}
+                fontFamily="medium"
+                textColor={'#8F93A0'}
+                style={{}}
+              />
+            </View>
+            {/* <View style={[styles.row, {marginBottom: 19}]}>
                 <MyText
                   text={`Shipping`}
                   fontSize={14}
@@ -403,121 +339,108 @@ useEffect(() => {
                   style={{}}
                 />
               </View> */}
-              <Divider style={{ borderColor: '#E0E0E0' }} />
-              <View style={[styles.row, { marginTop: 14 }]}>
-                <MyText
-                  text={`Total`}
-                  fontSize={18}
-                  fontFamily="medium"
-                  textColor={'#455A64'}
-                  style={{}}
-                />
-                <MyText
-                  // text={`$${Number(screenData?.total).toFixed(2)}`}
-                  text={'$' + (screenData?.total ? screenData?.total : 0)}
-                  fontSize={18}
-                  fontFamily="medium"
-                  textColor={'#455A64'}
-                  style={{}}
-                />
-              </View>
+            <Divider style={{borderColor: '#E0E0E0'}} />
+            <View style={[styles.row, {marginTop: 14}]}>
+              <MyText
+                text={`Total`}
+                fontSize={18}
+                fontFamily="medium"
+                textColor={'#455A64'}
+                style={{}}
+              />
+              <MyText
+                // text={`$${Number(screenData?.total).toFixed(2)}`}
+                text={'$' + (screenData?.total ? screenData?.total : 0)}
+                fontSize={18}
+                fontFamily="medium"
+                textColor={'#455A64'}
+                style={{}}
+              />
             </View>
-            <ViewAll
-              text="Please enter card details"
-              showSeeAll={true}
-              buttonText="Add New"
-               onPress={openAddCardModal}
-              style={{
-                justifyContent: 'center',
-                marginTop: 25,
-                marginBottom: 21,
-              }}
-            />
-          {showCard && (
-   <CardField
-   postalCodeEnabled={true}
-   onCardChange={(cardDetails) => 
-    {console.log('my cards--->>',cardDetails)
-      setCard(cardDetails)}}
-   style={{
-     height: 50,
-     marginVertical: 10,
-   }}
- />
-  )}
-            {screenData?.data?.length > 0 ? (
-              screenData?.data?.map(item => (
-                <TouchableOpacity
-                  key={item.card_id}
-                  onPress={() => {
-                    changeSelectedCard(item.card_id);
-                  }}
-                  style={[
-                    styles.cardContainer,
-                    item.card_id === selectedCard
-                      ? {borderWidth: 1, borderColor: Colors.THEME_GOLD}
-                      : null,
-                  ]}>
-                  <View style={styles.cardContainerLeftRow}>
-                    {/* <Image
+          </View>
+          <ViewAll
+            text="Please enter card details"
+            showSeeAll={true}
+            buttonText="Add New"
+            onPress={openAddCardModal}
+            style={{
+              justifyContent: 'center',
+              marginTop: 25,
+              marginBottom: 21,
+            }}
+          />
+          {screenData?.data?.length > 0 ? (
+            screenData?.data?.map(item => (
+              <TouchableOpacity
+                key={item.card_id}
+                onPress={() => {
+                  changeSelectedCard(item.card_id);
+                }}
+                style={[
+                  styles.cardContainer,
+                  item.card_id === selectedCard
+                    ? {borderWidth: 1, borderColor: Colors.THEME_GOLD}
+                    : null,
+                ]}>
+                <View style={styles.cardContainerLeftRow}>
+                  {/* <Image
                       source={
                         item.card_id === selectedCard
                           ? require('assets/images/selected.png')
                           : require('assets/images/not-selected.png')
                       }
                     /> */}
-                    {/* <Image
+                  {/* <Image
                       source={getCardImage(item.type)}
                       style={{marginLeft: 15}}
                     /> */}
-                    <View style={{marginLeft: 12}}>
-                      <MyText
-                        text={'**** **** **** ' + item.card_number.slice(-5)}
-                        // text={item.card_number}
-                        fontSize={16}
-                        fontFamily="medium"
-                        textColor={'#261313'}
-                      />
-                      <MyText
-                        text={`Expires ${item.valid_upto}`}
-                        fontSize={14}
-                        fontFamily="light"
-                        textColor={Colors.LIGHT_GREY}
-                      />
-                    </View>
+                  <View style={{marginLeft: 12}}>
+                    <MyText
+                      text={'**** **** **** ' + item.card_number.slice(-5)}
+                      // text={item.card_number}
+                      fontSize={16}
+                      fontFamily="medium"
+                      textColor={'#261313'}
+                    />
+                    <MyText
+                      text={`Expires ${item.valid_upto}`}
+                      fontSize={14}
+                      fontFamily="light"
+                      textColor={Colors.LIGHT_GREY}
+                    />
                   </View>
-                  <TouchableOpacity
-                    onPress={() => {
-                      deleteCard(item.id);
-                    }}>
-                    {/* <Image source={require('assets/images/trash.png')} /> */}
-                  </TouchableOpacity>
+                </View>
+                <TouchableOpacity
+                  onPress={() => {
+                    deleteCard(item.id);
+                  }}>
+                  {/* <Image source={require('assets/images/trash.png')} /> */}
                 </TouchableOpacity>
-              ))
-            ) : (
-              <MyText
-                text={`No Cards found`}
-                fontFamily="medium"
-                fontSize={18}
-                textColor={'#455A64'}
-                style={{textAlign: 'center', marginTop: 20}}
-              />
-            )}
-            <MyButton
-              text="CONFIRM"
-              style={{
-                width: dimensions.SCREEN_WIDTH * 0.9,
-                marginBottom: 10,
-                backgroundColor: Colors.THEME_BROWN,
-                marginTop: 32,
-              }}
-              // onPress={openSuccessfulyPurchasedModal}
-              onPress={onConfirm}
-            // onPress={handlePayClick}
+              </TouchableOpacity>
+            ))
+          ) : (
+            <MyText
+              text={`No Cards found`}
+              fontFamily="medium"
+              fontSize={18}
+              textColor={'#455A64'}
+              style={{textAlign: 'center', marginTop: 20}}
             />
-            </KeyboardAwareScrollView>
-       
-     
+          )}
+          <MyButton
+            text="CONFIRM"
+            style={{
+              width: dimensions.SCREEN_WIDTH * 0.9,
+              marginBottom: 10,
+              backgroundColor: Colors.THEME_BROWN,
+              marginTop: 32,
+            }}
+            // onPress={openSuccessfulyPurchasedModal}
+            onPress={onConfirm}
+            // onPress={handlePayClick}
+          />
+        </KeyboardAwareScrollView>
+
         <Loader visible={showLoader} />
         <SuccessfulyPurchased
           visible={showSuccessfulyPurchasedModal}
@@ -529,9 +452,9 @@ useEffect(() => {
           setVisibility={setShowAddCardModal}
           // setShowLoader={setShowLoader}
           userToken={userToken}
-          callFunctionAfterAddingcard={ getHome}
+          callFunctionAfterAddingcard={getHome}
         />
-    </ScrollView>
+      </ScrollView>
     </View>
   );
 };
@@ -551,38 +474,37 @@ export default connect(null, mapDispatchToProps)(Billing);
 // // };
 // import React, { useState } from "react";
 // import { View, Button, Alert } from "react-native";
-// import { CardField, useStripe } from "@stripe/stripe-react-native";
 // export default function Billing() {
 //   const { createPaymentMethod } = useStripe();
 //   const [cardDetails, setCardDetails] = useState(null);
 //   const [loading, setLoading] = useState(false);
 //   const handlePayPress = async () => {
 //     console.log("📌 Card details before payment:", cardDetails);
-  
+
 //     if (!cardDetails?.complete) {
 //       Alert.alert("Invalid Card", "Please enter valid card details.");
 //       return;
 //     }
-  
+
 //     setLoading(true);
-  
+
 //     try {
 //       const { paymentMethod, error } = await createPaymentMethod({
 //         paymentMethodType: "Card",  // ✅ Ensure the type is set
 //         card: cardDetails,
 //       });
-  
+
 //       if (error) {
 //         console.error("❌ Payment Error:", error);
 //         Alert.alert("Payment Failed", error.message);
 //         setLoading(false);
 //         return;
 //       }
-  
+
 //       console.log("✅ Payment Method Created:", paymentMethod);
-  
+
 //       Alert.alert("Success", `Payment Method Created: ${paymentMethod.id}`);
-  
+
 //       // Send paymentMethod.id to backend
 //       // processPayment(paymentMethod.id);
 //     } catch (err) {
@@ -624,6 +546,3 @@ export default connect(null, mapDispatchToProps)(Billing);
 //     </View>
 //   );
 // }
-
-
-
