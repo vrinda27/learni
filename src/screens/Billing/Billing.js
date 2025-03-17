@@ -83,9 +83,6 @@ const Billing = ({navigation, dispatch}) => {
     setTimeout(() => setShowCard(true), 6000);
   }, []);
   useEffect(() => {
-    {
-      console.log('klklklkk---');
-    }
     getData();
     getHome();
   }, []);
@@ -119,25 +116,20 @@ const Billing = ({navigation, dispatch}) => {
         Toast.show({text1: resp.data.message});
       }
     } catch (error) {
-      console.log('error in getData', error);
+      console.error('error in getData', error);
     }
     setShowLoader(false);
   };
   const getHome = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
-      {
-        console.log('my token for data--->>', token);
-      }
       const {response, status} = await Service.getAPI(
         API_Endpoints.card_list,
         token,
       );
-      {
-        console.log('my get homee--->>>', response);
-      }
+
       if (status) {
-        console.log('my response data for card list--->>>>', response?.data);
+        console.error('my response data for card list--->>>>', response?.data);
       }
     } catch (error) {
       console.error('error in getHome', error);
@@ -153,15 +145,6 @@ const Billing = ({navigation, dispatch}) => {
     stripeToken,
     cardID,
   ) => {
-    {
-      console.log(
-        'handel pa---->>>>',
-        order_id,
-        total_amount,
-        stripeToken,
-        cardID,
-      );
-    }
     setShowLoader(true);
     try {
       const myData = new FormData();
@@ -175,9 +158,7 @@ const Billing = ({navigation, dispatch}) => {
         myData,
         token,
       );
-      {
-        console.log('jkjkj my response hadle-->>>', response);
-      }
+
       if (status) {
         Toast.show({
           type: 'success',
@@ -188,16 +169,12 @@ const Billing = ({navigation, dispatch}) => {
         openSuccessfulyPurchasedModal();
       }
     } catch (error) {
-      console.log('error in handlePayClick', error);
+      console.error('error in handlePayClick', error);
     }
     setShowLoader(false);
   };
   const onConfirm = async () => {};
   const handlePayPress = async () => {
-    {
-      console.log('my handl e card is caleddd---->>>>>');
-    }
-    console.log(card);
     if (!card?.complete) {
       Toast.show('Please enter complete card details');
       return;
@@ -479,7 +456,6 @@ export default connect(null, mapDispatchToProps)(Billing);
 //   const [cardDetails, setCardDetails] = useState(null);
 //   const [loading, setLoading] = useState(false);
 //   const handlePayPress = async () => {
-//     console.log("📌 Card details before payment:", cardDetails);
 
 //     if (!cardDetails?.complete) {
 //       Alert.alert("Invalid Card", "Please enter valid card details.");
@@ -500,8 +476,6 @@ export default connect(null, mapDispatchToProps)(Billing);
 //         setLoading(false);
 //         return;
 //       }
-
-//       console.log("✅ Payment Method Created:", paymentMethod);
 
 //       Alert.alert("Success", `Payment Method Created: ${paymentMethod.id}`);
 

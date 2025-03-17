@@ -1,26 +1,26 @@
 //import : react component
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, TouchableOpacity, FlatList, Image} from 'react-native';
 //import : custom components
 import Header from 'component/Header/Header';
 import MyText from 'component/MyText/MyText';
 import MyButton from 'component/MyButton/MyButton';
 import ChapterContent from 'component/ChapterContent/ChapterContent';
+import Loader from 'component/loader/Loader';
 //import : third party
 import {ScrollView} from 'react-native-virtualized-view';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
 //import : utils
 import Calendar from 'assets/images/calendar.svg';
 import Clock from 'assets/images/clockGreen.svg';
 import TaskSvg from 'assets/svgs/task-square.svg';
 import NotFavSvg from 'assets/svgs/note-favorite.svg';
 import {BLACK, REGULAR} from 'global/Fonts';
-import {Colors, Service} from 'global/index';
+import {API_Endpoints} from 'global/Service';
+import {Colors, MyIcon, Service} from 'global/index';
 //import : styles
 import {styles} from './ChapterDetailStyle';
-import {API_Endpoints} from 'global/Service';
-import Loader from 'component/loader/Loader';
-import Toast from 'react-native-toast-message';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 //import : modals
 //import : redux
 
@@ -29,19 +29,39 @@ const ChapterDetail = ({route}) => {
   const {data} = route.params;
 
   //hook : states
-  const [selectedItem, setSelectedItem] = useState(data.chapter_steps[0]);
+  const [chapterData, setChapterData] = useState({});
+  const [selectedItem, setSelectedItem] = useState({});
   const [showAppLoader, setShowAppLoader] = useState(false);
+
   //function : imp func
   const handleContinuePress = () => {
-    const index = data?.chapter_steps?.findIndex(
+    const index = chapterData?.chapter_steps?.findIndex(
       e => e.step_id == selectedItem.step_id,
     );
-    if (index == data.chapter_steps.length - 1) {
+    if (index == chapterData.chapter_steps.length - 1) {
     } else {
-      setSelectedItem(data?.chapter_steps[index + 1]);
+      setSelectedItem(chapterData?.chapter_steps[index + 1]);
     }
   };
+  const initLoader = async () => {
+    setShowAppLoader(true);
+    await getLessonDetails();
+    setShowAppLoader(false);
+  };
   //function : serv func
+  const getLessonDetails = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const endPoint = `${API_Endpoints.lesson_details}/${data.lesson_id}`;
+      const {response, status} = await Service.getAPI(endPoint, token);
+      if (status) {
+        setSelectedItem(response?.data?.chapter_steps[0]);
+        setChapterData(response.data);
+      }
+    } catch (error) {
+      console.error('error in getLessonDetails', error);
+    }
+  };
   const markAsComplete = async () => {
     try {
       setShowAppLoader(true);
@@ -54,12 +74,12 @@ const ChapterDetail = ({route}) => {
         postData,
         token,
       );
-
       if (status) {
         Toast.show({
           type: 'success',
           text1: response?.message,
         });
+        getLessonDetails();
       }
     } catch (err) {
       console.error('error in markAsComplete', err);
@@ -67,12 +87,19 @@ const ChapterDetail = ({route}) => {
       setShowAppLoader(false);
     }
   };
+  //hook : useEffect
+  useEffect(() => {
+    initLoader();
+
+    return () => {};
+  }, []);
+
   //UI
   return (
     <View style={styles.container}>
       <Header
         showBackButton={true}
-        heading={data.lesson_name}
+        heading={chapterData.lesson_name}
         showNotification={false}
         showCart={false}
         showLearneLogo={false}
@@ -81,7 +108,7 @@ const ChapterDetail = ({route}) => {
       <ScrollView>
         {Object.keys(selectedItem).length > 0 && (
           <ChapterContent
-            course_img={data.image}
+            course_img={chapterData.image}
             url={selectedItem?.file}
             type={selectedItem?.type}
             item={selectedItem}
@@ -172,12 +199,13 @@ const ChapterDetail = ({route}) => {
             />
           </View>
           <FlatList
-            data={data.chapter_steps}
+            data={chapterData?.chapter_steps}
             renderItem={({item, index}) => {
               return (
                 <ChapterTask
                   icon={item.image}
                   title={item.title}
+                  item={item}
                   isSelected={item.title == selectedItem.title}
                   onPress={() => setSelectedItem(item)}
                 />
@@ -194,13 +222,14 @@ const ChapterDetail = ({route}) => {
 
 export default ChapterDetail;
 
-const ChapterTask = ({icon, isSelected, title, onPress = () => {}}) => {
+const ChapterTask = ({icon, item, isSelected, title, onPress = () => {}}) => {
   return (
     <TouchableOpacity
       onPress={() => onPress()}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'space-between',
         columnGap: 10,
         borderRadius: 10,
         padding: 10,
@@ -209,20 +238,33 @@ const ChapterTask = ({icon, isSelected, title, onPress = () => {}}) => {
         backgroundColor: 'white',
         marginVertical: 6,
       }}>
-      <Image
-        source={{uri: icon}}
+      <View
         style={{
-          height: 30,
-          width: 30,
-        }}
-      />
-      <MyText
-        text={title}
-        fontFamily={BLACK}
-        fontSize={14}
-        textColor={'black'}
-        style={{width: '95%'}}
-      />
+          flexDirection: 'row',
+          alignItems: 'center',
+          columnGap: 10,
+        }}>
+        <Image
+          source={{uri: icon}}
+          style={{
+            height: 30,
+            width: 30,
+          }}
+        />
+        <MyText
+          text={title}
+          fontFamily={BLACK}
+          fontSize={14}
+          textColor={'black'}
+        />
+      </View>
+      {item.is_completed == '1' && (
+        <MyIcon.MaterialCommunityIcons
+          name="check-decagram-outline"
+          size={28}
+          color={Colors.GREEN}
+        />
+      )}
     </TouchableOpacity>
   );
 };

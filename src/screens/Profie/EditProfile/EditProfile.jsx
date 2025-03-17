@@ -62,7 +62,6 @@ const EditProfile = ({route, navigation}) => {
         image: '',
       };
       const token = await AsyncStorage.getItem('token');
-      {console.log('my token--->>',token)}
       const {response, status} = await Service.postAPI(
         API_Endpoints.update_profile,
         postData,

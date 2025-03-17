@@ -25,7 +25,7 @@ const ChapterContent = ({course_img, type, url, item}) => {
     navigation.navigate(ScreenNames.VIEW_CONTENT, {url});
   };
   const gotoAddAssignment = () => {
-    navigation.navigate(ScreenNames.ADD_ASSIGNMENT);
+    navigation.navigate(ScreenNames.ADD_ASSIGNMENT, {data: item});
   };
   const openQuiz = () => {
     Linking.openURL(item.quiz_url);

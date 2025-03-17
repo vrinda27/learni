@@ -29,3 +29,5 @@ export const GRAY = '#8F93A0';
 export const LIGHT_GRAY = '#E0E0E0';
 
 export const CYAN = '#00FEFF';
+
+export const RED = '#ff0000';

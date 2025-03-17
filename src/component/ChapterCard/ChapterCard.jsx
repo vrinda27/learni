@@ -17,8 +17,6 @@ import {Colors} from 'global/index';
 //import : redux
 
 const ChapterCard = ({item, index, onPress = () => {}}) => {
-  console.log(item);
-
   //UI
   return (
     <TouchableOpacity onPress={() => onPress()} style={styles.container}>
@@ -56,8 +54,6 @@ const ChapterCard = ({item, index, onPress = () => {}}) => {
           style={{
             flexDirection: 'row',
             alignItems: 'center',
-            borderColor: Colors.DARK_PURPLE,
-            borderWidth: 1,
           }}>
           <Quiz />
           <MyText

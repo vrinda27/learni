@@ -346,12 +346,11 @@ const CourseDetail = ({navigation, dispatch, route}) => {
                     item={item}
                     index={index + 1}
                     onPress={() => {
-                      gotoChapterDetail(item);
-                      // if (courseData.purchased) {
-                      //   gotoChapterDetail(item);
-                      // } else {
-                      //   setShowNotPurchased(true);
-                      // }
+                      if (courseData.purchased) {
+                        gotoChapterDetail(item);
+                      } else {
+                        setShowNotPurchased(true);
+                      }
                     }}
                   />
                 )}

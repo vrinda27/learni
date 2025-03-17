@@ -35,6 +35,9 @@ export const API_Endpoints = {
   save_order: 'save-order',
   buy_now: 'buy-now',
   card_list: 'card-list',
+  upload_assignment: 'upload-assignment',
+  lesson_details: 'lesson-details',
+  assignment_details: 'assignment-details',
 };
 
 //function : imp function
