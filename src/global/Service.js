@@ -31,7 +31,10 @@ export const API_Endpoints = {
   add_card:'add-card',
   save_order:'save-order',
   buy_now:'buy-now',
-  card_list:'card-list'
+  card_list:'card-list',
+  cart_detail:'cart-details',
+  my_order:'my-order?type=1',
+  order_detail:'order-details'
 };
 
 //function : imp function
@@ -135,7 +138,7 @@ export const GetApi = async endPoint => {
 //function : get function
 export const getAPI = async (endPoint, token = '', paramsData = {}) => {
   const url = baseURL + endPoint + objToQueryString(paramsData);
-  console.log('GET URL of filterrr=>', paramsData);
+  console.log('GET URL of filterrr=88>', url);
   return await axios
     .get(url, {
       headers: {

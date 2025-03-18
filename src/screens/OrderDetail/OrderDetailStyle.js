@@ -114,9 +114,9 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   amountContainer: {
-    backgroundColor: Colors.THEME_BROWN,
+    backgroundColor: Colors.GREEN,
     overflow: 'hidden',
-    width: '100%',
+    width: '90%',
     borderRadius: 10,
     height: 96,
     flexDirection: 'row',
@@ -124,6 +124,7 @@ export const styles = StyleSheet.create({
     marginTop: 10,
     paddingVertical: 13,
     paddingHorizontal: 10,
+    alignSelf:'center'
   },
   whiteCircle2: {
     borderRadius: (17.15 * 2) / 2,
@@ -159,6 +160,11 @@ export const styles = StyleSheet.create({
     shadowRadius: 5,
     shadowOpacity: 0.05,
     elevation: 2,
+    borderWidth:1,
+    borderColor:'#CCCCFF',
+    width:dimensions.SCREEN_WIDTH*0.89,
+    alignSelf:'center',
+    marginTop:20
   },
   cardContainerLeftRow: {
     flexDirection: 'row',

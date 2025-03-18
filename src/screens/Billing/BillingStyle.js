@@ -5,12 +5,10 @@ import {width} from '../../../global/Constant';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.SCREEN_BG,
+    backgroundColor: 'white',
   },
   mainView: {
     padding: 20,
-    paddingTop: 0,
-    marginTop: -30,
   },
   summaryContainer: {
     
@@ -19,7 +17,7 @@ export const styles = StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 22,
     borderRadius: 10,
-    marginTop: 6,
+  
     backgroundColor: 'white',
     shadowColor: '#000',
     shadowOffset: {

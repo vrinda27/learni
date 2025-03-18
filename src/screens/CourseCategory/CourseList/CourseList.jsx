@@ -93,11 +93,14 @@ const CourseList = ({navigation, dispatch, route}) => {
   const [showModal, setShowModal] = useState({isVisible: false, data: null});
   const [refreshing, setRefreshing] = useState(false);
   const [applyCheck, setApplyCheck] = useState(false);
+  const [filterParams, setFilterParams] = useState(paramsData); // ✅ New state for filters
+
   //hook : pagination states
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [page1, setPage1] = useState(1);
   const [lastPage1, setLastPage1] = useState(1);
+  const [refresh, setRefresh] = useState(false);
   const [paginationDetails, setPaginationDetails] = useState({
     last_page_no: 1,
     current_page: 1,
@@ -118,7 +121,7 @@ const CourseList = ({navigation, dispatch, route}) => {
   };
   const initLoader = async () => {
     setShowLoader(true);
-    await getCourses();
+    // await getCourses();
     await courseCategories();
     setShowLoader(false);
   };
@@ -158,7 +161,7 @@ const CourseList = ({navigation, dispatch, route}) => {
     setSelectedPriceFilter('');
     setTempSelectedPriceFilter('');
     setSelectedRatingValues('');
-    setTempSelectedRatingValues('');
+    setTempSelectedRatingValues([]);
     setApplyCheck(false);
     initLoader();
   }, [focused]);
@@ -171,7 +174,7 @@ const CourseList = ({navigation, dispatch, route}) => {
       setSelectedPriceFilter('');
       setTempSelectedPriceFilter('');
       setSelectedRatingValues('');
-      setTempSelectedRatingValues('');
+      setTempSelectedRatingValues([]);
       setPage(1);
       setLastPage(1);
       setPage1(1);
@@ -200,27 +203,81 @@ const CourseList = ({navigation, dispatch, route}) => {
     });
   }, []);
   let paramsData = {}; // Global variable to store filter params
-  const getCourses = async (searchedName = '') => {
-    try {
-      paramsData = {
-        ...paramsData,
-        name: searchedName,
-        sub_category_id: data.id,
-      };
-      const token = await AsyncStorage.getItem('token');
+  // const getCourses = async (searchedName = '') => {
+  //   try {
+  //     paramsData = {
+  //       ...paramsData,
+  //       name: searchedName,
+  //       sub_category_id: data.id,
+  //     };
+  //     const token = await AsyncStorage.getItem('token');
 
-      const {response, status} = await Service.getAPI(
+  //     const {response, status} = await Service.getAPI(
+  //       API_Endpoints.courses,
+  //       token,
+  //       paramsData,
+  //     );
+  //     if (status) {
+  //       {console.log('my courses---::',response?.data)}
+  //       setCourseData(response.data?.data);
+  //     }
+  //   } catch (error) {
+  //     console.error('error in getHome', error);
+  //   }
+  // };
+
+  const getCourses = async (searchedName = '') => {
+    console.log('🔥 getCourses Triggered with search:', searchedName);
+  
+    try {
+      setShowLoader(true);
+  
+      // Construct params properly
+      const updatedParams = {
+        name: searchedName || '',
+        sub_category_id: data?.id || '',
+        highlow: tempSelectedPriceFilter || '',
+        ratings: tempSelectedRatingValues?.length > 0 ? tempSelectedRatingValues : '',
+      };
+  
+      // Extract category IDs
+      const catIds = courseCategries
+        ?.filter(el => tempSelectedCourseCategries?.includes(el?.name))
+        ?.map(el => el?.id) || [];
+  
+      // Append multiple tags[]=id dynamically
+      catIds.forEach((id, index) => {
+        updatedParams[`tags[${index}]`] = id;
+      });
+  
+      console.log('📡 Fetching with Params:', updatedParams);
+  
+      // Fetch API
+      const token = await AsyncStorage.getItem('token');
+      const { response, status } = await Service.getAPI(
         API_Endpoints.courses,
         token,
-        paramsData,
+        updatedParams
       );
+  
+      console.log('🟢 API Response Status:', status);
+  
       if (status) {
-        setCourseData(response.data);
+        console.log('✅ Courses Retrieved:', response?.data?.data);
+        setCourseData(response?.data?.data || []);
+        setShowFilterModal(false);
+      } else {
+        console.log('❌ API Error:', response?.data?.message);
+        setShowLoader(false);
+        return;
       }
     } catch (error) {
-      console.error('error in getHome', error);
+      console.error('🚨 Error in getCourses:', error);
     }
+  
+    setShowLoader(false);
   };
+  
 
   const onLike = async (type, id, status) => {
     setCourseData([]);
@@ -465,66 +522,139 @@ const CourseList = ({navigation, dispatch, route}) => {
     setSelectedPriceFilter(tempSelectedPriceFilter);
     setSelectedRatingValues(tempSelectedRatingValues);
   };
+  // const applyFilters = async (searchParam = '') => {
+  //   setCourseData([]);
+  //   setPage(1);
+  //   setLastPage(1);
+  //   setShowLoader(true);
+  //   setOriginalValues();
+  //   const postData = new FormData();
+  //   let catIds = [];
+  //   catIds = courseCategries
+  //     ?.filter(el => tempSelectedCourseCategries?.includes(el?.name))
+  //     ?.map(el => el?.id);
+  //   if (catIds?.length > 0) {
+  //     catIds?.map(el => postData.append('category[]', el));
+  //   }
+  //   if (catIds?.length > 0) {
+  //     catIds?.map(el => (paramsData.category = el)); // Adds multiple category IDs
+  //   }
+  //   if (tempSelectedPriceFilter !== '') {
+  //     // postData.append('highlow', tempSelectedPriceFilter);
+  //     paramsData.highlow = tempSelectedPriceFilter;
+  //   }
+  //   // if (tempSelectedRatingValues?.length > 0) {
+  //   //   tempSelectedRatingValues?.map(el => postData.append('ratings', el));
+  //   // }
+  //   if (tempSelectedRatingValues?.length > 0) {
+  //     paramsData.ratings = [...tempSelectedRatingValues]; // ✅ Save ratings in paramsData as an array
+  //   }
+  //   const isSearchTermExists = searchParam?.toString()?.trim()?.length > 0;
+  //   const isSearchValueExists = searchValue?.toString()?.trim()?.length > 0;
+  //   if (isSearchTermExists || isSearchValueExists) {
+  //     // handling special case: while deleting last character of search, since search state would not update fast, so using searchParam instead of search state (searchValue)
+  //     if (
+  //       searchValue?.toString()?.trim()?.length === 1 &&
+  //       searchParam?.toString()?.trim()?.length === 0
+  //     ) {
+  //       postData.append('title', searchParam?.toString()?.trim());
+  //     } else {
+  //       // preferring to check searchParam first, because it has the most recent search value fast. But it is not always passed, in else case using searchValue
+  //       if (isSearchTermExists) {
+  //         postData.append('title', searchParam?.toString()?.trim());
+  //       } else {
+  //         postData.append('title', searchValue?.toString()?.trim());
+  //       }
+  //     }
+  //   }
+  //   // postData.append('limit', 10);
+  //   try {
+  //     const token = await AsyncStorage.getItem('token');
+  //     const {response, status} = await Service.getAPI(
+  //       API_Endpoints.courses,
+  //       token,
+  //       paramsData,
+  //     );
+  //     setShowFilterModal(false);
+  //     {console.log('my filter data---->>>>',response?.data?.data)}
+  //     setCourseData(response?.data?.data || []);
+  //     // setParamsData(updatedParams);
+  //     setRefresh(prev => !prev); // ✅ Force re-render
+  //   } catch (error) {
+  //     console.error('error in applyFilters', error);
+  //   }
+  //   setShowLoader(false);
+  // };
+
   const applyFilters = async (searchParam = '') => {
     setCourseData([]);
-    setPage(1);
-    setLastPage(1);
     setShowLoader(true);
     setOriginalValues();
-    const postData = new FormData();
-    let catIds = [];
-    catIds = courseCategries
+
+    console.log('🔥 applyFilters Triggered');
+
+    const updatedFilters = {...filterParams};
+
+    let catIds = courseCategries
       ?.filter(el => tempSelectedCourseCategries?.includes(el?.name))
       ?.map(el => el?.id);
+
     if (catIds?.length > 0) {
-      catIds?.map(el => postData.append('category[]', el));
+      updatedFilters.category = catIds;
     }
-    if (catIds?.length > 0) {
-      catIds?.map(el => (paramsData.category = el)); // Adds multiple category IDs
-    }
+
     if (tempSelectedPriceFilter !== '') {
-      // postData.append('highlow', tempSelectedPriceFilter);
-      paramsData.highlow = tempSelectedPriceFilter;
+      updatedFilters.highlow = tempSelectedPriceFilter;
     }
-    // if (tempSelectedRatingValues?.length > 0) {
-    //   tempSelectedRatingValues?.map(el => postData.append('ratings', el));
-    // }
+
     if (tempSelectedRatingValues?.length > 0) {
-      paramsData.ratings = [...tempSelectedRatingValues]; // ✅ Save ratings in paramsData as an array
-    }
-    const isSearchTermExists = searchParam?.toString()?.trim()?.length > 0;
-    const isSearchValueExists = searchValue?.toString()?.trim()?.length > 0;
-    if (isSearchTermExists || isSearchValueExists) {
-      // handling special case: while deleting last character of search, since search state would not update fast, so using searchParam instead of search state (searchValue)
-      if (
-        searchValue?.toString()?.trim()?.length === 1 &&
-        searchParam?.toString()?.trim()?.length === 0
-      ) {
-        postData.append('title', searchParam?.toString()?.trim());
-      } else {
-        // preferring to check searchParam first, because it has the most recent search value fast. But it is not always passed, in else case using searchValue
-        if (isSearchTermExists) {
-          postData.append('title', searchParam?.toString()?.trim());
-        } else {
-          postData.append('title', searchValue?.toString()?.trim());
-        }
+      {
+        console.log('jkjkkjk---->>', tempSelectedRatingValues);
       }
+      updatedFilters.ratings = [...tempSelectedRatingValues];
     }
-    // postData.append('limit', 10);
+
+    if (searchParam.trim().length > 0 || searchValue.trim().length > 0) {
+      updatedFilters.title = searchParam.trim() || searchValue.trim();
+    }
+
     try {
       const token = await AsyncStorage.getItem('token');
+      {
+        console.log('mytoken-->>', token);
+      }
       const {response, status} = await Service.getAPI(
         API_Endpoints.courses,
         token,
-        paramsData,
+        updatedFilters,
       );
-      setShowFilterModal(false);
-      setCourseData(response?.data);
+
+      if (status) {
+        console.log('✅ Filtered Courses:', response?.data?.data, 'items');
+
+        setShowFilterModal(false);
+        setLastPage1(response?.data?.last_page_no);
+
+        setCourseData(() => {
+          console.log('🔄 Setting new Course Data (Reset)');
+          return response?.data?.data;
+        });
+
+        setPage1(2); // ✅ Reset page to 2 since first page is fetched
+      } else {
+        console.log('❌ API Error:', response?.data?.message);
+        Toast.show({text1: response?.data?.message});
+      }
     } catch (error) {
-      console.error('error in applyFilters', error);
+      console.log('🚨 Error in applyFilters:', error);
     }
+
     setShowLoader(false);
   };
+
+  useEffect(() => {
+    console.log('Updated courseData:', courseData);
+  }, [courseData]);
 
   const applyFilters2 = async (searchParam = '') => {
     setCourseData([]);
@@ -791,6 +921,47 @@ const CourseList = ({navigation, dispatch, route}) => {
             ) : null}
             <ShowSelectedFilters />
 
+            {/* <FlatList
+              ref={scrollRef}
+              key={'#'}
+                 extraData={refresh}
+              data={courseData}
+              
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+            
+              renderItem={({item, index}) => {
+                return (
+                  <CourseCard
+                    item={item}
+                    image={item.image}
+                    heartPress={() => addToWishlist(item.id)}
+                    onPress={() => gotoCourseDetails(item.id)}
+                  />
+                );
+              }}
+      
+              onEndReachedThreshold={0.9}
+              onEndReached={loadMore}
+              keyExtractor={(item, index) => item.id?.toString() || index.toString()}
+              contentContainerStyle={{paddingBottom: '30%'}}
+          
+              ListFooterComponent={renderFooter}
+              ListEmptyComponent={() => (
+                <View style={{alignItems: 'center', marginTop: 50}}>
+                  
+                  <MyText
+                    text={'No Trending Courses found'}
+                    fontFamily="medium"
+                    fontSize={40}
+                    textAlign="center"
+                    textColor={'black'}
+                  />
+                </View>
+              )}
+            /> */}
+            {console.log('after filter course data-====>>>>', courseData)}
             <FlatList
               ref={scrollRef}
               key={'#'}
@@ -844,7 +1015,8 @@ const CourseList = ({navigation, dispatch, route}) => {
           tempSelectedRatingValues={tempSelectedRatingValues}
           setTempSelectedRatingValues={setTempSelectedRatingValues}
           applyFilters={() => {
-            applyFilters();
+            // applyFilters();
+            getCourses();
             setApplyCheck(true);
           }}
           resetFilter={resetFilter}

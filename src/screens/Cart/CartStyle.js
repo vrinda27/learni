@@ -11,7 +11,7 @@ import {
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.SCREEN_BG,
+    backgroundColor: 'white',
   },
   mainView: {
     padding: 20,

@@ -31,16 +31,18 @@ const CartItem = ({item}) => {
           <View
             style={{
               flexDirection: 'row',
+              marginTop:6
             }}>
-            <Rating />
-            <MyText text={item.rating} />
+            <Rating style={{marginRight:3}} />
+            <MyText text={item.rating} fontSize={14} />
           </View>
           <View
             style={{
               flexDirection: 'row',
+              marginTop:6
             }}>
             <MyText
-              text={'$'}
+              text={'$ '}
               fontFamily={MEDIUM}
               fontSize={14}
               textColor={Colors.BLACK}

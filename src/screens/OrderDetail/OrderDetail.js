@@ -38,13 +38,18 @@ import {connect, useSelector} from 'react-redux';
 import {dimensions} from 'global/Constants';
 import Divider from 'component/Divider/Divider';
 import MyButton from 'component/MyButton/MyButton';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {ScreenNames, Service} from 'global/index';
+import { API_Endpoints } from 'global/Service';
 import Review from 'modals/Review/Review';
 import RNFetchBlob from 'react-native-blob-util';
+import { MEDIUM } from 'global/Fonts';
 // import defaultImg from "../../../assets/images/default-content-creator-image.png"
 
 const OrderDetails = ({navigation, dispatch, route}) => {
   //   const defaultImgPath = Image.resolveAssetSource(defaultImg).uri;
+  console.log(',y route--->>',route?.params
+?.order  )
   //variables
   const LINE_HEIGTH = 25;
   //variables : redux
@@ -77,22 +82,33 @@ const OrderDetails = ({navigation, dispatch, route}) => {
   const getOrderDetail = async () => {
     setShowLoader(true);
     const formdata = new FormData();
-    formdata.append('order_id', route?.params?.order_id);
-    formdata.append('item_id', route?.params?.item_id);
+    formdata.append('order_id', route?.params?.order);
+    // formdata.append('item_id', route?.params?.item_id);
+    var url=  API_Endpoints.order_detail
+    var murl=`/`+route?.params?.order
+    url=url+murl
+    {console.log('my url--->>>>>',url)}
     try {
-      const resp = await Service.postApiWithToken(
-        userToken,
-        Service.ORDER_DETAIL,
-        formdata,
+      {console.log('my api for ordet hit')}
+      const token = await AsyncStorage.getItem('token');
+      const {response, status} = await Service.getAPI(
+      url,
+        token,
       );
-      if (resp?.data?.status) {
-        const isCourseExist = resp.data.items?.find(el => el.type == '1');
-        if (isCourseExist) {
-          // resp.data.items = await generateThumb(resp?.data?.items);
-          setOrderData(resp?.data);
-        } else {
-          setOrderData(resp?.data);
-        }
+      if (status) {
+        console.log('my order data details--->>',response?.data)
+        setOrderData(
+         response?.data
+        );
+      
+      // if (resp?.data?.status) {
+      //   const isCourseExist = resp.data.items?.find(el => el.type == '1');
+      //   if (isCourseExist) {
+      //     // resp.data.items = await generateThumb(resp?.data?.items);
+      //     setOrderData(resp?.data);
+      //   } else {
+      //     setOrderData(resp?.data);
+      //   }
       } else {
         Toast.show({text1: resp.data.message});
       }
@@ -160,7 +176,7 @@ const OrderDetails = ({navigation, dispatch, route}) => {
             notification: true,
             path: `${DownloadDir}/.pdf`,
             description: 'Arkansas',
-            title: `${orderData?.data?.order_number} invoice.pdf`,
+            title: `${orderData?.order_number} invoice.pdf`,
             mime: 'application/pdf',
             mediaScannable: true,
           },
@@ -317,108 +333,162 @@ const OrderDetails = ({navigation, dispatch, route}) => {
   };
   const Summary = ({}) => {
     return (
-      <View style={styles.summaryContainer}>
-        <View style={[styles.row, {marginBottom: 10}]}>
-          <MyText
-            // text={`Total Amount (1)`}
-            text={`Subtotal`}
-            fontSize={14}
-            fontFamily="medium"
-            textColor={'#455A64'}
-            style={{}}
-          />
-          <MyText
-            text={
-              orderData?.data?.sub_total != undefined
-                ? '$' + orderData?.data?.sub_total
-                : '0'
-            }
-            fontSize={14}
-            fontFamily="medium"
-            textColor={'#455A64'}
-            style={{}}
-          />
-        </View>
-        {orderData?.data?.order_for === 2 && (
-          <View style={[styles.row, {marginBottom: 10}]}>
-            <MyText
-              text={`Shipping Cost`}
-              fontSize={14}
-              fontFamily="medium"
-              textColor={'#8F93A0'}
-              style={{}}
-            />
-            <MyText
-              text={
-                Number(orderData?.data?.shipping_cost) > 0
-                  ? '+ $' + orderData?.data?.shipping_cost
-                  : '$0'
-              }
-              fontSize={14}
-              fontFamily="medium"
-              textColor={'#8F93A0'}
-              style={{}}
-            />
-          </View>
-        )}
-        <View style={[styles.row, {marginBottom: 7}]}>
-          <MyText
-            text={`Tax`}
-            fontSize={14}
-            fontFamily="medium"
-            textColor={'#8F93A0'}
-            style={{}}
-          />
-          <MyText
-            text={
-              Number(orderData?.data?.taxes) > 0
-                ? '+ $' + orderData?.data?.taxes
-                : '$0'
-            }
-            fontSize={14}
-            fontFamily="medium"
-            textColor={'#8F93A0'}
-            style={{}}
-          />
-        </View>
-        <View style={[styles.row, {marginBottom: 19}]}>
-          <MyText
-            text={`Coupon Discount`}
-            fontSize={14}
-            fontFamily="medium"
-            textColor={'#8F93A0'}
-            style={{}}
-          />
-          <MyText
-            text={
-              Number(orderData?.data?.coupon_discount_price) > 0
-                ? '- $' + orderData?.data?.coupon_discount_price
-                : '$0'
-            }
-            fontSize={14}
-            fontFamily="medium"
-            textColor={'#8F93A0'}
-            style={{}}
-          />
-        </View>
-        {/* <Divider style={{ borderColor: '#E0E0E0' }} />
-        <View style={[styles.row, { marginTop: 14 }]}>
-          <MyText
-            text={`Coupon Discount`}
-            fontSize={18}
-            fontFamily="medium"
-            textColor={'#455A64'}
-            style={{}}
-          />
-          <MyText
-            text={'$' + orderData?.data?.shipping_cost}
-            fontSize={18}
-            fontFamily="medium"
-            textColor={'#455A64'}
-            style={{}}
-          />
-        </View> */}
-      </View>
+      // <View style={styles.summaryContainer}>
+      //   <View style={[styles.row, {marginBottom: 10}]}>
+      //     <MyText
+      //       // text={`Total Amount (1)`}
+      //       text={`Subtotal`}
+      //       fontSize={14}
+      //       fontFamily="medium"
+      //       textColor={'#455A64'}
+      //       style={{}}
+      //     />
+      //     <MyText
+      //       text={
+      //         orderData?.amount != undefined
+      //           ? '$' + orderData?.amount
+      //           : '0'
+      //       }
+      //       fontSize={14}
+      //       fontFamily="medium"
+      //       textColor={'#455A64'}
+      //       style={{}}
+      //     />
+      //   </View>
+      //   {orderData?.data?.order_for === 2 && (
+      //     <View style={[styles.row, {marginBottom: 10}]}>
+      //       <MyText
+      //         text={`Shipping Cost`}
+      //         fontSize={14}
+      //         fontFamily="medium"
+      //         textColor={'#8F93A0'}
+      //         style={{}}
+      //       />
+      //       <MyText
+      //         text={
+      //           Number(orderData?.data?.shipping_cost) > 0
+      //             ? '+ $' + orderData?.data?.shipping_cost
+      //             : '$0'
+      //         }
+      //         fontSize={14}
+      //         fontFamily="medium"
+      //         textColor={'#8F93A0'}
+      //         style={{}}
+      //       />
+      //     </View>
+      //   )}
+      //   <View style={[styles.row, {marginBottom: 7}]}>
+      //     <MyText
+      //       text={`Tax`}
+      //       fontSize={14}
+      //       fontFamily="medium"
+      //       textColor={'#8F93A0'}
+      //       style={{}}
+      //     />
+      //     <MyText
+      //       text={
+      //         Number(orderData?.taxes) > 0
+      //           ? '+ $' + orderData?.taxes
+      //           : '$0'
+      //       }
+      //       fontSize={14}
+      //       fontFamily="medium"
+      //       textColor={'#8F93A0'}
+      //       style={{}}
+      //     />
+      //   </View>
+      //   <View style={[styles.row, {marginBottom: 19}]}>
+      //     <MyText
+      //       text={`Coupon Discount`}
+      //       fontSize={14}
+      //       fontFamily="medium"
+      //       textColor={'#8F93A0'}
+      //       style={{}}
+      //     />
+      //     <MyText
+      //       text={
+      //         Number(orderData?.data?.coupon_discount_price) > 0
+      //           ? '- $' + orderData?.data?.coupon_discount_price
+      //           : '$0'
+      //       }
+      //       fontSize={14}
+      //       fontFamily="medium"
+      //       textColor={'#8F93A0'}
+      //       style={{}}
+      //     />
+      //   </View>
+      //   {/* <Divider style={{ borderColor: '#E0E0E0' }} />
+      //   <View style={[styles.row, { marginTop: 14 }]}>
+      //     <MyText
+      //       text={`Coupon Discount`}
+      //       fontSize={18}
+      //       fontFamily="medium"
+      //       textColor={'#455A64'}
+      //       style={{}}
+      //     />
+      //     <MyText
+      //       text={'$' + orderData?.data?.shipping_cost}
+      //       fontSize={18}
+      //       fontFamily="medium"
+      //       textColor={'#455A64'}
+      //       style={{}}
+      //     />
+      //   </View> */}
+      // </View>
+        <View
+                style={[
+                  styles.summaryContainer,
+                  {
+                    width: dimensions.SCREEN_WIDTH * 0.90,
+                    alignSelf: 'center',
+                    borderWidth: 1,
+                    borderColor: Colors.LIGHT_PURPLE,
+                    marginTop: 14,
+                  },
+                ]}>
+                <View style={[styles.row, {marginBottom: 10}]}>
+                  <MyText
+                    text={'Subtotal'}
+                    fontSize={16}
+                    fontFamily={MEDIUM}
+                    textColor={Colors.DARK_PURPLE}
+                    style={{}}
+                  />
+                  <MyText
+                    text={
+                      orderData?.amount != undefined
+               ? '$' + orderData?.amount
+                : '0'}
+                    fontSize={16}
+                    fontFamily={MEDIUM}
+                    textColor={Colors.DARK_PURPLE}
+                    style={{}}
+                  />
+                </View>
+
+                <View style={[styles.row, {marginBottom: 19}]}>
+                  <MyText
+                    text={`Tax`}
+                    fontSize={14}
+                    fontFamily={MEDIUM}
+                    textColor={Colors.GREEN}
+                    style={{}}
+                  />
+                  <MyText
+                    text={
+                      Number(orderData?.taxes) > 0
+                                ? '+ $' + orderData?.taxes
+                                 : '$0'
+                            }
+                    fontSize={14}
+                    fontFamily={MEDIUM}
+                    textColor={Colors.GREEN}
+                    style={{}}
+                  />
+                </View>
+                
+              
+              </View>
     );
   };
 
@@ -601,13 +671,13 @@ const OrderDetails = ({navigation, dispatch, route}) => {
 
   //UI
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1,backgroundColor:'white'}}>
       <ScrollView>
         <Background style={StyleSheet.absoluteFill} />
 
         <Header
-          showNotification={true}
-          heading={'Notifications'}
+          showNotification={false}
+          heading={'Order Detail'}
           showLearneLogo={false}
           showCart={false}
           showBackButton={true}></Header>
@@ -634,7 +704,7 @@ const OrderDetails = ({navigation, dispatch, route}) => {
           </>
         ) : null}
         <Summary />
-        <UserDetails />
+        {/* <UserDetails /> */}
 
         <View style={styles.amountContainer}>
           {/* <ImageBackground
@@ -657,8 +727,8 @@ const OrderDetails = ({navigation, dispatch, route}) => {
 
             <MyText
               text={
-                orderData?.data?.total_amount_paid != undefined
-                  ? '$' + `${orderData?.data?.total_amount_paid}`
+                orderData?.amount != undefined
+                  ? '$' + `${orderData?.total_amount_paid}`
                   : '0'
               }
               fontFamily="bold"
@@ -678,27 +748,25 @@ const OrderDetails = ({navigation, dispatch, route}) => {
                     : require('assets/images/not-selected.png')
                 }
               /> */}
-            {/* <Image
-                source={getCardImage(orderData?.data?.transaction?.card_type)}
-                style={{ marginLeft: 15 }}
-              /> */}
-            <View style={{marginLeft: 12}}>
-              <MyText
-                text={
-                  '**** **** **** ' + orderData?.data?.transaction?.card_no !=
-                  undefined
-                    ? orderData?.data?.transaction?.card_no
-                    : ''
-                }
-                // text={'**** **** **** '}
-                fontSize={16}
-                fontFamily="medium"
-                textColor={'#261313'}
+            <Image
+                source={getCardImage(orderData?.payment_card_type)}
+                style={{ marginLeft: 15,width:52,height:17 }}
               />
+            <View style={{marginLeft: 12}}>
+            <MyText
+  text={
+    orderData?.payment_card_no
+      ? '**** **** **** ' + orderData.payment_card_no
+      : ''
+  }
+  fontSize={16}
+  fontFamily="medium"
+  textColor={'#261313'}
+/>
               <MyText
                 text={`Expires ${
-                  orderData?.data?.transaction?.expiry != undefined
-                    ? orderData?.data?.transaction?.expiry
+                  orderData?.payment_card_expiry != undefined
+                    ? orderData?.payment_card_expiry
                     : ''
                 }`}
                 fontSize={14}
@@ -713,8 +781,9 @@ const OrderDetails = ({navigation, dispatch, route}) => {
           style={{
             width: dimensions.SCREEN_WIDTH * 0.9,
             marginBottom: 10,
-            backgroundColor: Colors.THEME_BROWN,
+            backgroundColor: Colors.GREEN,
             marginTop: 32,
+            alignSelf:'center'
           }}
           onPress={requestDownloadingPermission}
         />
@@ -759,10 +828,10 @@ const itemData = {
   isReviewed: 0,
 };
 
-// const getCardImage = type => {
-//   if (type === 'Visa') {
-//     return require('assets/images/visa.png');
-//   } else if (type === 'Mastercard') {
-//     return require('assets/images/mastercard.png');
-//   }
-// };
+const getCardImage = type => {
+  if (type === 'visa') {
+    return require('assets/images/vissa.png');
+  } else if (type === 'Mastercard') {
+    return require('assets/images/debitCart.png');
+  }
+};
