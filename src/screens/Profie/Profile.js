@@ -15,7 +15,7 @@ import MyButton from 'component/MyButton/MyButton';
 //import : third parties
 import AsyncStorage from '@react-native-async-storage/async-storage';
 //import : utils
-import {Colors, ScreenNames, Service} from 'global/index';
+import {Colors, MyIcon, ScreenNames, Service} from 'global/index';
 import CallSvg from 'assets/svgs/call.svg';
 import SmsSvg from 'assets/svgs/sms.svg';
 import BagSvg from 'assets/svgs/shopping-bag.svg';
@@ -31,9 +31,17 @@ const Profile = ({navigation}) => {
   const isFocused = useIsFocused();
   //hook : states
   const [profileData, setProfileData] = useState({});
+  console.log('PROFIEL DATA', profileData);
+
   //function : nav func
   const gotoEditProfile = () => {
     navigation.navigate(ScreenNames.EDIT_PROFILE, {data: profileData});
+  };
+  const gotoChatScreen = () => {
+    navigation.navigate(ScreenNames.CHAT_SCREEN, {id: profileData.id});
+  };
+  const gotoNotificationList = () => {
+    navigation.navigate(ScreenNames.NOTIFICATION);
   };
   //function : serv func
   const getProfile = async () => {
@@ -63,7 +71,7 @@ const Profile = ({navigation}) => {
     // Ensure 'EditProfile' is a valid screen
   };
 
-  const ProfileItem = ({icon, title}) => {
+  const ProfileItem = ({icon, title, onPress = () => {}}) => {
     return (
       <TouchableOpacity
         style={{
@@ -80,7 +88,7 @@ const Profile = ({navigation}) => {
           marginVertical: 5,
           borderRadius: 5,
         }}
-        onPress={() => gotoTabs(title)}>
+        onPress={() => onPress()}>
         <View
           style={{
             flexDirection: 'row',
@@ -168,9 +176,24 @@ const Profile = ({navigation}) => {
           </View>
           <ProfileItem icon={<BagSvg />} title={'Order History'} />
           <ProfileItem icon={<MedalSvg />} title={'Certificate'} />
-          <ProfileItem icon={<NotiSvg />} title={'Notifications'} />
+          <ProfileItem
+            icon={<NotiSvg />}
+            title={'Notifications'}
+            onPress={() => gotoNotificationList()}
+          />
           <ProfileItem icon={<DollarSvg />} title={'Billing'} />
           <ProfileItem icon={<HeartSvg />} title={'Wishlist'} />
+          <ProfileItem
+            icon={
+              <MyIcon.Ionicons
+                name="chatbox-ellipses-outline"
+                size={45}
+                color={Colors.RED}
+              />
+            }
+            title={'Chat'}
+            onPress={() => gotoChatScreen()}
+          />
         </View>
       </ScrollView>
     </View>

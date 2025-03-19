@@ -27,6 +27,7 @@ import ViewPdf from 'screens/CourseDeatils/ViewPdf/ViewPdf';
 import ViewContent from 'screens/CourseDeatils/ViewContent/ViewContent';
 import AddAssignment from 'screens/CourseDeatils/AddAssignment/AddAssignment';
 import Billing from 'screens/Billing/Billing';
+import ChatScreen from 'screens/ChatScreen/ChatScreen';
 const AuthStack = () => {
   //variables
   const Stack = createStackNavigator();
@@ -65,6 +66,7 @@ const AuthStack = () => {
       />
       <Stack.Screen name={ScreenNames.ORDER_DETAIL} component={OrderDetail} />
       <Stack.Screen name={ScreenNames.BILLING} component={Billing} />
+      <Stack.Screen name={ScreenNames.CHAT_SCREEN} component={ChatScreen} />
       {/* 
      
     

@@ -3,6 +3,7 @@ import {Colors, ScreenNames, Service} from 'global/index';
 import {dimensions} from 'global/Constants';
 
 export const styles = StyleSheet.create({
+  container: {flex: 1},
   courseContainer: {
     padding: 10,
     borderRadius: 5,
@@ -16,12 +17,12 @@ export const styles = StyleSheet.create({
     shadowRadius: 5,
     shadowOpacity: 0.05,
     elevation: 2,
-    borerRadius:1,
-    borderColor:'#E0E0E0',
-    borderWidth:1,
-    width:dimensions.SCREEN_WIDTH*0.93,
-    alignSelf:'center',
-    borderRadius:10
+    borerRadius: 1,
+    borderColor: '#E0E0E0',
+    borderWidth: 1,
+    width: dimensions.SCREEN_WIDTH * 0.93,
+    alignSelf: 'center',
+    borderRadius: 10,
   },
   courseSubContainer: {
     flexDirection: 'row',
@@ -29,7 +30,7 @@ export const styles = StyleSheet.create({
   },
   crseImg: {
     height: 99,
-    width: dimensions.SCREEN_WIDTH*0.33,
+    width: dimensions.SCREEN_WIDTH * 0.33,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -45,7 +46,6 @@ export const styles = StyleSheet.create({
   crtrRow: {
     flexDirection: 'row',
     alignItems: 'center',
-   
   },
   bottomRow: {
     flexDirection: 'row',

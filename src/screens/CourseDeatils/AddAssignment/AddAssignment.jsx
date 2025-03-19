@@ -1,5 +1,5 @@
 //import : react component
-import React, {useState, useEffect} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {Image, TouchableOpacity, View} from 'react-native';
 //import : custom components
 import SizeBox from 'component/SizeBox/SizeBox';
@@ -13,27 +13,43 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 //import : utils
 import {SEMI_BOLD} from 'global/Fonts';
-import {Colors, MyIcon, Service} from 'global/index';
+import {Colors, MyIcon, ScreenNames, Service} from 'global/index';
 import ExportSvg from 'assets/svgs/export.svg';
 import {API_Endpoints} from 'global/Service';
 //import : styles
 import {styles} from './AddAssignmentStyle';
+import ImagePreview from 'modals/ImagePreview/ImagePreview';
 //import : modals
-import AskMedia from 'modals/AskMedia/AskMedia';
 //import : redux
 
-const AddAssignment = ({route}) => {
+const AddAssignment = ({route, navigation}) => {
   //variables
   const {data} = route.params;
+  const imagesData = useRef({});
   //hook : states
   const [files, setFiles] = useState([]);
   const [assignments, setAssignments] = useState([]);
   //hook : modal states
-  const [showAskMedia, setShowAskMedia] = useState(false);
   const [showLoader, setShowLoader] = useState(false);
+  const [showImagePreview, setShowImagePreview] = useState(false);
+  //function : nav func
+  const gotoViewPdf = url => {
+    navigation.navigate(ScreenNames.VIEW_PDF, {url});
+  };
   //function : imp func
-  const uploadFilePress = () => {
-    setShowAskMedia(true);
+
+  const previewClickHandle = item => {
+    if (item.type == 'IMAGE') {
+      imagesData.current = [
+        {
+          url: item.file,
+        },
+      ];
+      setShowImagePreview(true);
+    } else {
+      gotoViewPdf(item.file);
+    }
+    console.log(item);
   };
   //function : serv func
   const getAssignmentInfo = async () => {
@@ -179,10 +195,9 @@ const AddAssignment = ({route}) => {
           {assignments.length > 0 && (
             <>
               {assignments.map((item, index) => {
-                console.log(item);
-
                 return (
                   <View
+                    key={index.toString()}
                     style={{
                       marginVertical: 10,
                       borderRadius: 15,
@@ -191,16 +206,32 @@ const AddAssignment = ({route}) => {
                       padding: 10,
                       flexDirection: 'row',
                       alignItems: 'center',
-                      columnGap: 10,
+                      justifyContent: 'space-between',
                     }}>
-                    <Image
-                      source={{uri: item.file}}
-                      style={{
-                        height: 50,
-                        width: 50,
-                      }}
-                    />
+                    {item.type == 'IMAGE' ? (
+                      <Image
+                        source={{uri: item.file}}
+                        style={{
+                          height: 50,
+                          width: 50,
+                        }}
+                      />
+                    ) : (
+                      <MyIcon.AntDesign
+                        name="filetext1"
+                        size={30}
+                        color={Colors.BLACK}
+                      />
+                    )}
+
                     <MyText text={`Assignment ${index + 1}`} />
+                    <TouchableOpacity onPress={() => previewClickHandle(item)}>
+                      <MyIcon.MaterialIcons
+                        name="preview"
+                        size={24}
+                        color={Colors.GREEN}
+                      />
+                    </TouchableOpacity>
                   </View>
                 );
               })}
@@ -208,14 +239,12 @@ const AddAssignment = ({route}) => {
           )}
         </View>
       </View>
-      <AskMedia
-        visible={showAskMedia}
-        setVisibility={setShowAskMedia}
-        nextFunction={imgs => {
-          uploadAssignment(imgs);
-        }}
-      />
       <Loader visible={showLoader} />
+      <ImagePreview
+        visible={showImagePreview}
+        images={imagesData.current}
+        setVisibility={setShowImagePreview}
+      />
     </View>
   );
 };

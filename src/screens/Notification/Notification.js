@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import Background from 'assets/svgs/background.svg';
 import Header from 'component/Header/Header';
@@ -17,6 +10,10 @@ import CertificateCard from 'component/Certificate/CertificateCard';
 import OrderHistoryTab from 'component/OrderHistory/OrderHistoryTab';
 import MySearchBarForHome from 'component/MySearchBarForHome';
 import NotificationCard from 'component/Notification/NotificationCard';
+
+import {styles} from './NotificationStyle';
+import {ScrollView} from 'react-native-virtualized-view';
+
 const Notification = () => {
   const [notification, setNotification] = useState([]);
   const getNotification = async () => {
@@ -61,16 +58,15 @@ const Notification = () => {
     getNotification();
   }, []);
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <ScrollView>
-        <Background style={StyleSheet.absoluteFill} />
-
-        <Header
-          showNotification={true}
-          heading={'Notifications'}
-          showLearneLogo={false}
-          showCart={false}
-          showBackButton={true}></Header>
+    <View style={styles.container}>
+      <Background style={StyleSheet.absoluteFill} />
+      <Header
+        showNotification={true}
+        heading={'Notifications'}
+        showLearneLogo={false}
+        showCart={false}
+        showBackButton={true}></Header>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <TouchableOpacity onPress={() => clearNotification()}>
           <MyText
             text={'Clear All'}
@@ -85,7 +81,7 @@ const Notification = () => {
           // viewDetails={viewDetails}
         />
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

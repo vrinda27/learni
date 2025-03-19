@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginHorizontal: 12,
+    margin: 10,
 
     alignSelf: 'center',
     borderRadius: 10,

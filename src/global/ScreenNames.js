@@ -30,4 +30,6 @@ export const ADD_ASSIGNMENT = 'ADD_ASSIGNMENT';
 
 export const ORDER_DETAIL = 'OrderDetail';
 
-export const BILLING='BILLING'
+export const BILLING = 'BILLING';
+
+export const CHAT_SCREEN = 'CHAT_SCREEN';
