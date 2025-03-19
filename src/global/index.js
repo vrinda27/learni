@@ -5,4 +5,5 @@ import * as Fonts from './Fonts';
 import * as ScreenNames from './ScreenNames';
 import * as Service from './Service';
 import * as MyIcon from './MyIcon';
-export {Colors, Service, ScreenNames, MyIcon, Fonts};
+import * as Constants from './Constants';
+export {Colors, Service, Constants, ScreenNames, MyIcon, Fonts};

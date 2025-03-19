@@ -10,6 +10,7 @@ import Loader from 'component/loader/Loader';
 //import : third party
 import {ScrollView} from 'react-native-virtualized-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useIsFocused} from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 //import : utils
 import Calendar from 'assets/images/calendar.svg';
@@ -18,21 +19,34 @@ import TaskSvg from 'assets/svgs/task-square.svg';
 import NotFavSvg from 'assets/svgs/note-favorite.svg';
 import {BLACK, REGULAR} from 'global/Fonts';
 import {API_Endpoints} from 'global/Service';
-import {Colors, MyIcon, Service} from 'global/index';
+import {Colors, MyIcon, ScreenNames, Service} from 'global/index';
 //import : styles
 import {styles} from './ChapterDetailStyle';
 //import : modals
 //import : redux
 
-const ChapterDetail = ({route}) => {
+const ChapterDetail = ({route, navigation}) => {
   //variables
   const {data} = route.params;
+  const isFocused = useIsFocused();
 
   //hook : states
   const [chapterData, setChapterData] = useState({});
   const [selectedItem, setSelectedItem] = useState({});
   const [showAppLoader, setShowAppLoader] = useState(false);
-
+  //function : nav func
+  const openQuiz = item => {
+    navigation.navigate(ScreenNames.WEB_VIEW_PAGE, {
+      url: item.quiz_url,
+      data: data,
+    });
+  };
+  const openSurvey = item => {
+    navigation.navigate(ScreenNames.WEB_VIEW_PAGE, {
+      url: item.survey_url,
+      data: data,
+    });
+  };
   //function : imp func
   const handleContinuePress = () => {
     const index = chapterData?.chapter_steps?.findIndex(
@@ -54,6 +68,8 @@ const ChapterDetail = ({route}) => {
       const token = await AsyncStorage.getItem('token');
       const endPoint = `${API_Endpoints.lesson_details}/${data.lesson_id}`;
       const {response, status} = await Service.getAPI(endPoint, token);
+      console.log('RESPONSE', response);
+
       if (status) {
         setSelectedItem(response?.data?.chapter_steps[0]);
         setChapterData(response.data);
@@ -92,7 +108,7 @@ const ChapterDetail = ({route}) => {
     initLoader();
 
     return () => {};
-  }, []);
+  }, [isFocused]);
 
   //UI
   return (
@@ -112,6 +128,8 @@ const ChapterDetail = ({route}) => {
             url={selectedItem?.file}
             type={selectedItem?.type}
             item={selectedItem}
+            quizPress={() => openQuiz(selectedItem)}
+            surveyPress={() => openSurvey(selectedItem)}
           />
         )}
 
@@ -189,6 +207,12 @@ const ChapterDetail = ({route}) => {
             <MyButton
               text={'Mark as complete'}
               width="48%"
+              disabled={!selectedItem?.showMarkCompleteBtn}
+              backgroundColor={
+                selectedItem?.showMarkCompleteBtn
+                  ? Colors.GREEN
+                  : Colors.LIGHT_GREY
+              }
               onPress={() => markAsComplete()}
             />
             <MyButton

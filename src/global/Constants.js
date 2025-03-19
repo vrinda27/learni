@@ -1,4 +1,4 @@
-import { Dimensions } from 'react-native';
+import {Dimensions} from 'react-native';
 // import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 // export const getWidth = (x) => {
@@ -7,11 +7,20 @@ import { Dimensions } from 'react-native';
 // export const getHeight = (x) => {
 //   return hp(x / 800 * 100)
 // }
-
+export const price_filter_value = [
+  {
+    id: '1',
+    name: 'High to Low',
+  },
+  {
+    id: '2',
+    name: 'Low to High',
+  },
+];
 export const dimensions = {
-    SCREEN_WIDTH: Dimensions.get('window').width,
-    SCREEN_HEIGHT: Dimensions.get('window').height
-  };
+  SCREEN_WIDTH: Dimensions.get('window').width,
+  SCREEN_HEIGHT: Dimensions.get('window').height,
+};
 
 export const countryCodes = [
   {

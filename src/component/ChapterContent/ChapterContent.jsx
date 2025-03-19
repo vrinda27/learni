@@ -1,6 +1,6 @@
 //import : react component
 import React from 'react';
-import {View, Text, Image, TouchableOpacity, Linking} from 'react-native';
+import {View, Image, TouchableOpacity, Linking} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 //import : custom components
 import MyText from 'component/MyText/MyText';
@@ -13,9 +13,17 @@ import {BOLD} from 'global/Fonts';
 //import : modals
 //import : redux
 var content_height = 250;
-const ChapterContent = ({course_img, type, url, item}) => {
+const ChapterContent = ({
+  course_img,
+  type,
+  url,
+  item,
+  quizPress = () => {},
+  surveyPress = () => {},
+}) => {
   //variables
   const navigation = useNavigation();
+  console.log(item);
 
   //function : nav func
   const gotoViewPdf = () => {
@@ -26,12 +34,6 @@ const ChapterContent = ({course_img, type, url, item}) => {
   };
   const gotoAddAssignment = () => {
     navigation.navigate(ScreenNames.ADD_ASSIGNMENT, {data: item});
-  };
-  const openQuiz = () => {
-    Linking.openURL(item.quiz_url);
-  };
-  const openViewSurvey = () => {
-    Linking.openURL(item.survey_url);
   };
   //UI
   if (type == 'video') {
@@ -57,7 +59,7 @@ const ChapterContent = ({course_img, type, url, item}) => {
       <OnlyViewSection
         course_img={course_img}
         btn_title={'View Quiz'}
-        onPress={() => openQuiz()}
+        onPress={() => quizPress()}
       />
     );
   } else if (type == 'assignment') {
@@ -73,7 +75,7 @@ const ChapterContent = ({course_img, type, url, item}) => {
       <OnlyViewSection
         course_img={course_img}
         btn_title={'View survey'}
-        onPress={() => openViewSurvey()}
+        onPress={() => surveyPress()}
       />
     );
   } else if (type == 'content') {

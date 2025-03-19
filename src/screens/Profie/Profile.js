@@ -31,8 +31,6 @@ const Profile = ({navigation}) => {
   const isFocused = useIsFocused();
   //hook : states
   const [profileData, setProfileData] = useState({});
-  console.log('PROFIEL DATA', profileData);
-
   //function : nav func
   const gotoEditProfile = () => {
     navigation.navigate(ScreenNames.EDIT_PROFILE, {data: profileData});

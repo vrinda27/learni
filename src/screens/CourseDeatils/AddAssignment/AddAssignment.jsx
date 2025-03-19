@@ -49,7 +49,6 @@ const AddAssignment = ({route, navigation}) => {
     } else {
       gotoViewPdf(item.file);
     }
-    console.log(item);
   };
   //function : serv func
   const getAssignmentInfo = async () => {

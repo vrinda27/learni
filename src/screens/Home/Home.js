@@ -8,6 +8,7 @@ import Loader from 'component/loader/Loader';
 import MySearchBarForHome from 'component/MySearchBarForHome';
 import MyText from 'component/MyText/MyText';
 import HomeCourseCard from 'component/HomeCourseCard/HomeCourseCard';
+import HomePageLoader from 'component/SkeltonLoader/HomePageLoader';
 import CategoryCard from 'component/CategoryCard/CategoryCard';
 //import : third parties
 import {ScrollView} from 'react-native-gesture-handler';
@@ -19,7 +20,6 @@ import {ScreenNames, Service} from 'global/index';
 import {API_Endpoints} from 'global/Service';
 //import : styles
 import {styles} from './HomeStyle';
-import HomePageLoader from 'component/SkeltonLoader/HomePageLoader';
 
 const Home = ({navigation}) => {
   //hook : states
@@ -41,8 +41,8 @@ const Home = ({navigation}) => {
   const gotoCourseDetails = id => {
     navigation.navigate(ScreenNames.COURSE_DETAIL, {id});
   };
-  const gotoTrendingCourses = () => {
-    // navigation.navigate(ScreenNames.TRENDING_COURSES);
+  const gotoCourseListing = () => {
+    navigation.navigate(ScreenNames.COURSE_LISTING);
   };
   //function : imp func
   const initLoader = async () => {
@@ -58,6 +58,8 @@ const Home = ({navigation}) => {
         API_Endpoints.home,
         token,
       );
+      console.log('response home', response);
+
       if (status) {
         setHomeData({
           categories: response?.data?.category,
@@ -120,7 +122,7 @@ const Home = ({navigation}) => {
                     <View>
                       <ViewAll
                         text="Trending Courses"
-                        onPress={gotoTrendingCourses}
+                        onPress={() => gotoCourseListing()}
                         style={{marginTop: 4}}
                       />
                       <FlatList
@@ -157,7 +159,7 @@ const Home = ({navigation}) => {
                     <View>
                       <ViewAll
                         text="Suggested Courses"
-                        onPress={gotoTrendingCourses}
+                        onPress={() => gotoCourseListing()}
                         style={{marginTop: 25}}
                       />
                       <FlatList

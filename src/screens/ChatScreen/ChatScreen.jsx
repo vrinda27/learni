@@ -37,12 +37,10 @@ const ChatScreen = ({route}) => {
           .doc(docId)
           .collection('Messages')
           .add({...Data, createdAt: firestore.FieldValue.serverTimestamp()})
-          .then(() => {
-            console.log('message added in firestore');
-          });
+          .then(() => {});
         setMessage('');
       } catch (error) {
-        console.log('error in sendMessage', error);
+        console.error('error in sendMessage', error);
       }
     }
   };
@@ -61,12 +59,10 @@ const ChatScreen = ({route}) => {
           .doc(docId)
           .collection('Messages')
           .add({...Data, createdAt: firestore.FieldValue.serverTimestamp()})
-          .then(() => {
-            console.log('message added in firestore');
-          });
+          .then(() => {});
         setMessage('');
       } catch (error) {
-        console.log('error in sendMessage', error);
+        console.error('error in sendMessage', error);
       }
     }
   };
