@@ -2,13 +2,15 @@
 import React from 'react';
 //navigation
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { NavigationContainer } from '@react-navigation/native';
 //global
 
 //stack
-import AuthStack from '../AuthStack.js';
-
+import AuthStack from 'navigation/AuthStack.js';
 import CustomDrawer from './CustomDrawer.js';
 import { SafeAreaView } from 'react-native';
+import { dimensions } from 'global/Constants.js';
+import { Colors } from 'global/index.js';
 // import {NativeModules} from 'react-native';
 const Drawer = ({}) => {
     //variables
@@ -20,8 +22,8 @@ const Drawer = ({}) => {
 
     //function: render function for custom drawer content
     const renderCustomDrawer = ({ navigation }) => (
-        <SafeAreaView style={{ flex: 1 ,backgroundColor:'black'}}>
-            {/* <CustomDrawer navigation={navigation} style={{paddingTop: NativeModules.StatusBarManager.HEIGHT}} /> */}
+        <SafeAreaView style={{ flex: 1 ,backgroundColor:Colors.DARK_PURPLE}}>
+            <CustomDrawer navigation={navigation}  />
         </SafeAreaView>
     );
 

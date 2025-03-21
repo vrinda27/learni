@@ -9,9 +9,11 @@ import AuthStack from 'navigation/AuthStack';
 import Toast from 'react-native-toast-message';
 //import : globals
 //import : redux
+
 import {Provider} from 'react-redux';
 import {store} from './src/reduxTooklit/Store';
-
+import {StripeProvider} from '@stripe/stripe-react-native';
+import Drawer from './src/navigation/Drawer/Drawer';
 const App = () => {
   //function
   const navigationRef = createNavigationContainerRef();
@@ -20,7 +22,8 @@ const App = () => {
     <>
       <Provider store={store}>
         <NavigationContainer ref={navigationRef}>
-          <AuthStack />
+          {/* <AuthStack /> */}
+          <Drawer />
           <Toast />
         </NavigationContainer>
       </Provider>

@@ -6,10 +6,16 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+
 import React, {useState} from 'react';
 import ArrowLeft from 'assets/images/arrowLeft.svg';
 import Notification from 'assets/images/notification.svg';
+import {
+  DrawerActions,
+  useNavigation,
+  useFocusEffect,
+  CommonActions,
+} from '@react-navigation/native';
 import {
   responsiveFontSize,
   responsiveWidth,
@@ -37,20 +43,21 @@ const Header = ({
   style,
 }) => {
   const navigation = useNavigation();
+    const openDrawer = () => navigation.dispatch(DrawerActions.openDrawer());
   const [notificationCount, setNotificationCount] = useState(0);
   const onPressBackHandler = () => {
     // onPressBack && onPressBack();
     navigation?.goBack();
   };
   const onPressNotificationHandler = () => {
-    navigation.navigate('Notification');
+    // navigation.navigate('Notification');
   };
   const openCart = () => {
-    navigation.navigate(ScreenNames.CART);
+    // navigation.navigate(ScreenNames.CART);
   };
-  const openDrawer = () => {
-    navigation.openDrawer();
-  };
+  // const openDrawer = () => {
+  //   navigation.openDrawer();
+  // };
 
   // Update notification count on screen focus
 

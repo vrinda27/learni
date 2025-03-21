@@ -1,6 +1,6 @@
 import colors from '../../global/Constants'
 import { StyleSheet } from 'react-native';
-
+import { Colors } from 'global/index';
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -79,7 +79,7 @@ export const styles = StyleSheet.create({
         height: (160 * 120) / 200,
     },
     socialMediaContainer: {
-        backgroundColor: colors.gold,
+        backgroundColor: Colors.GREEN,
         padding: 22,
         paddingBottom: 28,
         marginTop: 30,
@@ -112,20 +112,19 @@ export const styles = StyleSheet.create({
         resizeMode: 'contain',
       },
       profileView: {
-        marginTop: 10,
+       
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
       
-        height: 90,
+        height: 135,
         backgroundColor: '#D7BC70',
 
        
       },
       profile: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 10,
+       alignSelf:'center',
+       justifyContent:'center'
       },
       profileImage: {
         width: 50,
@@ -134,7 +133,9 @@ export const styles = StyleSheet.create({
         marginTop: 10,
       },
       info: {
-        flexDirection: 'column',
+     justifyContent:'center',
+        alignSelf:'center',
+
       },
       profileName: {
         color: 'black',

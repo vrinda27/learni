@@ -81,10 +81,6 @@ const Billing = ({navigation, dispatch}) => {
   const [showCard, setShowCard] = useState(true);
 
   useEffect(() => {
-    setTimeout(() => setShowCard(false), 5000);
-    setTimeout(() => setShowCard(true), 6000);
-  }, []);
-  useEffect(() => {
     getData();
     getHome();
   }, []);
@@ -126,13 +122,13 @@ const Billing = ({navigation, dispatch}) => {
   const getHome = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
+
       const {response, status} = await Service.getAPI(
         API_Endpoints.card_list,
         token,
       );
 
       if (status) {
-        console.error('my response data for card list--->>>>', response?.data);
       }
     } catch (error) {
       console.error('error in getHome', error);

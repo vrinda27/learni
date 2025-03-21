@@ -24,7 +24,7 @@ import {useNavigation} from '@react-navigation/native';
 //import : global
 // import Color, { dimensions } from '../../Global/Color';
 //import : styles
-import {styles} from './CustomDrawerStyle';
+import { styles } from './CustomDrawerStyle';
 
 //import : modal
 //import : third parties
@@ -34,12 +34,21 @@ import Toast from 'react-native-toast-message';
 // import { useSelector, useDispatch } from 'react-redux';
 // import { logOutUser, setUser } from 'src/reduxToolkit/reducer/user';
 import {useDrawerStatus} from '@react-navigation/drawer';
+import { Colors } from 'global/index';
+import Logo from 'assets/images/logoDrawer.svg'
+import Logout from 'assets/images/logout.svg'
+import Privacy from 'assets/images/privacy.svg'
+import Terms from 'assets/images/terms.svg'
+import Support from 'assets/images/suport.svg'
+import Info from 'assets/images/info.svg'
+import Like from 'assets/images/heart.svg'
+import Home from 'assets/images/home.svg'
 
 const CustomDrawer = ({navigation}) => {
-  const {getAPI, loading, postAPI} = useAPI();
+  // const {getAPI, loading, postAPI} = useAPI();
   const navigationn = useNavigation(); // Use hook to access navigation
 
-  const authToken = useSelector(state => state.auth.user);
+  // const authToken = useSelector(state => state.auth.user);
 
   const isFocussed = useIsFocused();
   const isFocused = useIsFocused();
@@ -124,22 +133,15 @@ const CustomDrawer = ({navigation}) => {
 
   //UI
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={{backgroundColor: 'white'}}>
-        <View style={styles.profileView}>
-          <View style={styles.profile}>
-            <Image
-              style={{width: 50, height: 50, borderRadius: 25, marginLeft: 6}}
-              // source={
-              //   authToken?.profile
-              //     ? { uri: authToken.profile }
-              //     : require('../../assets/Images/profile.png')
-              // }
-            />
+    <View style={[styles.container]}>
+      <ScrollView contentContainerStyle={{}}>
+      
+        <View style={[styles.profileView,{alignSelf:'center',width:'100%',justifyContent:'center',backgroundColor:Colors.DARK_PURPLE}]}>
+       
+           
             <View style={styles.info}>
-              {/* <Text style={styles.profileName}>{authToken?.name}</Text>
-              <Text style={styles.profileEmail}>{authToken?.email}</Text> */}
-            </View>
+            <Logo height={59}  style={{marginTop:55,alignItems:'center',}}></Logo>
+         
             <TouchableOpacity>
               {/* <LinearGradient
                 colors={['#060606', '#393939']}
@@ -208,7 +210,7 @@ const CustomDrawer = ({navigation}) => {
           <DrawerItemList
             Title="Logout"
             // image={require('../../assets/Images/logout.png')}
-            onPress={logout}
+            // onPress={logout}
           />
         </View>
         <View style={styles.socialMedia}>
@@ -221,10 +223,12 @@ const CustomDrawer = ({navigation}) => {
             <Image source={require('../../assets/Images/Youtube.png')} /> */}
           </View>
         </View>
+     
       </ScrollView>
 
       {/* <CustomLoader text="Logging Out...." showLoader={showLoader} /> */}
     </View>
+  
   );
 };
 export default CustomDrawer;
@@ -239,6 +243,7 @@ export const DrawerItemList = ({Title = '', image, onPress = () => {}}) => {
         alignItems: 'center',
         justifyContent: 'space-between',
         backgroundColor: 'white',
+        backgroundColor:'red'
       }}>
       <View style={{flexDirection: 'row', alignItems: 'center'}}>
         <Image
@@ -257,7 +262,7 @@ export const DrawerItemList = ({Title = '', image, onPress = () => {}}) => {
             fontFamily: 'Roboto',
             fontSize: 14,
             fontWeight: '500',
-            color: 'white',
+            color: 'black',
           }}>
           {Title}
         </Text>
