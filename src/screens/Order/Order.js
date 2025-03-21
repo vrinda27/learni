@@ -1,5 +1,5 @@
 //react components
-import React, {useEffect,useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Image,
@@ -34,8 +34,8 @@ import {responsiveWidth} from 'react-native-responsive-dimensions';
 import {responsiveHeight} from 'react-native-responsive-dimensions';
 import {REGULAR} from '../../global/Fonts';
 import SearchWithIcon from '../../component/SearchWithIcon/SearchWithIcon';
-import { Colors } from 'global/index';
-import { MEDIUM } from '../../global/Fonts';
+import {Colors} from 'global/index';
+import {MEDIUM} from '../../global/Fonts';
 import Divider from '../../component/Divider/Divider';
 ///svg images
 import Like from 'assets/images/heartActive.svg';
@@ -50,7 +50,6 @@ import MyButton from '../../component/MyButton/MyButton';
 import {ScreenNames, Service} from 'global/index';
 import {API_Endpoints} from 'global/Service';
 const Order = ({navigation}) => {
-  
   const trending = [
     {
       id: 1,
@@ -70,21 +69,17 @@ const Order = ({navigation}) => {
     },
   ];
 
-  const[orderData,setOrderData]=useState([])
-  
+  const [orderData, setOrderData] = useState([]);
+
   const getHome = async () => {
     try {
-      {console.log('my api for ordet hit')}
       const token = await AsyncStorage.getItem('token');
       const {response, status} = await Service.getAPI(
         API_Endpoints.my_order,
         token,
       );
       if (status) {
-        console.log('my order data--->>',response?.data)
-        setOrderData(
-         response?.data
-        );
+        setOrderData(response?.data);
       }
     } catch (error) {
       console.error('error in getHome', error);
@@ -94,211 +89,206 @@ const Order = ({navigation}) => {
   useEffect(() => {
     getHome();
   }, []);
-   const requestDownloadingPermission = async () => {
-     if (Platform.OS == 'ios') {
-       downloadInvoice();
-     } else {
-       try {
-         const granted = await PermissionsAndroid.request(
-           PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-           {
-             title: 'Downloading Permission',
-             message: 'Arkansas needs access to your downloading manager ',
-             buttonNeutral: 'Ask Me Later',
-             buttonNegative: 'Cancel',
-             buttonPositive: 'OK',
-           },
-         );
-         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-           downloadInvoice();
-         } else {
-         }
-       } catch (err) {
-         console.warn(err);
-       }
-     }
-   };
- 
-   const downloadInvoice = async () => {
-     setShowLoader(true);
-     let pdfUrl = orderData?.invoice;
-     let DownloadDir =
-       Platform.OS == 'ios'
-         ? RNFetchBlob.fs.dirs.DocumentDir
-         : RNFetchBlob.fs.dirs.DownloadDir;
-     const {dirs} = RNFetchBlob.fs;
-     const dirToSave =
-       Platform.OS == 'ios' ? dirs.DocumentDir : dirs.DownloadDir;
-     const configfb = {
-       fileCache: true,
-       useDownloadManager: true,
-       notification: true,
-       mediaScannable: true,
-       title: 'Arkansas',
-       path: `${dirToSave}.pdf`,
-     };
-     const configOptions = Platform.select({
-       ios: {
-         fileCache: configfb.fileCache,
-         title: configfb.title,
-         path: configfb.path,
-         appendExt: 'pdf',
-       },
-       android: configfb,
-     });
-     Platform.OS == 'android'
-       ? RNFetchBlob.config({
-           fileCache: true,
-           addAndroidDownloads: {
-             useDownloadManager: true,
-             notification: true,
-             path: `${DownloadDir}/.pdf`,
-             description: 'Arkansas',
-             title: `${orderData?.order_number} invoice.pdf`,
-             mime: 'application/pdf',
-             mediaScannable: true,
-           },
-         })
-           .fetch('GET', `${pdfUrl}`)
-           .then(res => {
-             setShowLoader(false);
-           })
-           .catch(error => {
-             setShowLoader(false);
-             console.warn(error.message);
-           })
-       : RNFetchBlob.config(configOptions)
-           .fetch('GET', `${pdfUrl}`, {})
-           .then(res => {
-             setShowLoader(false);
-             if (Platform.OS === 'ios') {
-               RNFetchBlob.fs.writeFile(configfb.path, res.data, 'base64');
-               RNFetchBlob.ios.previewDocument(configfb.path);
-             }
-           })
-           .catch(e => {
-             setShowLoader(false);
-           });
-   };
+  const requestDownloadingPermission = async () => {
+    if (Platform.OS == 'ios') {
+      downloadInvoice();
+    } else {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: 'Downloading Permission',
+            message: 'Arkansas needs access to your downloading manager ',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          downloadInvoice();
+        } else {
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+  };
+
+  const downloadInvoice = async () => {
+    setShowLoader(true);
+    let pdfUrl = orderData?.invoice;
+    let DownloadDir =
+      Platform.OS == 'ios'
+        ? RNFetchBlob.fs.dirs.DocumentDir
+        : RNFetchBlob.fs.dirs.DownloadDir;
+    const {dirs} = RNFetchBlob.fs;
+    const dirToSave =
+      Platform.OS == 'ios' ? dirs.DocumentDir : dirs.DownloadDir;
+    const configfb = {
+      fileCache: true,
+      useDownloadManager: true,
+      notification: true,
+      mediaScannable: true,
+      title: 'Arkansas',
+      path: `${dirToSave}.pdf`,
+    };
+    const configOptions = Platform.select({
+      ios: {
+        fileCache: configfb.fileCache,
+        title: configfb.title,
+        path: configfb.path,
+        appendExt: 'pdf',
+      },
+      android: configfb,
+    });
+    Platform.OS == 'android'
+      ? RNFetchBlob.config({
+          fileCache: true,
+          addAndroidDownloads: {
+            useDownloadManager: true,
+            notification: true,
+            path: `${DownloadDir}/.pdf`,
+            description: 'Arkansas',
+            title: `${orderData?.order_number} invoice.pdf`,
+            mime: 'application/pdf',
+            mediaScannable: true,
+          },
+        })
+          .fetch('GET', `${pdfUrl}`)
+          .then(res => {
+            setShowLoader(false);
+          })
+          .catch(error => {
+            setShowLoader(false);
+            console.warn(error.message);
+          })
+      : RNFetchBlob.config(configOptions)
+          .fetch('GET', `${pdfUrl}`, {})
+          .then(res => {
+            setShowLoader(false);
+            if (Platform.OS === 'ios') {
+              RNFetchBlob.fs.writeFile(configfb.path, res.data, 'base64');
+              RNFetchBlob.ios.previewDocument(configfb.path);
+            }
+          })
+          .catch(e => {
+            setShowLoader(false);
+          });
+  };
   const renderCourse = ({item}) => {
-    return ( 
-<View style={styles.courseContainer}>
-<View
-  style={{
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-  }}>
-  <View style={{flexDirection: 'row'}}>
-    <MyText
-      text={'Order No: '}
-      fontFamily={MEDIUM}
-      fontSize={14}
-      textColor={'#000000'}
-      style={{}}
-    />
-    <MyText
-      text={item?.order_number}
-      fontFamily={MEDIUM}
-      fontSize={14}
-      textColor={'#5E4AF7'}
-      style={{}}
-    />
-  </View>
-
-  <MyText
-    text={item?.category_name}
-    fontFamily={MEDIUM}
-    fontSize={14}
-    textColor={'#5E4AF7'}
-    style={{}}
-  />
-</View>
-<Divider style={{marginBottom: 15}} color="#E0E0E0"></Divider>
-<View style={styles.courseSubContainer}>
-  
-
-  <Image
-    source={{uri:item?.image}}
-    style={{width: 130, height: 97}}></Image>
-  <View style={{marginLeft: 11, width: dimensions.SCREEN_WIDTH * 0.5}}>
-    <MyText
-      text={item.name}
-      fontFamily={MEDIUM}
-      fontSize={14}
-      textColor={'#000000'}
-      style={{width: dimensions.SCREEN_WIDTH * 0.55}}
-    />
-    <View style={styles.middleRow}>
-      <View style={styles.crtrRow}>
-        <MyText
-          text={'$'}
-          fontFamily={MEDIUM}
-          fontSize={16}
-          textColor={'#000000'}
-          letterSpacing={0.13}
-          style={{}}
-        />
-        <MyText
-          text={item?.price}
-          fontFamily={MEDIUM}
-          fontSize={16}
-          textColor={'#5E4AF7'}
-          letterSpacing={0.13}
-          style={{}}
-        />
-      </View>
-      <View style={[styles.ratingRow, {marginLeft: 16}]}>
+    return (
+      <View style={styles.courseContainer}>
         <View
           style={{
-            height: 10,
-            width: 10,
-            justifyContent: 'center',
-            alignItems: 'center',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            paddingVertical: 12,
           }}>
-          <Rating
-            style={{marginLeft: 24}}
-            height={18}
-            width={18}></Rating>
+          <View style={{flexDirection: 'row'}}>
+            <MyText
+              text={'Order No: '}
+              fontFamily={MEDIUM}
+              fontSize={14}
+              textColor={'#000000'}
+              style={{}}
+            />
+            <MyText
+              text={item?.order_number}
+              fontFamily={MEDIUM}
+              fontSize={14}
+              textColor={'#5E4AF7'}
+              style={{}}
+            />
+          </View>
+
+          <MyText
+            text={item?.category_name}
+            fontFamily={MEDIUM}
+            fontSize={14}
+            textColor={'#5E4AF7'}
+            style={{}}
+          />
         </View>
-        <MyText
-          text={item.rating}
-          fontFamily={REGULAR}
-          fontSize={13}
-          textColor={'#000000'}
-          letterSpacing={0.13}
-          style={{marginLeft: 20, marginTop: 2}}
-        />
+        <Divider style={{marginBottom: 15}} color="#E0E0E0"></Divider>
+        <View style={styles.courseSubContainer}>
+          <Image
+            source={{uri: item?.image}}
+            style={{width: 130, height: 97}}></Image>
+          <View style={{marginLeft: 11, width: dimensions.SCREEN_WIDTH * 0.5}}>
+            <MyText
+              text={item.name}
+              fontFamily={MEDIUM}
+              fontSize={14}
+              textColor={'#000000'}
+              style={{width: dimensions.SCREEN_WIDTH * 0.55}}
+            />
+            <View style={styles.middleRow}>
+              <View style={styles.crtrRow}>
+                <MyText
+                  text={'$'}
+                  fontFamily={MEDIUM}
+                  fontSize={16}
+                  textColor={'#000000'}
+                  letterSpacing={0.13}
+                  style={{}}
+                />
+                <MyText
+                  text={item?.price}
+                  fontFamily={MEDIUM}
+                  fontSize={16}
+                  textColor={'#5E4AF7'}
+                  letterSpacing={0.13}
+                  style={{}}
+                />
+              </View>
+              <View style={[styles.ratingRow, {marginLeft: 16}]}>
+                <View
+                  style={{
+                    height: 10,
+                    width: 10,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Rating
+                    style={{marginLeft: 24}}
+                    height={18}
+                    width={18}></Rating>
+                </View>
+                <MyText
+                  text={item.rating}
+                  fontFamily={REGULAR}
+                  fontSize={13}
+                  textColor={'#000000'}
+                  letterSpacing={0.13}
+                  style={{marginLeft: 20, marginTop: 2}}
+                />
+              </View>
+            </View>
+          </View>
+        </View>
+        <Divider style={{marginTop: 12}} color="#E0E0E0"></Divider>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            width: '98%',
+            marginTop: 10,
+          }}>
+          <MyButton
+            text={'View Order Details'}
+            style={{flex: 1, marginRight: 10, backgroundColor: '#5E4AF7'}}
+            onPress={() => {
+              navigation.navigate(ScreenNames.ORDER_DETAIL, {order: item?.id});
+            }}
+          />
+          <MyButton
+            text={'Download Invoice'}
+            style={{flex: 1, backgroundColor: '#00B44B'}}
+            onPress={requestDownloadingPermission}
+          />
+        </View>
       </View>
-    </View>
-  </View>
-</View>
-<Divider style={{marginTop: 12}} color="#E0E0E0"></Divider>
-<View
-  style={{
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '98%',
-    marginTop: 10,
-  }}>
-  <MyButton
-    text={'View Order Details'}
-    style={{flex: 1, marginRight: 10, backgroundColor: '#5E4AF7'}}
-    onPress={() => {
-      navigation.navigate(ScreenNames.ORDER_DETAIL,{order:item?.id});
-    }}
-  />
-  <MyButton
-    text={'Download Invoice'}
-    style={{flex: 1, backgroundColor: '#00B44B'}}
-    onPress={requestDownloadingPermission}
-  />
-</View>
-</View>
-
-
-
-);
+    );
   };
   //UI
   return (
@@ -326,7 +316,7 @@ const Order = ({navigation}) => {
           <View style={{marginVertical: 12}}>
             <SearchWithIcon
               disabled
-              placeHolder={'Search by course or product name'}
+              placeholder={'Search by course or product name'}
               placeholderTextColor={'#8F93A0'}
             />
           </View>
@@ -352,85 +342,83 @@ const Order = ({navigation}) => {
 
 export default Order;
 const styles = StyleSheet.create({
-  
   courseContainer: {
-      padding: 10,
-      borderRadius: 5,
-      backgroundColor: 'white',
-      marginBottom: 11,
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 3,
-      },
-      shadowRadius: 5,
-      shadowOpacity: 0.05,
-      elevation: 2,
-      borerRadius:1,
-      borderColor:'#E0E0E0',
-      borderWidth:1,
-      width:dimensions.SCREEN_WIDTH*0.93,
-      alignSelf:'center',
-      borderRadius:10
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: 'white',
+    marginBottom: 11,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 3,
     },
-    courseSubContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    crseImg: {
-      height: 99,
-      width: dimensions.SCREEN_WIDTH*0.33,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    middleRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginTop: 8,
-    },
-    ratingRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    crtrRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-     
-    },
-    bottomRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginTop: 8,
-    },
-    iconsRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    courseTopRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      marginBottom: 11,
-    },
-    statusRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    dot: {
-      height: 10,
-      width: 10,
-      borderRadius: 10 / 2,
-      backgroundColor: Colors.THEME_BROWN,
-    },
-    courseButton: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginTop: 8,
-    },
-    tickRow: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginTop: 12,
-    },
+    shadowRadius: 5,
+    shadowOpacity: 0.05,
+    elevation: 2,
+    borerRadius: 1,
+    borderColor: '#E0E0E0',
+    borderWidth: 1,
+    width: dimensions.SCREEN_WIDTH * 0.93,
+    alignSelf: 'center',
+    borderRadius: 10,
+  },
+  courseSubContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  crseImg: {
+    height: 99,
+    width: dimensions.SCREEN_WIDTH * 0.33,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  middleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  ratingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  crtrRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  bottomRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 8,
+  },
+  iconsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  courseTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 11,
+  },
+  statusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  dot: {
+    height: 10,
+    width: 10,
+    borderRadius: 10 / 2,
+    backgroundColor: Colors.THEME_BROWN,
+  },
+  courseButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 8,
+  },
+  tickRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 12,
+  },
 });

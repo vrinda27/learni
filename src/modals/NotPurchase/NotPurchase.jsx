@@ -21,34 +21,42 @@ const NotPurchase = ({visible, setVisibility}) => {
       <View style={styles.container}>
         <TouchableOpacity style={styles.blurView} onPress={closeModal} />
         <View style={styles.mainView}>
-          <MyIcon.AntDesign
-            name="questioncircle"
-            size={70}
-            color={Colors.GREEN}
+          <View
             style={{
+              width: '70%',
               alignSelf: 'center',
-            }}
-          />
-          <SizeBox height={10} />
-          <MyText
-            text={'Prerequisite(s) have not yet been completed!'}
-            fontFamily={BOLD}
-            fontSize={18}
-            textAlign="center"
-          />
-          <MyText
-            text={
-              'To move forward, please complete all prerequisites in Chapter 2: Frequently Asked Questions'
-            }
-            textAlign="center"
-          />
-          <MyButton text={'Purchase'} />
-          <SizeBox height={10} />
-          <MyText
-            text={'Close'}
-            style={{alignSelf: 'center'}}
-            fontFamily={BOLD}
-          />
+            }}>
+            <MyIcon.AntDesign
+              name="questioncircle"
+              size={70}
+              color={Colors.GREEN}
+              style={{
+                alignSelf: 'center',
+              }}
+            />
+            <SizeBox height={10} />
+            <MyText
+              text={'You have not purchased this course.'}
+              fontFamily={BOLD}
+              fontSize={18}
+              textAlign="center"
+              marginVertical={10}
+            />
+            <MyText
+              text={'Please buy this course to access the contents.'}
+              textAlign="center"
+              marginVertical={10}
+            />
+            {/* <MyButton text={'Purchase'} /> */}
+            <SizeBox height={10} />
+            <TouchableOpacity onPress={() => closeModal()}>
+              <MyText
+                text={'Close'}
+                style={{alignSelf: 'center'}}
+                fontFamily={BOLD}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </Modal>

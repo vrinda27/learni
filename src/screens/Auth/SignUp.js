@@ -21,16 +21,20 @@ import CustomTextInput from '../../component/TextInput/CustomTextInput';
 import CustomPasswordInput from '../../component/TextInput/CustomPasswordInput';
 import CustomPhoneInput from '../../component/TextInput/CustomPhoneInput';
 import BorderLessButton from '../../component/MyButton/BorderLessButton';
-import {Colors} from '../../global';
+import {Colors, ScreenNames} from '../../global';
 import {useIsFocused, useNavigation} from '@react-navigation/native';
 import ConfettiCannonModel from '../../component/ConfettiCannonModel/ConfettiCannonModel';
 import VectoreIcon from 'assets/images/Vector.svg';
 import Loader from '../../component/loader/Loader';
 import {API_Endpoints, PostApi} from '../../global/Service';
 import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useDispatch} from 'react-redux';
+import {setUser} from 'reduxTooklit/UserSlice';
 
-const SignUp = () => {
-  const navigation = useNavigation();
+const SignUp = ({navigation}) => {
+  //variables
+  const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [loader, setLoader] = useState(false);
@@ -50,7 +54,10 @@ const SignUp = () => {
     cca2: 'US',
     callingCode: '1',
   });
-
+  //function : nav func
+  const gotoBottomTab = () => {
+    navigation.replace(ScreenNames.BOTTOM_TAB);
+  };
   useEffect(() => {
     if (isFocused) {
       setUserDetails({
@@ -143,8 +150,23 @@ const SignUp = () => {
         type: response?.data?.status ? 'success' : 'error',
         text1: response?.data?.message,
       });
+
       if (response?.data?.status) {
-        setShowSuccessModal(true);
+        const data = response?.data?.data;
+        await AsyncStorage.setItem('token', data?.access_token);
+        dispatch(
+          setUser({
+            isAuth: data?.access_token,
+            id: data?.user?.id,
+            name: data?.user?.name,
+            email: data?.user?.email,
+            callingCode: data?.user?.country_code,
+            cca2: data?.user?.cca2,
+            mobile: data?.user?.mobile,
+            profile: data?.user?.profile,
+          }),
+        );
+        gotoBottomTab();
       }
     } catch (err) {
       console.error('error in registering user', err);
@@ -169,6 +191,7 @@ const SignUp = () => {
         <Header
           showLearneLogo={false}
           heading="Sign Up"
+          showCart={false}
           headingStyle={{color: 'black'}}
         />
         <View style={styles.subContainer}>

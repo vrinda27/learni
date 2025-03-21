@@ -36,7 +36,6 @@ const CourseListing = ({navigation, route}) => {
   const isFocused = useIsFocused();
   const {data} = route.params;
   const currentAppliedFilter = useRef('');
-  console.log(currentAppliedFilter.current);
 
   //hook : states
   const [coursesData, setCoursesData] = useState([]);

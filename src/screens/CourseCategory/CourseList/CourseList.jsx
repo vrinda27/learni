@@ -218,7 +218,6 @@ const CourseList = ({navigation, dispatch, route}) => {
   //       paramsData,
   //     );
   //     if (status) {
-  //       {console.log('my courses---::',response?.data)}
   //       setCourseData(response.data?.data);
   //     }
   //   } catch (error) {
@@ -227,57 +226,50 @@ const CourseList = ({navigation, dispatch, route}) => {
   // };
 
   const getCourses = async (searchedName = '') => {
-    console.log('🔥 getCourses Triggered with search:', searchedName);
-  
     try {
       setShowLoader(true);
-  
+
       // Construct params properly
       const updatedParams = {
         name: searchedName || '',
         sub_category_id: data?.id || '',
         highlow: tempSelectedPriceFilter || '',
-        ratings: tempSelectedRatingValues?.length > 0 ? tempSelectedRatingValues : '',
+        ratings:
+          tempSelectedRatingValues?.length > 0 ? tempSelectedRatingValues : '',
       };
-  
+
       // Extract category IDs
-      const catIds = courseCategries
-        ?.filter(el => tempSelectedCourseCategries?.includes(el?.name))
-        ?.map(el => el?.id) || [];
-  
+      const catIds =
+        courseCategries
+          ?.filter(el => tempSelectedCourseCategries?.includes(el?.name))
+          ?.map(el => el?.id) || [];
+
       // Append multiple tags[]=id dynamically
       catIds.forEach((id, index) => {
         updatedParams[`tags[${index}]`] = id;
       });
-  
-      console.log('📡 Fetching with Params:', updatedParams);
-  
+
       // Fetch API
       const token = await AsyncStorage.getItem('token');
-      const { response, status } = await Service.getAPI(
+      const {response, status} = await Service.getAPI(
         API_Endpoints.courses,
         token,
-        updatedParams
+        updatedParams,
       );
-  
-      console.log('🟢 API Response Status:', status);
-  
+
       if (status) {
-        console.log('✅ Courses Retrieved:', response?.data?.data);
         setCourseData(response?.data?.data || []);
         setShowFilterModal(false);
       } else {
-        console.log('❌ API Error:', response?.data?.message);
         setShowLoader(false);
         return;
       }
     } catch (error) {
       console.error('🚨 Error in getCourses:', error);
     }
-  
+
     setShowLoader(false);
   };
-  
 
   const onLike = async (type, id, status) => {
     setCourseData([]);
@@ -576,7 +568,6 @@ const CourseList = ({navigation, dispatch, route}) => {
   //       paramsData,
   //     );
   //     setShowFilterModal(false);
-  //     {console.log('my filter data---->>>>',response?.data?.data)}
   //     setCourseData(response?.data?.data || []);
   //     // setParamsData(updatedParams);
   //     setRefresh(prev => !prev); // ✅ Force re-render
@@ -590,8 +581,6 @@ const CourseList = ({navigation, dispatch, route}) => {
     setCourseData([]);
     setShowLoader(true);
     setOriginalValues();
-
-    console.log('🔥 applyFilters Triggered');
 
     const updatedFilters = {...filterParams};
 
@@ -608,9 +597,6 @@ const CourseList = ({navigation, dispatch, route}) => {
     }
 
     if (tempSelectedRatingValues?.length > 0) {
-      {
-        console.log('jkjkkjk---->>', tempSelectedRatingValues);
-      }
       updatedFilters.ratings = [...tempSelectedRatingValues];
     }
 
@@ -620,9 +606,7 @@ const CourseList = ({navigation, dispatch, route}) => {
 
     try {
       const token = await AsyncStorage.getItem('token');
-      {
-        console.log('mytoken-->>', token);
-      }
+
       const {response, status} = await Service.getAPI(
         API_Endpoints.courses,
         token,
@@ -630,31 +614,23 @@ const CourseList = ({navigation, dispatch, route}) => {
       );
 
       if (status) {
-        console.log('✅ Filtered Courses:', response?.data?.data, 'items');
-
         setShowFilterModal(false);
         setLastPage1(response?.data?.last_page_no);
 
         setCourseData(() => {
-          console.log('🔄 Setting new Course Data (Reset)');
           return response?.data?.data;
         });
 
         setPage1(2); // ✅ Reset page to 2 since first page is fetched
       } else {
-        console.log('❌ API Error:', response?.data?.message);
         Toast.show({text1: response?.data?.message});
       }
-    } catch (error) {
-      console.log('🚨 Error in applyFilters:', error);
-    }
+    } catch (error) {}
 
     setShowLoader(false);
   };
 
-  useEffect(() => {
-    console.log('Updated courseData:', courseData);
-  }, [courseData]);
+  useEffect(() => {}, [courseData]);
 
   const applyFilters2 = async (searchParam = '') => {
     setCourseData([]);
@@ -961,7 +937,6 @@ const CourseList = ({navigation, dispatch, route}) => {
                 </View>
               )}
             /> */}
-            {console.log('after filter course data-====>>>>', courseData)}
             <FlatList
               ref={scrollRef}
               key={'#'}

@@ -40,16 +40,15 @@ import Divider from 'component/Divider/Divider';
 import MyButton from 'component/MyButton/MyButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ScreenNames, Service} from 'global/index';
-import { API_Endpoints } from 'global/Service';
+import {API_Endpoints} from 'global/Service';
 import Review from 'modals/Review/Review';
 import RNFetchBlob from 'react-native-blob-util';
-import { MEDIUM } from 'global/Fonts';
+import {MEDIUM} from 'global/Fonts';
 // import defaultImg from "../../../assets/images/default-content-creator-image.png"
 
 const OrderDetails = ({navigation, dispatch, route}) => {
   //   const defaultImgPath = Image.resolveAssetSource(defaultImg).uri;
-  console.log(',y route--->>',route?.params
-?.order  )
+
   //variables
   const LINE_HEIGTH = 25;
   //variables : redux
@@ -84,31 +83,24 @@ const OrderDetails = ({navigation, dispatch, route}) => {
     const formdata = new FormData();
     formdata.append('order_id', route?.params?.order);
     // formdata.append('item_id', route?.params?.item_id);
-    var url=  API_Endpoints.order_detail
-    var murl=`/`+route?.params?.order
-    url=url+murl
-    {console.log('my url--->>>>>',url)}
+    var url = API_Endpoints.order_detail;
+    var murl = `/` + route?.params?.order;
+    url = url + murl;
+
     try {
-      {console.log('my api for ordet hit')}
       const token = await AsyncStorage.getItem('token');
-      const {response, status} = await Service.getAPI(
-      url,
-        token,
-      );
+      const {response, status} = await Service.getAPI(url, token);
       if (status) {
-        console.log('my order data details--->>',response?.data)
-        setOrderData(
-         response?.data
-        );
-      
-      // if (resp?.data?.status) {
-      //   const isCourseExist = resp.data.items?.find(el => el.type == '1');
-      //   if (isCourseExist) {
-      //     // resp.data.items = await generateThumb(resp?.data?.items);
-      //     setOrderData(resp?.data);
-      //   } else {
-      //     setOrderData(resp?.data);
-      //   }
+        setOrderData(response?.data);
+
+        // if (resp?.data?.status) {
+        //   const isCourseExist = resp.data.items?.find(el => el.type == '1');
+        //   if (isCourseExist) {
+        //     // resp.data.items = await generateThumb(resp?.data?.items);
+        //     setOrderData(resp?.data);
+        //   } else {
+        //     setOrderData(resp?.data);
+        //   }
       } else {
         Toast.show({text1: resp.data.message});
       }
@@ -435,60 +427,55 @@ const OrderDetails = ({navigation, dispatch, route}) => {
       //     />
       //   </View> */}
       // </View>
-        <View
-                style={[
-                  styles.summaryContainer,
-                  {
-                    width: dimensions.SCREEN_WIDTH * 0.90,
-                    alignSelf: 'center',
-                    borderWidth: 1,
-                    borderColor: Colors.LIGHT_PURPLE,
-                    marginTop: 14,
-                  },
-                ]}>
-                <View style={[styles.row, {marginBottom: 10}]}>
-                  <MyText
-                    text={'Subtotal'}
-                    fontSize={16}
-                    fontFamily={MEDIUM}
-                    textColor={Colors.DARK_PURPLE}
-                    style={{}}
-                  />
-                  <MyText
-                    text={
-                      orderData?.amount != undefined
-               ? '$' + orderData?.amount
-                : '0'}
-                    fontSize={16}
-                    fontFamily={MEDIUM}
-                    textColor={Colors.DARK_PURPLE}
-                    style={{}}
-                  />
-                </View>
+      <View
+        style={[
+          styles.summaryContainer,
+          {
+            width: dimensions.SCREEN_WIDTH * 0.9,
+            alignSelf: 'center',
+            borderWidth: 1,
+            borderColor: Colors.LIGHT_PURPLE,
+            marginTop: 14,
+          },
+        ]}>
+        <View style={[styles.row, {marginBottom: 10}]}>
+          <MyText
+            text={'Subtotal'}
+            fontSize={16}
+            fontFamily={MEDIUM}
+            textColor={Colors.DARK_PURPLE}
+            style={{}}
+          />
+          <MyText
+            text={
+              orderData?.amount != undefined ? '$' + orderData?.amount : '0'
+            }
+            fontSize={16}
+            fontFamily={MEDIUM}
+            textColor={Colors.DARK_PURPLE}
+            style={{}}
+          />
+        </View>
 
-                <View style={[styles.row, {marginBottom: 19}]}>
-                  <MyText
-                    text={`Tax`}
-                    fontSize={14}
-                    fontFamily={MEDIUM}
-                    textColor={Colors.GREEN}
-                    style={{}}
-                  />
-                  <MyText
-                    text={
-                      Number(orderData?.taxes) > 0
-                                ? '+ $' + orderData?.taxes
-                                 : '$0'
-                            }
-                    fontSize={14}
-                    fontFamily={MEDIUM}
-                    textColor={Colors.GREEN}
-                    style={{}}
-                  />
-                </View>
-                
-              
-              </View>
+        <View style={[styles.row, {marginBottom: 19}]}>
+          <MyText
+            text={`Tax`}
+            fontSize={14}
+            fontFamily={MEDIUM}
+            textColor={Colors.GREEN}
+            style={{}}
+          />
+          <MyText
+            text={
+              Number(orderData?.taxes) > 0 ? '+ $' + orderData?.taxes : '$0'
+            }
+            fontSize={14}
+            fontFamily={MEDIUM}
+            textColor={Colors.GREEN}
+            style={{}}
+          />
+        </View>
+      </View>
     );
   };
 
@@ -671,7 +658,7 @@ const OrderDetails = ({navigation, dispatch, route}) => {
 
   //UI
   return (
-    <SafeAreaView style={{flex: 1,backgroundColor:'white'}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       <ScrollView>
         <Background style={StyleSheet.absoluteFill} />
 
@@ -749,20 +736,20 @@ const OrderDetails = ({navigation, dispatch, route}) => {
                 }
               /> */}
             <Image
-                source={getCardImage(orderData?.payment_card_type)}
-                style={{ marginLeft: 15,width:52,height:17 }}
-              />
+              source={getCardImage(orderData?.payment_card_type)}
+              style={{marginLeft: 15, width: 52, height: 17}}
+            />
             <View style={{marginLeft: 12}}>
-            <MyText
-  text={
-    orderData?.payment_card_no
-      ? '**** **** **** ' + orderData.payment_card_no
-      : ''
-  }
-  fontSize={16}
-  fontFamily="medium"
-  textColor={'#261313'}
-/>
+              <MyText
+                text={
+                  orderData?.payment_card_no
+                    ? '**** **** **** ' + orderData.payment_card_no
+                    : ''
+                }
+                fontSize={16}
+                fontFamily="medium"
+                textColor={'#261313'}
+              />
               <MyText
                 text={`Expires ${
                   orderData?.payment_card_expiry != undefined
@@ -783,7 +770,7 @@ const OrderDetails = ({navigation, dispatch, route}) => {
             marginBottom: 10,
             backgroundColor: Colors.GREEN,
             marginTop: 32,
-            alignSelf:'center'
+            alignSelf: 'center',
           }}
           onPress={requestDownloadingPermission}
         />

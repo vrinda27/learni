@@ -1,6 +1,6 @@
 //import : react component
 import React from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, TouchableOpacity} from 'react-native';
 //import : custom components
 import MyText from 'component/MyText/MyText';
 //import : third party
@@ -12,7 +12,6 @@ import Pdf from 'assets/svgs/chaptersvg/document-pdf.svg';
 import Quiz from 'assets/images/quizQues.svg';
 //import : styles
 import {styles} from './ChapterCardStyle';
-import {Colors} from 'global/index';
 //import : modals
 //import : redux
 
@@ -50,31 +49,36 @@ const ChapterCard = ({item, index, onPress = () => {}}) => {
             />
           </View>
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <Quiz />
-          <MyText
-            text={item.total_quiz}
-            fontFamily={BLACK}
-            fontSize={12}
-            style={{textAlign: 'center', marginLeft: 5}}
-          />
-        </View>
-        {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Clock />
-          <MyText
-            text={'10min'}
-            fontFamily={BLACK}
-            fontSize={12}
-            textColor={'#999999'}
-            style={{textAlign: 'center', marginLeft: 5}}
-          />
-        </View>
-
-         */}
+        {item?.total_quiz > 0 && (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <Quiz />
+            <MyText
+              text={`${item.total_quiz} QUIZ`}
+              fontFamily={BLACK}
+              fontSize={12}
+              style={{textAlign: 'center', marginLeft: 5}}
+            />
+          </View>
+        )}
+        {item?.total_pdf > 0 && (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <Pdf />
+            <MyText
+              text={`${item.total_pdf} PDF`}
+              fontFamily={BLACK}
+              fontSize={12}
+              style={{textAlign: 'center', marginLeft: 5}}
+            />
+          </View>
+        )}
       </View>
       <MyText
         text={item.lesson_description}

@@ -105,15 +105,12 @@ const Billing = ({navigation, dispatch}) => {
     setShowLoader(true);
     try {
       const token = await AsyncStorage.getItem('token');
-      {
-        console.log('my token for data--->>', token);
-      }
+
       const {response, status} = await Service.getAPI(
         API_Endpoints.cart_detail,
         token,
       );
       if (status) {
-        console.log('my response data for card list item--->>>>', response);
         setScreenData(response);
       } else {
         Toast.show({
@@ -197,9 +194,7 @@ const Billing = ({navigation, dispatch}) => {
     setShowLoader(true);
     try {
       const res = await createToken({card, type: 'Card'});
-      {
-        console.log(' stripe tokennn0----->>>', res?.token?.card?.id);
-      }
+
       // return
       if (res?.error) {
         if (res?.error?.message) {
@@ -223,19 +218,8 @@ const Billing = ({navigation, dispatch}) => {
         '',
         token,
       );
-      {
-        console.log('my order api mrespinse', response?.message);
-      }
+
       if (status) {
-        {
-          console.log(
-            'did it reach here',
-            response?.data?.order_id,
-            response?.data?.total_amount,
-            res?.token?.id,
-            res?.token?.card?.id,
-          );
-        }
         handlePayClick(
           response?.data?.order_id,
           response?.data?.total_amount,
@@ -265,7 +249,6 @@ const Billing = ({navigation, dispatch}) => {
       // }
     } catch (error) {
       setShowLoader(false);
-      console.log('error in onConfirm', error);
     } finally {
       setShowLoader(false);
     }
@@ -546,7 +529,6 @@ const Billing = ({navigation, dispatch}) => {
             <CardField
               postalCodeEnabled={true}
               onCardChange={cardDetails => {
-                console.log('my cards--->>', cardDetails);
                 setCard(cardDetails);
               }}
               style={{

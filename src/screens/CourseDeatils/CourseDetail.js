@@ -68,6 +68,8 @@ const CourseDetail = ({navigation, dispatch, route}) => {
       const token = await AsyncStorage.getItem('token');
       const endPoint = `${API_Endpoints.course_details}/${id}`;
       const {response, status} = await Service.getAPI(endPoint, token);
+      console.log('response', response);
+
       if (status) {
         setCourseData(response.data);
       }
@@ -194,18 +196,15 @@ const CourseDetail = ({navigation, dispatch, route}) => {
                   textColor={'black'}
                 />
               </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  columnGap: 5,
-                }}>
-                <Rating />
+              <View style={{flexDirection: 'row'}}>
+                <Rating height={20} />
                 <MyText
                   text={courseData.rating}
-                  fontFamily={MEDIUM}
-                  fontSize={12}
-                  textColor={'black'}
+                  fontFamily={REGULAR}
+                  fontSize={16}
+                  textColor={Colors.DARK_PURPLE}
+                  letterSpacing={0.14}
+                  style={{marginLeft: 3}}
                 />
               </View>
               <View
@@ -283,30 +282,32 @@ const CourseDetail = ({navigation, dispatch, route}) => {
               borderBottomWidth={2}
               marginVertical={10}
             />
-            <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              {courseData.in_cart ? (
-                <MyButton
-                  text={'Remove from cart'}
-                  backgroundColor="#FF0000"
-                  width="48%"
-                  onPress={() => removeCourseFromCart()}
-                />
-              ) : (
-                <MyButton
-                  text={'Add to cart'}
-                  backgroundColor="#00B44B"
-                  width="48%"
-                  onPress={() => addCourseInToCart()}
-                />
-              )}
+            {!courseData.purchased && (
+              <View
+                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                {courseData.in_cart ? (
+                  <MyButton
+                    text={'Remove from cart'}
+                    backgroundColor="#FF0000"
+                    width="48%"
+                    onPress={() => removeCourseFromCart()}
+                  />
+                ) : (
+                  <MyButton
+                    text={'Add to cart'}
+                    backgroundColor="#00B44B"
+                    width="48%"
+                    onPress={() => addCourseInToCart()}
+                  />
+                )}
 
-              <MyButton
-                text={'Buy Now'}
-                backgroundColor="#5E4AF7"
-                width="48%"
-              />
-            </View>
+                <MyButton
+                  text={'Buy Now'}
+                  backgroundColor="#5E4AF7"
+                  width="48%"
+                />
+              </View>
+            )}
             <ViewAll text="Tags" showSeeAll={false} style={{marginTop: 20}} />
             {courseData?.tags?.length > 0 ? (
               <FlatList
@@ -365,46 +366,58 @@ const CourseDetail = ({navigation, dispatch, route}) => {
               />
             )}
             <View style={styles.ratingCotainer}>
-              <Rating height={60} width={60}></Rating>
-              <View>
-                <MyText
-                  text={'Rating & Review'}
-                  fontFamily="medium"
-                  fontSize={14}
-                  textAlign="center"
-                  textColor={'black'}
-                />
-                <MyText
-                  text={`${courseData.rating}(${courseData?.review_list?.length})`}
-                  fontFamily="medium"
-                  fontSize={14}
-                  textColor={YELLOW}
-                />
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  columnGap: 10,
+                }}>
+                <Rating height={60} width={60} />
+                <View>
+                  <MyText
+                    text={'Rating & Review'}
+                    fontFamily="medium"
+                    fontSize={14}
+                    textAlign="center"
+                    textColor={'black'}
+                  />
+                  <MyText
+                    text={`${courseData.rating}(${courseData?.review_list?.length})`}
+                    fontFamily="medium"
+                    fontSize={14}
+                    textColor={YELLOW}
+                  />
+                </View>
               </View>
-              {courseData.is_reviewed ? (
-                <TouchableOpacity
-                  onPress={() => setShowEditReview(true)}
-                  style={styles.buttonReview}>
-                  <MyText
-                    text={'Edit your Review'}
-                    fontFamily="medium"
-                    fontSize={14}
-                    textAlign="center"
-                    textColor={'white'}
-                  />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  onPress={() => setShowReviewPopup(true)}
-                  style={styles.buttonReview}>
-                  <MyText
-                    text={'Write your Review'}
-                    fontFamily="medium"
-                    fontSize={14}
-                    textAlign="center"
-                    textColor={'white'}
-                  />
-                </TouchableOpacity>
+
+              {courseData.purchased && (
+                <>
+                  {courseData.is_reviewed ? (
+                    <TouchableOpacity
+                      onPress={() => setShowEditReview(true)}
+                      style={styles.buttonReview}>
+                      <MyText
+                        text={'Edit your Review'}
+                        fontFamily="medium"
+                        fontSize={14}
+                        textAlign="center"
+                        textColor={'white'}
+                      />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      onPress={() => setShowReviewPopup(true)}
+                      style={styles.buttonReview}>
+                      <MyText
+                        text={'Write your Review'}
+                        fontFamily="medium"
+                        fontSize={14}
+                        textAlign="center"
+                        textColor={'white'}
+                      />
+                    </TouchableOpacity>
+                  )}
+                </>
               )}
             </View>
             {courseData?.review_list?.length > 0 ? (
