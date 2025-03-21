@@ -9,10 +9,11 @@ import AuthStack from 'navigation/AuthStack';
 import Toast from 'react-native-toast-message';
 //import : globals
 //import : redux
+
 import {Provider} from 'react-redux';
 import {store} from './src/reduxTooklit/Store';
 import { StripeProvider } from "@stripe/stripe-react-native"
-
+import Drawer from './src/navigation/Drawer/Drawer'
 const App = () => {
   //function
   const publishable =
@@ -25,7 +26,8 @@ const App = () => {
     <StripeProvider publishableKey={'pk_test_51QyUTWAld9cSunswPAQF50ugZhqbxAdjEzISyxeOnKk7CcFuEZZErc9cAqCwC3AsaBM7xmb1KvbtlA8CsJAWuIlt00oXjFil7t'}>
       <Provider store={store}>
         <NavigationContainer ref={navigationRef}>
-          <AuthStack />
+          {/* <AuthStack /> */}
+          <Drawer/>
           <Toast />
         </NavigationContainer>
       </Provider>

@@ -89,7 +89,7 @@ useEffect(() => {
   setTimeout(() => setShowCard(true), 6000);
 }, []);
   useEffect(() => {
-   {console.log('klklklkk---')}
+
     getData();
     getHome()
   }, []);
@@ -110,13 +110,13 @@ useEffect(() => {
     setShowLoader(true);
     try {
       const token = await AsyncStorage.getItem('token');
-      {console.log('my token for data--->>',token)}
+     
       const {response, status} = await Service.getAPI(
         API_Endpoints.cart_detail,
         token,
       );
       if (status) {
-        console.log('my response data for card list item--->>>>',response)
+        
         setScreenData(response);
         }
      else {
@@ -133,14 +133,14 @@ useEffect(() => {
   const getHome = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
-      {console.log('my token for data--->>',token)}
+   
       const {response, status} = await Service.getAPI(
         API_Endpoints.card_list,
         token,
       );
-      {console.log('my get homee--->>>',response)}
+      
       if (status) {
-      console.log('my response data for card list--->>>>',response?.data)
+     
       }
     } catch (error) {
       console.error('error in getHome', error);
@@ -152,7 +152,7 @@ useEffect(() => {
     routes: [{ name: ScreenNames.BOTTOM_TAB }],
   });
   const handlePayClick = async (order_id, total_amount, stripeToken,cardID) => {
-   {console.log('handel pa---->>>>',order_id, total_amount, stripeToken,cardID)} 
+   
     setShowLoader(true);
     try {
       const myData = new FormData();
@@ -166,7 +166,7 @@ useEffect(() => {
              myData,
              token,
            );
-           {console.log('jkjkj my response hadle-->>>',response)}
+      
       if (status) {
              Toast.show({
                type: 'success',
@@ -200,8 +200,7 @@ useEffect(() => {
     try {
      
       const res = await createToken({ card, type: 'Card' });
-     {console.log(' stripe tokennn0----->>>',res?.token?.card?.id
-     )}
+    
       // return
       if (res?.error) {
         if (res?.error?.message) {
@@ -226,11 +225,9 @@ useEffect(() => {
              '',
              token,
            );
-           {console.log('my order api mrespinse',response?.message)}
+         
     if (status) {
-     {console.log('did it reach here', response?.data?.order_id, response?.data?.total_amount,
-      res?.token?.id,
-      res?.token?.card?.id)}
+    
       handlePayClick(
         response?.data?.order_id,
         response?.data?.total_amount,
