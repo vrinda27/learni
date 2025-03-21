@@ -28,6 +28,7 @@ const Home = ({navigation}) => {
     courses: [],
     products: [],
     sub_categories: [],
+    suggested_courses: [],
   });
   const [showLoader, setShowLoader] = useState(false);
   const [showBaseLoader, setShowBaseLoader] = useState(false);
@@ -41,8 +42,8 @@ const Home = ({navigation}) => {
   const gotoCourseDetails = id => {
     navigation.navigate(ScreenNames.COURSE_DETAIL, {id});
   };
-  const gotoCourseListing = () => {
-    navigation.navigate(ScreenNames.COURSE_LISTING);
+  const gotoCourseListing = data => {
+    navigation.navigate(ScreenNames.COURSE_LISTING, {data});
   };
   //function : imp func
   const initLoader = async () => {
@@ -58,14 +59,13 @@ const Home = ({navigation}) => {
         API_Endpoints.home,
         token,
       );
-      console.log('response home', response);
-
       if (status) {
         setHomeData({
           categories: response?.data?.category,
           courses: response?.data?.course,
           products: response?.data?.product,
           sub_categories: response?.data?.subCategory,
+          suggested_courses: response.data.suggested_course,
         });
       }
     } catch (error) {
@@ -122,7 +122,9 @@ const Home = ({navigation}) => {
                     <View>
                       <ViewAll
                         text="Trending Courses"
-                        onPress={() => gotoCourseListing()}
+                        onPress={() =>
+                          gotoCourseListing({title: 'Trending', trending: true})
+                        }
                         style={{marginTop: 4}}
                       />
                       <FlatList
@@ -155,15 +157,20 @@ const Home = ({navigation}) => {
                   )}
                 </View>
                 <View>
-                  {homeData?.courses?.length > 0 ? (
+                  {homeData?.suggested_courses?.length > 0 ? (
                     <View>
                       <ViewAll
                         text="Suggested Courses"
-                        onPress={() => gotoCourseListing()}
+                        onPress={() =>
+                          gotoCourseListing({
+                            title: 'Suggested',
+                            trending: false,
+                          })
+                        }
                         style={{marginTop: 25}}
                       />
                       <FlatList
-                        data={homeData?.courses || []}
+                        data={homeData?.suggested_courses || []}
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         style={{marginTop: 15}}

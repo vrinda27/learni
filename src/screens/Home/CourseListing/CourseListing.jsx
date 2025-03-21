@@ -1,6 +1,13 @@
 //import : react component
-import React, {useEffect, useState} from 'react';
-import {View, SafeAreaView, FlatList, StyleSheet} from 'react-native';
+import React, {useCallback, useRef, useEffect, useState} from 'react';
+import {
+  View,
+  SafeAreaView,
+  FlatList,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
 import {useIsFocused} from '@react-navigation/native';
 //import : custom components
 import CourseCard from 'component/CourseCard/CourseCard';
@@ -13,6 +20,7 @@ import Loader from 'component/loader/Loader';
 //import : third party
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {debounce} from 'lodash';
 //import : utils
 import Background from 'assets/svgs/background.svg';
 import {API_Endpoints} from 'global/Service';
@@ -23,9 +31,13 @@ import {styles} from './CourseListingStyle';
 import CourseFilter from 'modals/CourseFilter/CourseFilter';
 //import : redux
 
-const CourseListing = ({navigation}) => {
+const CourseListing = ({navigation, route}) => {
   //variables
   const isFocused = useIsFocused();
+  const {data} = route.params;
+  const currentAppliedFilter = useRef('');
+  console.log(currentAppliedFilter.current);
+
   //hook : states
   const [coursesData, setCoursesData] = useState([]);
   //hook : modal states
@@ -43,13 +55,17 @@ const CourseListing = ({navigation}) => {
     await getCourses();
     setShowBaseLoader(false);
   };
-
+  const debouncedSearch = useCallback(
+    debounce(query => {
+      getCourses({name: query});
+    }, 500), // 500ms delay
+    [],
+  );
   const searchHandle = text => {
     setTempSearchedText(text);
-    const data = {
-      name: text,
-    };
+    debouncedSearch(text);
   };
+
   //function : serv func
   const addToWishlist = async id => {
     try {
@@ -77,11 +93,15 @@ const CourseListing = ({navigation}) => {
       setShowLoader(false);
     }
   };
-  const getCourses = async (data = {}) => {
+  const getCourses = async (filterData = {}) => {
     try {
       const paramsData = {
-        highlow: data.highlow || '',
-        ratings: data.ratings || '',
+        name: filterData.name || '',
+        highlow: filterData.highlow || '',
+        ratings: filterData.ratings || '',
+        category_id: filterData.category_id || '',
+        sub_category_id: filterData.sub_category_id || '',
+        ...data,
       };
       const token = await AsyncStorage.getItem('token');
       const {response, status} = await Service.getAPI(
@@ -89,8 +109,6 @@ const CourseListing = ({navigation}) => {
         token,
         paramsData,
       );
-      console.log('response', response);
-
       if (status) {
         setCoursesData(response?.data?.data);
       }
@@ -115,71 +133,72 @@ const CourseListing = ({navigation}) => {
         <Header
           showBackButton={true}
           showNotification={false}
-          heading={'Trending Courses'}
+          heading={`${data.title} Courses`}
           showCart={false}
           showGridIcon={false}
           showLearneLogo={false}
         />
-        <FlatList
-          data={coursesData || []}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({item, index}) => {
-            return (
-              <CourseCard
-                item={item}
-                heartPress={() => addToWishlist(item.id)}
-                onPress={() => gotoCourseDetails(item.id)}
+        <View style={styles.mainView}>
+          <SearchWithIcon
+            value={tempSearchedText}
+            placeholder={'Search by course or product name'}
+            onChangeText={text => searchHandle(text)}
+            icon={
+              <MyIcon.Ionicons name="filter" size={28} color={Colors.WHITE} />
+            }
+            onPress={() => setShowFilter(true)}
+            placeholderTextColor={Colors.GRAY}
+          />
+          {Object.keys(currentAppliedFilter?.current).length > 0 && (
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                columnGap: 10,
+                marginTop: 10,
+                flexWrap: 'wrap',
+                rowGap: 10,
+              }}>
+              <FilterItem
+                title={'Categories: '}
+                value={currentAppliedFilter?.current?.category_name}
               />
-            );
-          }}
-          onEndReachedThreshold={0.1}
-          nestedScrollEnabled={true} // Allows inner scrolling
-          contentContainerStyle={{
-            paddingHorizontal: 16, // Equal left-right padding
-            paddingBottom: 50, // Ensure enough space to scroll to bottom
-            flexGrow: 1, // Ensures FlatList takes full height
-          }}
-          ListHeaderComponent={() => (
-            <View style={{marginVertical: 12}}>
-              <SearchWithIcon
-                value={tempSearchedText}
-                disabled
-                placeHolder={'Search by course or product name'}
-                onChangeText={text => searchHandle(text)}
-                icon={
-                  <MyIcon.Ionicons
-                    name="filter"
-                    size={28}
-                    color={Colors.WHITE}
-                  />
-                }
-                onPress={() => setShowFilter(true)}
-                placeholderTextColor={'#8F93A0'}
+              <FilterItem
+                title={'Sub Categories: '}
+                value={currentAppliedFilter?.current?.sub_category_name}
+              />
+              <FilterItem
+                title={'Price: '}
+                value={currentAppliedFilter?.current?.highlow}
               />
             </View>
           )}
-          ListFooterComponent={
-            () =>
-              coursesData.length === 0 ? (
-                <MyText
-                  text={`No Trending Courses found`}
-                  fontFamily="medium"
-                  fontSize={18}
-                  textColor={'#455A64'}
-                  style={{textAlign: 'center', marginTop: 20}}
+          <FlatList
+            data={coursesData || []}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item, index}) => {
+              return (
+                <CourseCard
+                  item={item}
+                  heartPress={() => addToWishlist(item.id)}
+                  onPress={() => gotoCourseDetails(item.id)}
                 />
-              ) : (
-                <View style={{height: 20}} />
-              ) // Empty space for better scrolling
-          }
-        />
-        <SizeBox height={30} />
+              );
+            }}
+            onEndReachedThreshold={0.1}
+            contentContainerStyle={{
+              paddingBottom: '50%',
+            }}
+          />
+        </View>
+
         <Loader visible={showLoader} />
         <CourseFilter
           visible={showFilter}
           setVisibility={setShowFilter}
           nextFunction={filterData => {
+            currentAppliedFilter.current = filterData;
             getCourses(filterData);
           }}
         />
@@ -189,3 +208,20 @@ const CourseListing = ({navigation}) => {
 };
 
 export default CourseListing;
+
+const FilterItem = ({title, value}) => {
+  return (
+    <View
+      style={{
+        backgroundColor: '#ede5ca',
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf: 'flex-start',
+        padding: 5,
+        borderRadius: 10,
+      }}>
+      <MyText text={title} />
+      <MyText text={value} />
+    </View>
+  );
+};

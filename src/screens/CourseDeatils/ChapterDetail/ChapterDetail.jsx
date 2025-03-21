@@ -1,5 +1,5 @@
 //import : react component
-import React, {useState, useEffect} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {View, TouchableOpacity, FlatList, Image} from 'react-native';
 //import : custom components
 import Header from 'component/Header/Header';
@@ -23,23 +23,34 @@ import {Colors, MyIcon, ScreenNames, Service} from 'global/index';
 //import : styles
 import {styles} from './ChapterDetailStyle';
 //import : modals
+import QuizResult from 'modals/QuizResult/QuizResult';
 //import : redux
 
 const ChapterDetail = ({route, navigation}) => {
   //variables
   const {data} = route.params;
   const isFocused = useIsFocused();
-
+  const quizInfo = useRef({});
   //hook : states
   const [chapterData, setChapterData] = useState({});
   const [selectedItem, setSelectedItem] = useState({});
   const [showAppLoader, setShowAppLoader] = useState(false);
+  //hook : modal states
+  const [showQuizResult, setShowQuizResult] = useState(false);
   //function : nav func
-  const openQuiz = item => {
+  const gotoWebViewPage = url => {
     navigation.navigate(ScreenNames.WEB_VIEW_PAGE, {
-      url: item.quiz_url,
+      url: url,
       data: data,
     });
+  };
+  const openQuiz = item => {
+    if (selectedItem.is_quiz_attempted) {
+      quizInfo.current = item;
+      setShowQuizResult(true);
+    } else {
+      gotoWebViewPage(item.quiz_url);
+    }
   };
   const openSurvey = item => {
     navigation.navigate(ScreenNames.WEB_VIEW_PAGE, {
@@ -68,8 +79,6 @@ const ChapterDetail = ({route, navigation}) => {
       const token = await AsyncStorage.getItem('token');
       const endPoint = `${API_Endpoints.lesson_details}/${data.lesson_id}`;
       const {response, status} = await Service.getAPI(endPoint, token);
-      console.log('RESPONSE', response);
-
       if (status) {
         setSelectedItem(response?.data?.chapter_steps[0]);
         setChapterData(response.data);
@@ -240,6 +249,14 @@ const ChapterDetail = ({route, navigation}) => {
         </View>
       </ScrollView>
       <Loader visible={showAppLoader} />
+      <QuizResult
+        visible={showQuizResult}
+        setVisibility={setShowQuizResult}
+        data={quizInfo.current}
+        nextFunction={() => {
+          gotoWebViewPage(selectedItem.quiz_url);
+        }}
+      />
     </View>
   );
 };

@@ -7,6 +7,7 @@ import {Dimensions} from 'react-native';
 // export const getHeight = (x) => {
 //   return hp(x / 800 * 100)
 // }
+export const {width, height} = Dimensions.get('screen');
 export const price_filter_value = [
   {
     id: '1',

@@ -23,8 +23,6 @@ const ChapterContent = ({
 }) => {
   //variables
   const navigation = useNavigation();
-  console.log(item);
-
   //function : nav func
   const gotoViewPdf = () => {
     navigation.navigate(ScreenNames.VIEW_PDF, {url});
