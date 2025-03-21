@@ -126,7 +126,7 @@ const Cart = ({navigation, dispatch}) => {
       <ScrollView style={styles.mainView}>
         <Background style={StyleSheet.absoluteFill} />
         {cartListData?.items?.length > 0 ? (
-          <View>
+          <View style={{marginTop:20,}}>
             <FlatList
               data={cartListData?.items}
               keyExtractor={(item, index) => index.toString()}
@@ -138,13 +138,13 @@ const Cart = ({navigation, dispatch}) => {
               <ViewAll
                 text="Order Summary"
                 showSeeAll={false}
-                style={{marginTop: 41, marginHorizontal: 15}}
+                style={{marginTop: 41, marginHorizontal: 5}}
               />
               <View
                 style={[
                   styles.summaryContainer,
                   {
-                    width: dimensions.SCREEN_WIDTH * 0.95,
+                    width: dimensions.SCREEN_WIDTH * 0.90,
                     alignSelf: 'center',
                     borderWidth: 1,
                     borderColor: Colors.LIGHT_PURPLE,

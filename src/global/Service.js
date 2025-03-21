@@ -31,13 +31,16 @@ export const API_Endpoints = {
   my_rating: 'my-rating',
   mark_as_complete: 'mark-as-complete',
   edit_rating: 'edit-rating',
+  upload_assignment: 'upload-assignment',
+  lesson_details: 'lesson-details',
+  assignment_details: 'assignment-details',
   add_card: 'add-card',
   save_order: 'save-order',
   buy_now: 'buy-now',
   card_list: 'card-list',
-  upload_assignment: 'upload-assignment',
-  lesson_details: 'lesson-details',
-  assignment_details: 'assignment-details',
+  cart_detail: 'cart-details',
+  my_order: 'my-order?type=1',
+  order_detail: 'order-details',
 };
 
 //function : imp function
