@@ -41,6 +41,7 @@ export const API_Endpoints = {
   cart_detail: 'cart-details',
   my_order: 'my-order?type=1',
   order_detail: 'order-details',
+  my_courses: 'my-courses',
 };
 
 //function : imp function

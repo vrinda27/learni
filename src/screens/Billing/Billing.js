@@ -1,60 +1,39 @@
 //import : react components
-import React, {useEffect, useRef, useState} from 'react';
-import {
-  View,
-  Switch,
-  TouchableOpacity,
-  Dimensions,
-  Text,
-  Image,
-  FlatList,
-  ActivityIndicator,
-  Alert,
-  ImageBackground,
-  TextInput,
-  SafeAreaView,
-  StatusBar,
-  Keyboard,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, TouchableOpacity, SafeAreaView, ScrollView} from 'react-native';
+import {CommonActions} from '@react-navigation/native';
 //import : custom components
 import MyText from 'component/MyText/MyText';
 import Loader from 'component/loader/Loader';
-//import : third parties
-// import { ScrollView } from 'react-native-virtualized-view';
-import LinearGradient from 'react-native-linear-gradient';
-import Toast from 'react-native-toast-message';
-//import : global
-
-//import : styles
-import {styles} from './BillingStyle';
-//import : modal
-//import : redux
-import {connect, useSelector} from 'react-redux';
-import {dimensions} from 'global/Constants';
 import Divider from 'component/Divider/Divider';
 import MyButton from 'component/MyButton/MyButton';
-
 import ViewAll from 'component/ViewAll/ViewAll';
-import SuccessfulyPurchased from 'modals/SuccessfulyPurchased.js/SuccessfulyPurchased';
-import {CommonActions} from '@react-navigation/native';
-import AddCard from 'modals/AddCard/AddCard';
-import {ScreenNames, Service, Colors} from 'global/index';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Background from 'assets/svgs/background.svg';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Header from 'component/Header/Header';
+//import : third parties
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {CardField, createToken} from '@stripe/stripe-react-native';
+//import : utils
+import {dimensions} from 'global/Constants';
+import {ScreenNames, Service, Colors} from 'global/index';
+//import : third parties
+import Toast from 'react-native-toast-message';
+//import : global
 import {API_Endpoints} from 'global/Service';
 import {MEDIUM} from 'global/Fonts';
 import {GREEN, WHITE} from 'global/Color';
+//import : styles
+import {styles} from './BillingStyle';
+//import : modal
+import SuccessfulyPurchased from 'modals/SuccessfulyPurchased.js/SuccessfulyPurchased';
+import AddCard from 'modals/AddCard/AddCard';
+//import : redux
+import {connect, useSelector} from 'react-redux';
+
 const Billing = ({navigation, dispatch}) => {
   //variables
-  const LINE_HEIGTH = 25;
   //variables : redux
   const userToken = useSelector(state => state.user.userToken);
-  const userInfo = useSelector(state => state.user.userInfo);
   const [showLoader, setShowLoader] = useState(false);
   const [showSuccessfulyPurchasedModal, setShowSuccessfulyPurchasedModal] =
     useState(false);
@@ -80,10 +59,6 @@ const Billing = ({navigation, dispatch}) => {
   const [refreshing, setRefreshing] = useState(false);
   const [showCard, setShowCard] = useState(true);
 
-  useEffect(() => {
-    getData();
-    getHome();
-  }, []);
   const checkcon = () => {
     getData();
     getHome();
@@ -119,21 +94,6 @@ const Billing = ({navigation, dispatch}) => {
     }
     setShowLoader(false);
   };
-  const getHome = async () => {
-    try {
-      const token = await AsyncStorage.getItem('token');
-
-      const {response, status} = await Service.getAPI(
-        API_Endpoints.card_list,
-        token,
-      );
-
-      if (status) {
-      }
-    } catch (error) {
-      console.error('error in getHome', error);
-    }
-  };
 
   const resetIndexGoToUserBottomTab = CommonActions.reset({
     index: 1,
@@ -160,10 +120,10 @@ const Billing = ({navigation, dispatch}) => {
       );
 
       if (status) {
-        Toast.show({
-          type: 'success',
-          text1: response?.message,
-        });
+        // Toast.show({
+        //   type: 'success',
+        //   text1: response?.message,
+        // });
         setMadePayment(true);
 
         openSuccessfulyPurchasedModal();
@@ -186,10 +146,10 @@ const Billing = ({navigation, dispatch}) => {
     }
     const postData = new FormData();
     // postData.append('card_id', 5);
-
     setShowLoader(true);
     try {
       const res = await createToken({card, type: 'Card'});
+      console.log('res', res);
 
       // return
       if (res?.error) {
@@ -244,6 +204,8 @@ const Billing = ({navigation, dispatch}) => {
       //   });
       // }
     } catch (error) {
+      console.error('error in onConfirm', error);
+
       setShowLoader(false);
     } finally {
       setShowLoader(false);
@@ -286,7 +248,10 @@ const Billing = ({navigation, dispatch}) => {
     setCardList([...updatedData]);
     // setSelectedCard(id);
   };
-
+  //hook : useEffect
+  useEffect(() => {
+    getData();
+  }, []);
   //UI
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
@@ -617,7 +582,7 @@ const Billing = ({navigation, dispatch}) => {
           setVisibility={setShowAddCardModal}
           // setShowLoader={setShowLoader}
           userToken={userToken}
-          callFunctionAfterAddingcard={getHome}
+          callFunctionAfterAddingcard={() => {}}
         />
       </ScrollView>
       <Loader visible={showLoader} />
@@ -628,84 +593,3 @@ const mapDispatchToProps = dispatch => ({
   dispatch,
 });
 export default connect(null, mapDispatchToProps)(Billing);
-
-// // const getCardImage = type => {
-// //   if (type === 'VISA') {
-// //     return require('assets/images/visa.png');
-// //   } else if (type === 'MASTERCARD') {
-// //     return require('assets/images/mastercard.png');
-// //   } else {
-// //     return require('assets/images/mastercard.png');
-// //   }
-// // };
-// import React, { useState } from "react";
-// import { View, Button, Alert } from "react-native";
-// export default function Billing() {
-//   const { createPaymentMethod } = useStripe();
-//   const [cardDetails, setCardDetails] = useState(null);
-//   const [loading, setLoading] = useState(false);
-//   const handlePayPress = async () => {
-
-//     if (!cardDetails?.complete) {
-//       Alert.alert("Invalid Card", "Please enter valid card details.");
-//       return;
-//     }
-
-//     setLoading(true);
-
-//     try {
-//       const { paymentMethod, error } = await createPaymentMethod({
-//         paymentMethodType: "Card",  // ✅ Ensure the type is set
-//         card: cardDetails,
-//       });
-
-//       if (error) {
-//         console.error("❌ Payment Error:", error);
-//         Alert.alert("Payment Failed", error.message);
-//         setLoading(false);
-//         return;
-//       }
-
-//       Alert.alert("Success", `Payment Method Created: ${paymentMethod.id}`);
-
-//       // Send paymentMethod.id to backend
-//       // processPayment(paymentMethod.id);
-//     } catch (err) {
-//       console.error("🔥 Unexpected Error:", err);
-//       Alert.alert("Unexpected Error", err.message);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-//   ;
-//   const processPayment = async (paymentMethodId) => {
-//     try {
-//       const response = await fetch("https://your-server.com/pay", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({ paymentMethodId }),
-//       });
-//       const data = await response.json();
-//       if (data.success) {
-//         Alert.alert("Payment Successful", "Your payment was processed!");
-//       } else {
-//         Alert.alert("Payment Failed", data.message);
-//       }
-//     } catch (error) {
-//       Alert.alert("Server Error", "Something went wrong");
-//     }
-//   };
-//   return (
-//     <View style={{ padding: 20 }}>
-//       <CardField
-//         postalCodeEnabled={true}
-//         onCardChange={(cardDetails) => setCardDetails(cardDetails)}
-//         style={{
-//           height: 50,
-//           marginVertical: 10,
-//         }}
-//       />
-//       <Button title="Pay" onPress={handlePayPress} disabled={loading} />
-//     </View>
-//   );
-// }

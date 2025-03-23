@@ -1,6 +1,13 @@
 //import : react component
 import React, {useEffect, useState} from 'react';
-import {View, FlatList, TouchableOpacity,SafeAreaView,ScrollView,StyleSheet} from 'react-native';
+import {
+  View,
+  FlatList,
+  TouchableOpacity,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+} from 'react-native';
 //import : custom components
 import Header from 'component/Header/Header';
 import MyText from 'component/MyText/MyText';
@@ -15,6 +22,9 @@ import RightSvg from 'assets/svgs/right-arrow.svg';
 import Background from 'assets/svgs/background.svg';
 //import : styles
 import {styles} from './SubCategoriesStyle';
+import NoDataFound from 'component/NoDataFound/NoDataFound';
+import {responsiveHeight} from 'react-native-responsive-dimensions';
+import ListLoader from 'component/SkeltonLoader/ListLoader';
 //import : modals
 //import : redux
 
@@ -23,6 +33,7 @@ const SubCategories = ({route, navigation}) => {
   const {data} = route.params;
   //hook : states
   const [subCategoriesData, setSubCategoriesData] = useState([]);
+  const [loader, setLoader] = useState(false);
   //function : nav func
   const gotoCourseList = postData => {
     navigation.navigate(ScreenNames.COURSE_LIST, {data: postData});
@@ -30,6 +41,7 @@ const SubCategories = ({route, navigation}) => {
   //function : serv func
   const getSubCategories = async (name = '') => {
     try {
+      setLoader(true);
       const token = await AsyncStorage.getItem('token');
       const paramsData = {
         category_id: data.id,
@@ -41,10 +53,13 @@ const SubCategories = ({route, navigation}) => {
         paramsData,
       );
       if (status) {
+        console.log('qwer hit');
         setSubCategoriesData(response.data);
       }
     } catch (error) {
       console.error('error in getHome', error);
+    } finally {
+      setLoader(false);
     }
   };
   //hook : useEffect
@@ -56,19 +71,18 @@ const SubCategories = ({route, navigation}) => {
 
   //UI
   return (
-    <SafeAreaView style={{flex: 1,backgroundColor:'white'}}>
-    <ScrollView>
-      <Background style={StyleSheet.absoluteFill} />
+    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+      <ScrollView>
+        <Background style={StyleSheet.absoluteFill} />
 
-      <Header
-        showNotification={false}
-        heading={data.name}
-        showLearneLogo={false}
-        showCart={false}
-        showBackButton={true}
-        ></Header>
-    {/* <View style={styles.container}> */}
-      {/* <Header
+        <Header
+          showNotification={false}
+          heading={data.name}
+          showLearneLogo={false}
+          showCart={false}
+          showBackButton={true}></Header>
+        {/* <View style={styles.container}> */}
+        {/* <Header
         showBackButton={true}
         heading={data.name}
         showNotification={true}
@@ -76,31 +90,35 @@ const SubCategories = ({route, navigation}) => {
         showLearneLogo={false}
         showGridIcon={false}
       /> */}
-      <View style={styles.mainView}>
-        <SearchWithIcon
-          placeholder="Search by name"
-          onChangeText={text => {
-            getSubCategories(text);
-          }}
-        />
-        <SizeBox height={10} />
-        <FlatList
-          data={subCategoriesData}
-          style={{marginTop:12,alignSelf:'center'}}
-          renderItem={({item, index}) => {
-            return (
-              <SubCategoriesCard
-                name={item.name}
-                onPress={() => gotoCourseList(item)}
-              />
-            );
-          }}
-          ItemSeparatorComponent={() => <SizeBox height={10} />}
-          keyExtractor={(item, index) => item + index}
-        />
-      </View>
-    {/* </View> */}
-    </ScrollView>
+        <View style={styles.mainView}>
+          <SearchWithIcon
+            placeholder="Search by name"
+            onChangeText={text => {
+              getSubCategories(text);
+            }}
+          />
+          <SizeBox height={10} />
+          {subCategoriesData?.length > 0 && (
+            <FlatList
+              data={subCategoriesData}
+              style={{marginTop: 12, alignSelf: 'center'}}
+              renderItem={({item, index}) => {
+                return (
+                  <SubCategoriesCard
+                    name={item.name}
+                    onPress={() => gotoCourseList(item)}
+                  />
+                );
+              }}
+              ItemSeparatorComponent={() => <SizeBox height={10} />}
+              keyExtractor={(item, index) => item + index}
+            />
+          )}
+          {subCategoriesData?.length === 0 && <NoDataFound />}
+        </View>
+        {/* </View> */}
+      </ScrollView>
+      {loader && <ListLoader />}
     </SafeAreaView>
   );
 };
@@ -127,8 +145,7 @@ const SubCategoriesCard = ({name, onPress = () => {}}) => {
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 10,
-        alignSelf:'center',
-   
+        alignSelf: 'center',
       }}>
       <MyText text={name} fontSize={14} />
       <RightSvg />

@@ -1,49 +1,25 @@
-import {Colors, ScreenNames, Service} from 'global/index';
+import {Colors} from 'global/index';
 import {StyleSheet} from 'react-native';
-import { dimensions } from 'global/Constants';
 
 export const styles = StyleSheet.create({
-  modal: {
-    justifyContent: 'flex-end',
-    margin: 0,
-    backgroundColor: 'rgba(0,0,0,0.75)',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  modalContent: {
-    width: dimensions.SCREEN_WIDTH,
-    // height: 134,
-    backgroundColor: 'white',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    padding: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#545454',
-  },
   container: {
     flex: 1,
     backgroundColor: Colors.BLACK + '66',
-    borderRadius: 10,
-    // position: 'absolute',
-    // top: '50%',
-    // left: '50%',
   },
   blurView: {
     flex: 1,
   },
   mainView: {
+    backgroundColor: Colors.WHITE,
     padding: 20,
-    // margin: 20,
-    backgroundColor: Colors.BLACK3,
-    borderRadius: 10,
-    alignItems: 'center',
-    alignSelf: 'center',
-    marginBottom: dimensions.SCREEN_WIDTH / 2 - 40,
-    width: 593,
-    height: 117,
-    borderColor: '#545454',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  reviewInput: {
     borderWidth: 1,
+    borderColor: Colors.LIGHT_PURPLE,
+    borderRadius: 10,
+    padding: 5,
+    height: 100,
   },
 });

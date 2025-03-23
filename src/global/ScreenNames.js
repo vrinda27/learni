@@ -37,3 +37,7 @@ export const CHAT_SCREEN = 'CHAT_SCREEN';
 export const COURSE_LISTING = 'COURSE_LISTING';
 
 export const WEB_VIEW_PAGE = 'WEB_VIEW_PAGE';
+
+export const MY_COURSES = 'MY_COURSES';
+
+export const SEARCH = 'SEARCH';

@@ -6,16 +6,10 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
-
-import React, {useState} from 'react';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
 import ArrowLeft from 'assets/images/arrowLeft.svg';
 import Notification from 'assets/images/notification.svg';
-import {
-  DrawerActions,
-  useNavigation,
-  useFocusEffect,
-  CommonActions,
-} from '@react-navigation/native';
 import {
   responsiveFontSize,
   responsiveWidth,
@@ -23,7 +17,10 @@ import {
 import Drawer from 'assets/images/drawer.svg';
 import Logo from 'assets/svgs/logoLearne.svg';
 import Cart from 'assets/images/shoppingBag.svg';
-import {ScreenNames} from 'global/index';
+import {Colors, ScreenNames} from 'global/index';
+import {useSelector} from 'react-redux';
+import {API_Endpoints, GetApiWithToken} from 'global/Service';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Header = ({
   heading,
@@ -43,21 +40,39 @@ const Header = ({
   style,
 }) => {
   const navigation = useNavigation();
-    const openDrawer = () => navigation.dispatch(DrawerActions.openDrawer());
+  const cartCount = useSelector(state => state.count?.cartCount);
+  const focused = useIsFocused();
   const [notificationCount, setNotificationCount] = useState(0);
+
+  useEffect(() => {
+    focused && getNotificationCount();
+  }, [focused]);
+
+  const getNotificationCount = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const response = await GetApiWithToken(API_Endpoints.notification, token);
+      if (response?.data?.status) {
+        setNotificationCount(response?.data?.data?.length);
+      }
+    } catch (err) {
+      console.error('error in getting notification count in header', err);
+    }
+  };
+
   const onPressBackHandler = () => {
     // onPressBack && onPressBack();
     navigation?.goBack();
   };
   const onPressNotificationHandler = () => {
-    // navigation.navigate('Notification');
+    navigation.navigate(ScreenNames.NOTIFICATION);
   };
   const openCart = () => {
-    // navigation.navigate(ScreenNames.CART);
+    navigation.navigate(ScreenNames.CART);
   };
-  // const openDrawer = () => {
-  //   navigation.openDrawer();
-  // };
+  const openDrawer = () => {
+    navigation.openDrawer();
+  };
 
   // Update notification count on screen focus
 
@@ -68,9 +83,15 @@ const Header = ({
         style,
         !gradient && {
           flexDirection: 'row',
-          height: 84,
+          // height: 114,
           backgroundColor: 'white',
           justifyContent: 'space-between',
+          shadowColor: 'rgba(0,0,0,0.2)',
+          shadowOffset: {width: 0, height: 4},
+          shadowOpacity: 0.3,
+          shadowRadius: 4,
+          // Android Shadow
+          elevation: 5,
         },
       ]}>
       <>
@@ -104,15 +125,44 @@ const Header = ({
           {showCart && (
             <TouchableOpacity
               onPress={openCart}
-              style={{marginRight: responsiveWidth(2)}}>
+              style={{position: 'relative', marginRight: responsiveWidth(2)}}>
               <Cart height={24} width={24} />
+              {cartCount > 0 && (
+                <View
+                  style={{
+                    position: 'absolute',
+                    top: -8,
+                    right: -5,
+                    height: 12,
+                    width: 12,
+                    borderRadius: 6,
+                    backgroundColor: Colors.GREEN,
+                  }}
+                />
+              )}
             </TouchableOpacity>
           )}
           {showNotification && (
             <TouchableOpacity
               onPress={onPressNotificationHandler}
-              style={{marginLeft: responsiveWidth(showCart ? 0 : 13)}}>
+              style={{
+                position: 'relative',
+                marginLeft: responsiveWidth(showCart ? 0 : 13),
+              }}>
               <Notification height={24} width={24} />
+              {notificationCount > 0 && (
+                <View
+                  style={{
+                    position: 'absolute',
+                    top: -8,
+                    right: -5,
+                    height: 12,
+                    width: 12,
+                    borderRadius: 6,
+                    backgroundColor: '#FF8615',
+                  }}
+                />
+              )}
             </TouchableOpacity>
           )}
         </View>
@@ -176,7 +226,7 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1,
-    height: 64,
+    minHeight: 64,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',

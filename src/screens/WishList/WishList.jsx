@@ -15,10 +15,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //import : utils
 import Background from 'assets/svgs/background.svg';
 import {API_Endpoints} from 'global/Service';
-import {Service} from 'global/index';
+import {ScreenNames, Service} from 'global/index';
 //import : styles
 import {styles} from './WishListStyle';
 import ListLoader from 'component/SkeltonLoader/ListLoader';
+import NoDataFound from 'component/NoDataFound/NoDataFound';
 //import : modals
 //import : redux
 
@@ -80,6 +81,8 @@ const WishList = ({navigation}) => {
       );
       if (status) {
         setWishlistData(response.data);
+      }else{
+        setWishlistData([]);
       }
     } catch (error) {
       console.error('error in getWishlist', error);
@@ -91,6 +94,10 @@ const WishList = ({navigation}) => {
 
     return () => {};
   }, [isFocused]);
+
+  const gotoCourseDetails = id => {
+      navigation.navigate(ScreenNames.COURSE_DETAIL, {id});
+    };
 
   //UI
   if (showBaseLoader) {
@@ -136,13 +143,14 @@ const WishList = ({navigation}) => {
           ListFooterComponent={
             () =>
               wishlistData.length === 0 ? (
-                <MyText
-                  text={`No Trending Courses found`}
-                  fontFamily="medium"
-                  fontSize={18}
-                  textColor={'#455A64'}
-                  style={{textAlign: 'center', marginTop: 20}}
-                />
+                // <MyText
+                //   text={`No Trending Courses found`}
+                //   fontFamily="medium"
+                //   fontSize={18}
+                //   textColor={'#455A64'}
+                //   style={{textAlign: 'center', marginTop: 20}}
+                // />
+                <NoDataFound/>
               ) : (
                 <View style={{height: 20}} />
               ) // Empty space for better scrolling

@@ -85,8 +85,11 @@ const EditProfile = ({route, navigation}) => {
     <View style={styles.container}>
       <Header
         showBackButton={true}
-        showNotification={true}
+        // showNotification={true}
         showGridIcon={false}
+        showCart={false}
+        showLearneLogo={false}
+        heading="Edit Profile"
       />
       <ScrollView>
         <View style={styles.mainView}>
@@ -105,6 +108,7 @@ const EditProfile = ({route, navigation}) => {
           />
 
           <MyTextInput
+            disabled={true}
             placeholder="Email Address"
             value={editProfileData.email}
             leftIcon={<EmailLogo />}

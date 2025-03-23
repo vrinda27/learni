@@ -35,6 +35,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ScreenNames, Service} from 'global/index';
 import {API_Endpoints} from 'global/Service';
 import CourseCard from 'component/CourseCard/CourseCard';
+import FilterIcon from 'assets/images/settingFilter.svg';
 
 //import : modal
 //import : redux
@@ -50,6 +51,8 @@ import Cross from 'assets/images/closecircle.svg';
 // import { shareItemHandler } from '../../../global/globalMethod';
 import {responsiveHeight} from 'react-native-responsive-dimensions';
 import {dimensions} from 'global/Constants';
+import CourseDetailLoader from 'component/SkeltonLoader/CourseDetailLoader';
+import NoDataFound from 'component/NoDataFound/NoDataFound';
 // import defaultImg from 'assets/images/profilePerson.svg';
 
 let timeoutId;
@@ -93,14 +96,11 @@ const CourseList = ({navigation, dispatch, route}) => {
   const [showModal, setShowModal] = useState({isVisible: false, data: null});
   const [refreshing, setRefreshing] = useState(false);
   const [applyCheck, setApplyCheck] = useState(false);
-  const [filterParams, setFilterParams] = useState(paramsData); // ✅ New state for filters
-
   //hook : pagination states
   const [page, setPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [page1, setPage1] = useState(1);
   const [lastPage1, setLastPage1] = useState(1);
-  const [refresh, setRefresh] = useState(false);
   const [paginationDetails, setPaginationDetails] = useState({
     last_page_no: 1,
     current_page: 1,
@@ -121,7 +121,7 @@ const CourseList = ({navigation, dispatch, route}) => {
   };
   const initLoader = async () => {
     setShowLoader(true);
-    // await getCourses();
+    await getCourses();
     await courseCategories();
     setShowLoader(false);
   };
@@ -161,7 +161,7 @@ const CourseList = ({navigation, dispatch, route}) => {
     setSelectedPriceFilter('');
     setTempSelectedPriceFilter('');
     setSelectedRatingValues('');
-    setTempSelectedRatingValues([]);
+    setTempSelectedRatingValues('');
     setApplyCheck(false);
     initLoader();
   }, [focused]);
@@ -174,7 +174,7 @@ const CourseList = ({navigation, dispatch, route}) => {
       setSelectedPriceFilter('');
       setTempSelectedPriceFilter('');
       setSelectedRatingValues('');
-      setTempSelectedRatingValues([]);
+      setTempSelectedRatingValues('');
       setPage(1);
       setLastPage(1);
       setPage1(1);
@@ -203,72 +203,28 @@ const CourseList = ({navigation, dispatch, route}) => {
     });
   }, []);
   let paramsData = {}; // Global variable to store filter params
-  // const getCourses = async (searchedName = '') => {
-  //   try {
-  //     paramsData = {
-  //       ...paramsData,
-  //       name: searchedName,
-  //       sub_category_id: data.id,
-  //     };
-  //     const token = await AsyncStorage.getItem('token');
-
-  //     const {response, status} = await Service.getAPI(
-  //       API_Endpoints.courses,
-  //       token,
-  //       paramsData,
-  //     );
-  //     if (status) {
-  //       setCourseData(response.data?.data);
-  //     }
-  //   } catch (error) {
-  //     console.error('error in getHome', error);
-  //   }
-  // };
-
   const getCourses = async (searchedName = '') => {
     try {
-      setShowLoader(true);
-
-      // Construct params properly
-      const updatedParams = {
-        name: searchedName || '',
-        sub_category_id: data?.id || '',
-        highlow: tempSelectedPriceFilter || '',
-        ratings:
-          tempSelectedRatingValues?.length > 0 ? tempSelectedRatingValues : '',
+      paramsData = {
+        ...paramsData,
+        name: searchedName,
+        sub_category_id: data.id,
       };
-
-      // Extract category IDs
-      const catIds =
-        courseCategries
-          ?.filter(el => tempSelectedCourseCategries?.includes(el?.name))
-          ?.map(el => el?.id) || [];
-
-      // Append multiple tags[]=id dynamically
-      catIds.forEach((id, index) => {
-        updatedParams[`tags[${index}]`] = id;
-      });
-
-      // Fetch API
       const token = await AsyncStorage.getItem('token');
+
       const {response, status} = await Service.getAPI(
         API_Endpoints.courses,
         token,
-        updatedParams,
+        paramsData,
       );
-
       if (status) {
-        setCourseData(response?.data?.data || []);
-        setShowFilterModal(false);
-      } else {
-        setShowLoader(false);
-        return;
+        setCourseData(response?.data?.data);
       }
     } catch (error) {
-      console.error('🚨 Error in getCourses:', error);
+      console.error('error in getHome', error);
+    } finally {
+      setShowLoader(false);
     }
-
-    setShowLoader(false);
   };
 
   const onLike = async (type, id, status) => {
@@ -299,7 +255,7 @@ const CourseList = ({navigation, dispatch, route}) => {
     showLoader && setShowLoader(false);
   };
   const gotoCourseDetails = (id, type) => {
-    navigation.navigate(ScreenNames.COURSE_DETAILS, {id, type});
+    navigation.navigate(ScreenNames.COURSE_DETAIL, {id, type});
   };
   const isFilterApplied = () => {
     if (selectedCourseCategries?.length > 0) {
@@ -514,123 +470,66 @@ const CourseList = ({navigation, dispatch, route}) => {
     setSelectedPriceFilter(tempSelectedPriceFilter);
     setSelectedRatingValues(tempSelectedRatingValues);
   };
-  // const applyFilters = async (searchParam = '') => {
-  //   setCourseData([]);
-  //   setPage(1);
-  //   setLastPage(1);
-  //   setShowLoader(true);
-  //   setOriginalValues();
-  //   const postData = new FormData();
-  //   let catIds = [];
-  //   catIds = courseCategries
-  //     ?.filter(el => tempSelectedCourseCategries?.includes(el?.name))
-  //     ?.map(el => el?.id);
-  //   if (catIds?.length > 0) {
-  //     catIds?.map(el => postData.append('category[]', el));
-  //   }
-  //   if (catIds?.length > 0) {
-  //     catIds?.map(el => (paramsData.category = el)); // Adds multiple category IDs
-  //   }
-  //   if (tempSelectedPriceFilter !== '') {
-  //     // postData.append('highlow', tempSelectedPriceFilter);
-  //     paramsData.highlow = tempSelectedPriceFilter;
-  //   }
-  //   // if (tempSelectedRatingValues?.length > 0) {
-  //   //   tempSelectedRatingValues?.map(el => postData.append('ratings', el));
-  //   // }
-  //   if (tempSelectedRatingValues?.length > 0) {
-  //     paramsData.ratings = [...tempSelectedRatingValues]; // ✅ Save ratings in paramsData as an array
-  //   }
-  //   const isSearchTermExists = searchParam?.toString()?.trim()?.length > 0;
-  //   const isSearchValueExists = searchValue?.toString()?.trim()?.length > 0;
-  //   if (isSearchTermExists || isSearchValueExists) {
-  //     // handling special case: while deleting last character of search, since search state would not update fast, so using searchParam instead of search state (searchValue)
-  //     if (
-  //       searchValue?.toString()?.trim()?.length === 1 &&
-  //       searchParam?.toString()?.trim()?.length === 0
-  //     ) {
-  //       postData.append('title', searchParam?.toString()?.trim());
-  //     } else {
-  //       // preferring to check searchParam first, because it has the most recent search value fast. But it is not always passed, in else case using searchValue
-  //       if (isSearchTermExists) {
-  //         postData.append('title', searchParam?.toString()?.trim());
-  //       } else {
-  //         postData.append('title', searchValue?.toString()?.trim());
-  //       }
-  //     }
-  //   }
-  //   // postData.append('limit', 10);
-  //   try {
-  //     const token = await AsyncStorage.getItem('token');
-  //     const {response, status} = await Service.getAPI(
-  //       API_Endpoints.courses,
-  //       token,
-  //       paramsData,
-  //     );
-  //     setShowFilterModal(false);
-  //     setCourseData(response?.data?.data || []);
-  //     // setParamsData(updatedParams);
-  //     setRefresh(prev => !prev); // ✅ Force re-render
-  //   } catch (error) {
-  //     console.error('error in applyFilters', error);
-  //   }
-  //   setShowLoader(false);
-  // };
-
   const applyFilters = async (searchParam = '') => {
     setCourseData([]);
+    setPage(1);
+    setLastPage(1);
     setShowLoader(true);
     setOriginalValues();
-
-    const updatedFilters = {...filterParams};
-
-    let catIds = courseCategries
+    const postData = new FormData();
+    let catIds = [];
+    catIds = courseCategries
       ?.filter(el => tempSelectedCourseCategries?.includes(el?.name))
       ?.map(el => el?.id);
-
     if (catIds?.length > 0) {
-      updatedFilters.category = catIds;
+      catIds?.map(el => postData.append('category[]', el));
     }
-
+    if (catIds?.length > 0) {
+      catIds?.map(el => (paramsData.category = el)); // Adds multiple category IDs
+    }
     if (tempSelectedPriceFilter !== '') {
-      updatedFilters.highlow = tempSelectedPriceFilter;
+      // postData.append('highlow', tempSelectedPriceFilter);
+      paramsData.highlow = tempSelectedPriceFilter;
     }
-
+    // if (tempSelectedRatingValues?.length > 0) {
+    //   tempSelectedRatingValues?.map(el => postData.append('ratings', el));
+    // }
     if (tempSelectedRatingValues?.length > 0) {
-      updatedFilters.ratings = [...tempSelectedRatingValues];
+      paramsData.ratings = [...tempSelectedRatingValues]; // ✅ Save ratings in paramsData as an array
     }
-
-    if (searchParam.trim().length > 0 || searchValue.trim().length > 0) {
-      updatedFilters.title = searchParam.trim() || searchValue.trim();
+    const isSearchTermExists = searchParam?.toString()?.trim()?.length > 0;
+    const isSearchValueExists = searchValue?.toString()?.trim()?.length > 0;
+    if (isSearchTermExists || isSearchValueExists) {
+      // handling special case: while deleting last character of search, since search state would not update fast, so using searchParam instead of search state (searchValue)
+      if (
+        searchValue?.toString()?.trim()?.length === 1 &&
+        searchParam?.toString()?.trim()?.length === 0
+      ) {
+        postData.append('title', searchParam?.toString()?.trim());
+      } else {
+        // preferring to check searchParam first, because it has the most recent search value fast. But it is not always passed, in else case using searchValue
+        if (isSearchTermExists) {
+          postData.append('title', searchParam?.toString()?.trim());
+        } else {
+          postData.append('title', searchValue?.toString()?.trim());
+        }
+      }
     }
-
+    // postData.append('limit', 10);
     try {
       const token = await AsyncStorage.getItem('token');
-
       const {response, status} = await Service.getAPI(
         API_Endpoints.courses,
         token,
-        updatedFilters,
+        paramsData,
       );
-
-      if (status) {
-        setShowFilterModal(false);
-        setLastPage1(response?.data?.last_page_no);
-
-        setCourseData(() => {
-          return response?.data?.data;
-        });
-
-        setPage1(2); // ✅ Reset page to 2 since first page is fetched
-      } else {
-        Toast.show({text1: response?.data?.message});
-      }
-    } catch (error) {}
-
+      setShowFilterModal(false);
+      setCourseData(response?.data?.data);
+    } catch (error) {
+      console.error('error in applyFilters', error);
+    }
     setShowLoader(false);
   };
-
-  useEffect(() => {}, [courseData]);
 
   const applyFilters2 = async (searchParam = '') => {
     setCourseData([]);
@@ -683,7 +582,7 @@ const CourseList = ({navigation, dispatch, route}) => {
       );
 
       setShowFilterModal(false);
-      setCourseData(response.data);
+      setCourseData(response?.data?.data);
       // if (resp?.data?.status == true) {
       //   setShowFilterModal(false);
       //   // const updatedData = await generateThumb(resp?.data?.data);
@@ -840,14 +739,42 @@ const CourseList = ({navigation, dispatch, route}) => {
 
   // }
   //UI
+
+  const addToWishlist = async id => {
+    try {
+      setShowLoader(true);
+      const postData = {
+        id,
+        type: 1,
+      };
+      const token = await AsyncStorage.getItem('token');
+      const {response, status} = await Service.postAPI(
+        API_Endpoints.add_wishlist,
+        postData,
+        token,
+      );
+      if (status) {
+        Toast.show({
+          type: 'success',
+          text1: response?.message,
+        });
+        getCourses()
+      }
+    } catch (err) {
+      console.error('error in registering user', err);
+    } finally {
+      setShowLoader(false);
+    }
+  };
+
   return (
     <SafeAreaView style={{flex: 1}}>
       <ScrollView>
         <Background style={StyleSheet.absoluteFill} />
 
         <Header
-          showNotification={true}
-          heading={'Notifications'}
+          // showNotification={true}
+          heading={'Courses List'}
           showLearneLogo={false}
           showCart={false}
           showBackButton={true}></Header>
@@ -876,8 +803,7 @@ const CourseList = ({navigation, dispatch, route}) => {
                 onPress={openFilterModal}
                 icon={
                   // <Image source={require('assets/images/filter.png')} />
-                  <Image
-                    source={require('assets/images/settingFilter.svg')}></Image>
+                  <FilterIcon />
                 }
                 style={{marginTop: 10}}
                 showDot={isFilterApplied}
@@ -897,85 +823,50 @@ const CourseList = ({navigation, dispatch, route}) => {
             ) : null}
             <ShowSelectedFilters />
 
-            {/* <FlatList
-              ref={scrollRef}
-              key={'#'}
-                 extraData={refresh}
-              data={courseData}
-              
-              refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-              }
-            
-              renderItem={({item, index}) => {
-                return (
-                  <CourseCard
-                    item={item}
-                    image={item.image}
-                    heartPress={() => addToWishlist(item.id)}
-                    onPress={() => gotoCourseDetails(item.id)}
+            {courseData?.length > 0 && (
+              <FlatList
+                ref={scrollRef}
+                key={'#'}
+                data={courseData}
+                // style={{ marginTop: responsiveHeight(5), height: responsiveHeight(65), }}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
                   />
-                );
-              }}
-      
-              onEndReachedThreshold={0.9}
-              onEndReached={loadMore}
-              keyExtractor={(item, index) => item.id?.toString() || index.toString()}
-              contentContainerStyle={{paddingBottom: '30%'}}
-          
-              ListFooterComponent={renderFooter}
-              ListEmptyComponent={() => (
-                <View style={{alignItems: 'center', marginTop: 50}}>
-                  
-                  <MyText
-                    text={'No Trending Courses found'}
-                    fontFamily="medium"
-                    fontSize={40}
-                    textAlign="center"
-                    textColor={'black'}
-                  />
-                </View>
-              )}
-            /> */}
-            <FlatList
-              ref={scrollRef}
-              key={'#'}
-              data={courseData}
-              // style={{ marginTop: responsiveHeight(5), height: responsiveHeight(65), }}
-              refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-              }
-              // keyExtractor={(item, index) => index.toString()}
-              renderItem={({item, index}) => {
-                return (
-                  <CourseCard
-                    item={item}
-                    image={item.image}
-                    heartPress={() => addToWishlist(item.id)}
-                    onPress={() => gotoCourseDetails(item.id)}
-                  />
-                );
-              }}
-              // onEndReached={paginationHandler}
-              onEndReachedThreshold={0.9}
-              onEndReached={loadMore}
-              keyExtractor={item => item.id}
-              contentContainerStyle={{paddingBottom: '30%'}}
-              // onEndReachedThreshold={0.3}
-              ListFooterComponent={renderFooter}
-              ListEmptyComponent={() => (
-                <View style={{alignItems: 'center', marginTop: 50}}>
-                  {/* <Image source={require('assets/images/no-data.png')} /> */}
-                  <MyText
-                    text={'No Trending Courses found'}
-                    fontFamily="medium"
-                    fontSize={40}
-                    textAlign="center"
-                    textColor={'black'}
-                  />
-                </View>
-              )}
-            />
+                }
+                // keyExtractor={(item, index) => index.toString()}
+                renderItem={({item, index}) => {
+                  return (
+                    <CourseCard
+                      item={item}
+                      image={item.image}
+                      heartPress={() => addToWishlist(item.id)}
+                      onPress={() => gotoCourseDetails(item.id)}
+                    />
+                  );
+                }}
+                // onEndReached={paginationHandler}
+                // onEndReachedThreshold={0.9}
+                // onEndReached={loadMore}
+                keyExtractor={item => item.id}
+                contentContainerStyle={{paddingBottom: '30%'}}
+                // onEndReachedThreshold={0.3}
+                // ListFooterComponent={renderFooter}
+                // ListEmptyComponent={() => (
+                //   <View style={{alignItems: 'center', marginTop: 50}}>
+                //     {/* <Image source={require('assets/images/no-data.png')} /> */}
+                //     <MyText
+                //       text={'No Trending Courses found'}
+                //       fontFamily="medium"
+                //       fontSize={40}
+                //       textAlign="center"
+                //       textColor={'black'}
+                //     />
+                //   </View>
+                // )}
+              />
+            )}
           </View>
         </KeyboardAwareScrollView>
         <TrendingFiltersModal
@@ -990,13 +881,15 @@ const CourseList = ({navigation, dispatch, route}) => {
           tempSelectedRatingValues={tempSelectedRatingValues}
           setTempSelectedRatingValues={setTempSelectedRatingValues}
           applyFilters={() => {
-            // applyFilters();
-            getCourses();
+            applyFilters();
             setApplyCheck(true);
           }}
           resetFilter={resetFilter}
         />
+        {courseData?.length === 0 && <NoDataFound />}
       </ScrollView>
+
+      {showLoader && <CourseDetailLoader />}
 
       {/* <CustomLoader showLoader={showLoader} /> */}
       {/* {courseData.length === 0 && <CustomLoader showLoader={showLoader} />} */}

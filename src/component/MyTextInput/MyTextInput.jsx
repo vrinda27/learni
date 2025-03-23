@@ -7,11 +7,13 @@ const MyTextInput = ({
   onChangeText = () => {},
   placeholder = 'Enter here',
   leftIcon,
+  disabled = false,
 }) => {
   return (
-    <View style={styles.container}>
+    <View style={{...styles.container, backgroundColor: disabled ? 'rgba(0,0,0,0.1)' : 'white' }}>
       {leftIcon && leftIcon}
       <TextInput
+        editable={!disabled}
         value={value}
         placeholder={placeholder}
         style={styles.textInput}

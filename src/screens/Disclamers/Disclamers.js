@@ -20,7 +20,7 @@ import {Colors, ScreenNames, Service} from 'global/index';
 import {REGULAR} from 'global/Fonts';
 import {dimensions} from 'global/Constants';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import NoDataFound from 'component/NoDataFound';
+import NoDataFound from 'component/NoDataFound/NoDataFound';
 const Disclamers = ({route}) => {
   const flatListRef = useRef(null);
   const [completeModal, setcompleteModal] = useState(false);

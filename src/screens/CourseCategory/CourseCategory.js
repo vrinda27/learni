@@ -24,6 +24,12 @@ import {ScreenNames, Service} from 'global/index';
 import {API_Endpoints} from 'global/Service';
 //import : styles
 import {styles} from './CourseCategoryStyle';
+import {
+  responsiveFontSize,
+  responsiveHeight,
+} from 'react-native-responsive-dimensions';
+import HomePageLoader from 'component/SkeltonLoader/HomePageLoader';
+import NoDataFound from 'component/NoDataFound/NoDataFound';
 //import : modal
 //import : redux
 
@@ -94,13 +100,13 @@ const CourseCategory = ({navigation, dispatch, route}) => {
         <Header
           showBackButton={true}
           heading={'Course Category'}
-          showNotification={true}
+          // showNotification={true}
           showCart={false}
           showLearneLogo={false}
           showGridIcon={false}
         />
 
-        <View style={{marginHorizontal: 14,}}>
+        <View style={{marginHorizontal: 14}}>
           <View style={{marginVertical: 12}}>
             <SearchWithIcon
               placeholder="Search Category"
@@ -117,20 +123,22 @@ const CourseCategory = ({navigation, dispatch, route}) => {
                 renderItem={renderCategory}
               />
             ) : (
-              <View style={{alignItems: 'center', marginTop: 20}}>
-                <MyText
-                  text={'No data found!'}
-                  fontFamily="medium"
-                  fontSize={40}
-                  textAlign="center"
-                  textColor={'black'}
-                />
-              </View>
+              // <View style={{alignItems: 'center', marginTop: 20}}>
+              //   <MyText
+              //     text={'No data found!'}
+              //     fontFamily="medium"
+              //     fontSize={40}
+              //     textAlign="center"
+              //     textColor={'black'}
+              //   />
+              // </View>
+              <NoDataFound />
             )}
           </View>
         </View>
       </ScrollView>
-      <Loader visible={showLoader} />
+      {/* <Loader visible={showLoader} /> */}
+      {showLoader && <HomePageLoader />}
     </SafeAreaView>
   );
 };

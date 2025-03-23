@@ -25,6 +25,7 @@ import DollarSvg from 'assets/svgs/dollar-circle.svg';
 import HeartSvg from 'assets/svgs/heart.svg';
 import RightSvg from 'assets/svgs/right-arrow.svg';
 import {API_Endpoints} from 'global/Service';
+import {MEDIUM, SEMI_BOLD} from 'global/Fonts';
 
 const Profile = ({navigation}) => {
   //variables
@@ -40,6 +41,14 @@ const Profile = ({navigation}) => {
   };
   const gotoNotificationList = () => {
     navigation.navigate(ScreenNames.NOTIFICATION);
+  };
+
+  const gotoCertificateList = () => {
+    navigation.navigate(ScreenNames.CERTIFICATE);
+  };
+
+  const gotoWishlistList = () => {
+    navigation.navigate('Wishlist');
   };
   //function : serv func
   const getProfile = async () => {
@@ -135,7 +144,12 @@ const Profile = ({navigation}) => {
                 borderWidth: 2,
               }}
             />
-            <MyText text={profileData.name} />
+            <MyText
+              text={profileData.name}
+              fontFamily={SEMI_BOLD}
+              style={{marginVertical: 6}}
+              fontSize={16}
+            />
             <View
               style={{
                 flexDirection: 'row',
@@ -143,7 +157,11 @@ const Profile = ({navigation}) => {
                 columnGap: 5,
               }}>
               <CallSvg />
-              <MyText text={profileData.mobile} />
+              <MyText
+                text={profileData.mobile}
+                style={{marginBottom: 5}}
+                fontSize={13}
+              />
             </View>
             <View
               style={{
@@ -152,7 +170,7 @@ const Profile = ({navigation}) => {
                 columnGap: 5,
               }}>
               <SmsSvg />
-              <MyText text={profileData.email} />
+              <MyText text={profileData.email} marginBottom={7} />
             </View>
           </View>
           <View
@@ -172,16 +190,30 @@ const Profile = ({navigation}) => {
               backgroundColor={Colors.DARK_PURPLE}
             />
           </View>
-          <ProfileItem icon={<BagSvg />} title={'Order History'} />
-          <ProfileItem icon={<MedalSvg />} title={'Certificate'} />
+          <ProfileItem
+            icon={<BagSvg />}
+            title={'Order History'}
+            onPress={() => {
+              navigation.navigate('Order');
+            }}
+          />
+          <ProfileItem
+            icon={<MedalSvg />}
+            title={'Certificate'}
+            onPress={gotoCertificateList}
+          />
           <ProfileItem
             icon={<NotiSvg />}
             title={'Notifications'}
             onPress={() => gotoNotificationList()}
           />
-          <ProfileItem icon={<DollarSvg />} title={'Billing'} />
-          <ProfileItem icon={<HeartSvg />} title={'Wishlist'} />
+          {/* <ProfileItem icon={<DollarSvg />} title={'Billing'} /> */}
           <ProfileItem
+            icon={<HeartSvg />}
+            title={'Wishlist'}
+            onPress={gotoWishlistList}
+          />
+          {/* <ProfileItem
             icon={
               <MyIcon.Ionicons
                 name="chatbox-ellipses-outline"
@@ -191,7 +223,7 @@ const Profile = ({navigation}) => {
             }
             title={'Chat'}
             onPress={() => gotoChatScreen()}
-          />
+          /> */}
         </View>
       </ScrollView>
     </View>
@@ -203,6 +235,7 @@ export default Profile;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   mainView: {
     padding: 20,

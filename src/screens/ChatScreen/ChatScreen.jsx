@@ -1,6 +1,13 @@
 //import : react component
 import React, {useEffect, useState} from 'react';
-import {View, Text, TextInput, FlatList, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 //import : custom components
 import Header from 'component/Header/Header';
 //import : third party
@@ -16,8 +23,9 @@ import {styles} from './ChatScreenStyle';
 
 const ChatScreen = ({route}) => {
   //variables
-  const {id} = route.params;
+  const {id, name} = route.params;
   const adminId = 1;
+  const docId = `${adminId.toString()}-${id?.toString()}`;
   //hook : states
   const [message, setMessage] = useState('');
   const [messagesData, setMessagesData] = useState([]);
@@ -28,10 +36,18 @@ const ChatScreen = ({route}) => {
       try {
         const Data = {
           userId: id,
-          message: message,
+          text: message,
+          sendBy: id.toString(),
+          sendTo: adminId.toString(),
+          adminName: 'Learni',
+          userName: name,
+          seen: false,
+          user: {
+            _id: id,
+          },
+          _id: firestore.FieldValue.serverTimestamp(),
           createdAt: new Date(),
         };
-        const docId = adminId.toString() + id?.toString();
         firestore()
           .collection('Chat')
           .doc(docId)
@@ -68,6 +84,8 @@ const ChatScreen = ({route}) => {
   };
   //function : render func
   const chatRenderFunction = ({item}) => {
+    console.log('itm', item);
+
     return (
       <View
         key={item.id}
@@ -82,13 +100,22 @@ const ChatScreen = ({route}) => {
             borderRadius: 10,
             padding: 10,
           }}>
-          {item?.message ? (
+          {item.imageUrl && (
+            <Image
+              source={{uri: item.imageUrl}}
+              style={{
+                height: 100,
+                width: 100,
+              }}
+            />
+          )}
+          {item?.text ? (
             <Text
               style={{
-                color: id == item?.userId ? Colors.BLACK : Colors.WHITE,
+                color: Colors.WHITE,
                 fontFamily: BOLD,
               }}>
-              {item?.message}
+              {item?.text}
             </Text>
           ) : null}
         </View>
@@ -107,7 +134,6 @@ const ChatScreen = ({route}) => {
   };
   //hook : useEffect
   useEffect(() => {
-    const docId = adminId.toString() + id?.toString();
     const MessageRef = firestore()
       .collection('Chat')
       .doc(docId)

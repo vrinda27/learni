@@ -5,6 +5,6 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   mainView: {
-    padding: 20,
+    paddingHorizontal: 20,
   },
 });

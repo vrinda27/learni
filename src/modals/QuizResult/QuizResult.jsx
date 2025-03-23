@@ -79,8 +79,8 @@ const QuizResult = ({
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              justifyContent: 'space-between',
-              marginVertical: 5,
+              justifyContent: 'space-around',
+              marginVertical: 20,
             }}>
             <ItemBox value={data.total_question} title={'Total Questions'} />
             <ItemBox
@@ -93,8 +93,8 @@ const QuizResult = ({
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              justifyContent: 'space-between',
-              marginVertical: 5,
+              justifyContent: 'space-around',
+              marginVertical: 20,
             }}>
             <ItemBox
               value={data.total_correct}
@@ -115,15 +115,15 @@ const QuizResult = ({
               marginVertical: 5,
             }}>
             <MyButton
-              text={'RETAKE QUIZ'}
-              width="48%"
-              onPress={() => retakeQuizPress()}
-            />
-            <MyButton
-              text={'BACK'}
+              text={'CLOSE'}
               width="48%"
               backgroundColor={Colors.BLACK}
               onPress={() => closeModal()}
+            />
+            <MyButton
+              text={'RETAKE QUIZ'}
+              width="48%"
+              onPress={() => retakeQuizPress()}
             />
           </View>
         </View>

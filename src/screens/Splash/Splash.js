@@ -46,6 +46,9 @@ const Splash = ({navigation}) => {
         );
 
         gotoBottomTab();
+      } else {
+        await AsyncStorage.clear();
+        navigation.replace(ScreenNames.WELCOME);
       }
     } catch (err) {
       'error in getting profile data in splash screen', err;

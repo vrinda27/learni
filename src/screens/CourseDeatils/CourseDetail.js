@@ -22,6 +22,7 @@ import Video from 'react-native-video';
 import Toast from 'react-native-toast-message';
 import {ScrollView} from 'react-native-virtualized-view';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import RNFetchBlob from 'react-native-blob-util';
 //import : utils
 import {API_Endpoints} from 'global/Service';
 import {Colors, ScreenNames, Service} from 'global/index';
@@ -38,10 +39,15 @@ import {styles} from './CourseDetailStyle';
 import Review from 'modals/Review/Review';
 import NotPurchase from 'modals/NotPurchase/NotPurchase';
 import EditReview from 'modals/EditReview/EditReview';
+//import : redux
+import {useDispatch, useSelector} from 'react-redux';
+import {setCartCount} from 'reduxTooklit/CountSlice';
 
-const CourseDetail = ({navigation, dispatch, route}) => {
+const CourseDetail = ({navigation, route}) => {
   // variables : ref
   const {id} = route?.params;
+  const dispatch = useDispatch();
+  const cartCount = useSelector(state => state.count?.cartCount);
   //variables
   const LINE_HEIGTH = 25;
   //variables : redux
@@ -56,11 +62,73 @@ const CourseDetail = ({navigation, dispatch, route}) => {
   const gotoChapterDetail = data => {
     navigation.navigate(ScreenNames.CHAPTER_DETAIL, {data});
   };
+  const gotoViewCertificate = () => {
+    navigation.navigate(ScreenNames.VIEW_PDF, {url: courseData.certificate});
+  };
   //function : imp func
   const initLoader = async () => {
     setShowLoader(true);
     await getCourseDetail();
     setShowLoader(false);
+  };
+  const downloadCertificate = async () => {
+    try {
+      let pdfUrl = courseData?.certificate;
+      let DownloadDir =
+        Platform.OS == 'ios'
+          ? RNFetchBlob.fs.dirs.DocumentDir
+          : RNFetchBlob.fs.dirs.DownloadDir;
+      const {dirs} = RNFetchBlob.fs;
+      const dirToSave =
+        Platform.OS == 'ios' ? dirs.DocumentDir : dirs.DownloadDir;
+      const configfb = {
+        fileCache: true,
+        useDownloadManager: true,
+        notification: true,
+        mediaScannable: true,
+        title: 'Learni',
+        path: `${dirToSave}.pdf`,
+      };
+      const configOptions = Platform.select({
+        ios: {
+          fileCache: configfb.fileCache,
+          title: configfb.title,
+          path: configfb.path,
+          appendExt: 'pdf',
+        },
+        android: configfb,
+      });
+      Platform.OS == 'android'
+        ? RNFetchBlob.config({
+            fileCache: true,
+            addAndroidDownloads: {
+              useDownloadManager: true,
+              notification: true,
+              path: `${DownloadDir}/.pdf`,
+              description: 'Learni',
+              title: `${courseData.name} certificate.pdf`,
+              mime: 'application/pdf',
+              mediaScannable: true,
+            },
+          })
+            .fetch('GET', `${pdfUrl}`)
+            .then(res => {})
+            .catch(error => {
+              setShowLoader(false);
+              console.warn(error.message);
+            })
+        : RNFetchBlob.config(configOptions)
+            .fetch('GET', `${pdfUrl}`, {})
+            .then(res => {
+              if (Platform.OS === 'ios') {
+                RNFetchBlob.fs.writeFile(configfb.path, res.data, 'base64');
+                RNFetchBlob.ios.previewDocument(configfb.path);
+              }
+            })
+            .catch(e => {});
+    } catch (error) {
+      console.error('error in downloadCertificate', error);
+    }
   };
   //function : serv func
   const getCourseDetail = async () => {
@@ -84,6 +152,7 @@ const CourseDetail = ({navigation, dispatch, route}) => {
       const endPoint = `${API_Endpoints.add_cart}?id=${id}&type=1`;
       const {response, status} = await Service.postAPI(endPoint, {}, token);
       if (status) {
+        dispatch(setCartCount({cartCount: cartCount + 1}));
         Toast.show({
           type: 'success',
           text1: response?.message,
@@ -109,6 +178,7 @@ const CourseDetail = ({navigation, dispatch, route}) => {
         token,
       );
       if (status) {
+        dispatch(setCartCount({cartCount: cartCount - 1}));
         Toast.show({
           type: 'success',
           text1: response?.message,
@@ -485,6 +555,27 @@ const CourseDetail = ({navigation, dispatch, route}) => {
             )}
           </View>
         </ScrollView>
+        {courseData?.course_completed == '1' && (
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              padding: 10,
+            }}>
+            <MyButton
+              text={'View Certificate'}
+              width="48%"
+              onPress={() => gotoViewCertificate()}
+            />
+            <MyButton
+              text={'Download Certificate'}
+              width="48%"
+              backgroundColor={Colors.DARK_PURPLE}
+              onPress={() => downloadCertificate()}
+            />
+          </View>
+        )}
+
         <Review
           id={id}
           visible={showReviewPopup}

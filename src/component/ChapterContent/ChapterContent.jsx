@@ -28,7 +28,7 @@ const ChapterContent = ({
     navigation.navigate(ScreenNames.VIEW_PDF, {url});
   };
   const gotoViewContent = () => {
-    navigation.navigate(ScreenNames.VIEW_CONTENT, {url});
+    navigation.navigate(ScreenNames.VIEW_CONTENT, {data: item});
   };
   const gotoAddAssignment = () => {
     navigation.navigate(ScreenNames.ADD_ASSIGNMENT, {data: item});

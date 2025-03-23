@@ -1,24 +1,16 @@
 //import : react components
 import React, {useRef, useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  TextInput,
-  Keyboard,
-  KeyboardAvoidingView,
-} from 'react-native';
+import {View, TouchableOpacity, Modal} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 //import : custom components
 import MyText from 'component/MyText/MyText';
 //import : globals
+import SuccessSvg from 'assets/svgs/success.svg';
 import {Colors, ScreenNames, Service} from 'global/index';
 //import : styles
-import { styles } from './SuccesfulyPurchasedStyle';
-import Modal from 'react-native-modal';
+import {styles} from './SuccesfulyPurchasedStyle';
 import MyButton from 'component/MyButton/MyButton';
-import { dimensions } from 'global/Constants';
+import {BOLD, REGULAR} from 'global/Fonts';
 
 const SuccessfulyPurchased = ({visible, setVisibility, gotoMyCourses}) => {
   //variables : navigation
@@ -28,54 +20,42 @@ const SuccessfulyPurchased = ({visible, setVisibility, gotoMyCourses}) => {
   const closeModal = () => {
     setVisibility(false);
   };
+  const gotoMyCoursesPress = () => {
+    closeModal();
+    gotoMyCourses();
+  };
   //UI
   return (
-    <Modal
-      isVisible={visible}
-      // swipeDirection="down"
-      // onBackdropPress={() => setVisibility(false)}
-      onSwipeComplete={e => {
-        setVisibility(false);
-      }}
-      scrollTo={() => {}}
-      scrollOffset={1}
-      propagateSwipe={true}
-      coverScreen={false}
-      backdropColor="transparent"
-      style={styles.modal}>
-      {/* <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}> */}
-      <View style={styles.modalContent}>
-        {/* <Image source={require('assets/images/tick-circle.png')} />
-        */}
-        <MyText
-          text="Successfully Purchased!"
-          textColor={Colors.THEME_GOLD}
-          fontSize={24}
-          fontFamily="medium"
-          textAlign="center"
-          style={{}}
-        />
-        <MyText
-          text="Thank you for your purchase. You can now go to My Orders section and check the status."
-          textColor={Colors.LIGHT_GREY}
-          fontSize={18}
-          fontFamily="regular"
-          textAlign="center"
-          style={{marginBottom: 20}}
-        />
-        <MyButton
-          text="MY ORDERS"
-          style={{
-            width: dimensions.SCREEN_WIDTH * 0.9,
-            marginBottom: 10,
-            backgroundColor: Colors.THEME_BROWN,
-          }}
-          onPress={gotoMyCourses}
-        />
+    <Modal visible={visible} transparent animationType="slide">
+      <View style={styles.container}>
+        <TouchableOpacity style={styles.blurView} />
+        <View style={styles.mainView}>
+          <View
+            style={{
+              alignSelf: 'center',
+            }}>
+            <SuccessSvg />
+          </View>
+
+          <MyText
+            text="Successfully Purchased!"
+            textColor={Colors.BLACK}
+            fontSize={24}
+            fontFamily={BOLD}
+            textAlign="center"
+            marginVertical={10}
+          />
+          <MyText
+            text="Thank you for your purchase. You can now go to My Orders section and check the status."
+            textColor={Colors.BLACK}
+            fontSize={18}
+            fontFamily={REGULAR}
+            textAlign="center"
+            marginVertical={10}
+          />
+          <MyButton text="MY ORDERS" onPress={gotoMyCoursesPress} />
+        </View>
       </View>
-      {/* </KeyboardAvoidingView> */}
     </Modal>
   );
 };

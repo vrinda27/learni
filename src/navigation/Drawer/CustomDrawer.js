@@ -1,273 +1,188 @@
 //import : react components
 import React, {useEffect, useState} from 'react';
+import {View, ScrollView, Image, TouchableOpacity, Text} from 'react-native';
 import {
-  View,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-  Alert,
-  Text,
-} from 'react-native';
-// import LinearGradient from 'react-native-linear-gradient';
-
-import {
-  NavigationContainer,
-  StackActions,
+  CommonActions,
   useIsFocused,
+  useNavigation,
 } from '@react-navigation/native';
-import {useNavigation} from '@react-navigation/native';
-
-// import { CommonActions } from '@react-navigation/core';
-// //import : custom components
-// import MyText from '../../Components/MyText/MyText';
-// import CustomLoaderLogout from 'components/CustomLoader/CustomLoaderLogout';
-//import : global
-// import Color, { dimensions } from '../../Global/Color';
-//import : styles
-import { styles } from './CustomDrawerStyle';
-
-//import : modal
+import {ScreenNames, Service} from 'global/index';
+//import : custom components
+import MyText from 'component/MyText/MyText';
+import SizeBox from 'component/SizeBox/SizeBox';
 //import : third parties
-// import AsyncStorage from '@react-native-async-storage/async-storage';
-import Toast from 'react-native-toast-message';
-//import : redux
-// import { useSelector, useDispatch } from 'react-redux';
-// import { logOutUser, setUser } from 'src/reduxToolkit/reducer/user';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+//import : utils
+import Logo from 'assets/images/logoDrawer.svg';
+import HomeSvg from 'assets/svgs/drawersvgs/home.svg';
+import HeartSvg from 'assets/svgs/drawersvgs/heart.svg';
+import BookSvg from 'assets/svgs/drawersvgs/book.svg';
+import InfoSvg from 'assets/svgs/drawersvgs/info-circle.svg';
+import HeadPhoneSvg from 'assets/svgs/drawersvgs/headphone.svg';
+import NoteSvg from 'assets/svgs/drawersvgs/stickynote.svg';
+import PrivacySvg from 'assets/svgs/drawersvgs/privacy.svg';
+import LogoutSvg from 'assets/svgs/drawersvgs/logout.svg';
+import FBSvg from 'assets/svgs/drawersvgs/fb.svg';
+import YTSvg from 'assets/svgs/drawersvgs/youtube.svg';
+import INSTASvg from 'assets/svgs/drawersvgs/insta.svg';
+import {BOLD} from 'global/Fonts';
+//import : styles
+import {styles} from './CustomDrawerStyle';
+import {API_Endpoints} from 'global/Service';
 import {useDrawerStatus} from '@react-navigation/drawer';
-import { Colors } from 'global/index';
-import Logo from 'assets/images/logoDrawer.svg'
-import Logout from 'assets/images/logout.svg'
-import Privacy from 'assets/images/privacy.svg'
-import Terms from 'assets/images/terms.svg'
-import Support from 'assets/images/suport.svg'
-import Info from 'assets/images/info.svg'
-import Like from 'assets/images/heart.svg'
-import Home from 'assets/images/home.svg'
 
 const CustomDrawer = ({navigation}) => {
-  // const {getAPI, loading, postAPI} = useAPI();
-  const navigationn = useNavigation(); // Use hook to access navigation
-
-  // const authToken = useSelector(state => state.auth.user);
-
-  const isFocussed = useIsFocused();
-  const isFocused = useIsFocused();
   //variables
-  // const userToken = useSelector(state => state.user.userToken);
-  // const dispatch = useDispatch();
+  const isDrawerOpen = useDrawerStatus();
   //hook : states
-  const [showLoader, setShowLoader] = useState(false);
-  const [notificationCount, setNotificationCount] = useState(false);
-  //function : imp function
-  // const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-  //function : navigation function
-  // const closeDrawer = () => navigation.closeDrawer();
-  // const resetIndexGoToSignup = CommonActions.reset({
-  //     index: 1,
-  //     routes: [{ name: ScreenNames.SIGN_UP_1 }],
-  // });
-  const gotoSignUp = () => {
-    // closeDrawer();
-    // navigation.dispatch(resetIndexGoToSignup);
-  };
+  const [profileData, setProfileData] = useState({});
+  console.log('profileData', profileData);
+
+  //function : nav func
+  const resetIndexGoToSplash = CommonActions.reset({
+    index: 1,
+    routes: [{name: 'AuthStack'}],
+  });
   const gotoHome = () => {
-    // navigation.navigate(ScreenNames.BOTTOM_TAB, { screen: ScreenNames.HOME });
+    navigation.navigate(ScreenNames.BOTTOM_TAB, {
+      screen: 'Home',
+    });
   };
-  const gotoSuperAdminCourses = () => {
-    // navigation.navigate(ScreenNames.SUPER_ADMIN_COURSES);
+  const gotoWishlist = () => {
+    navigation.navigate(ScreenNames.BOTTOM_TAB, {
+      screen: 'Wishlist',
+    });
   };
-  const gotoAllProducts = () => {
-    // navigation.navigate(ScreenNames.ALL_PRODUCTS);
+  const gotoMyCourses = () => {
+    navigation.navigate('AuthStack', {
+      screen: ScreenNames.MY_COURSES,
+    });
   };
-  const gotoMyWhishlist = () => {
-    // navigation.navigate(ScreenNames.BOTTOM_TAB, {
-    //     screen: ScreenNames.WISHLIST,
-    // });
+  const gotoChatScreen = () => {
+    navigation.navigate('AuthStack', {
+      screen: ScreenNames.CHAT_SCREEN,
+      params: {id: profileData.id, name: profileData.name},
+    });
   };
-  const gotoMyOrders = () => {
-    navigation.navigate('MyListing');
+
+  //function : imp func
+  const logoutUser = async () => {
+    await AsyncStorage.clear();
+    navigation.closeDrawer();
+    navigation.dispatch(resetIndexGoToSplash);
   };
-  const gotoWelcome = () => {};
-  // CommonActions.reset({
-  //     index: 1,
-  //     routes: [{ name: ScreenNames.WELCOME }],
-  // });
-  //   const logout = async () => {
-  //     const isLogout = await handleLogoutAndNavigate();
-  //     if (isLogout) {
-  //       const resetIndexGoToWelcome = CommonActions.reset({
-  //         index: 1,
-  //         routes: [{name: 'SignIn'}],
-  //       });
-  //       navigateAndDispatchFromRef(resetIndexGoToWelcome);
-  //       dispatch(clearToken());
-  //       navigation.closeDrawer();
-  //     }
-  //     return;
-  //     // try {
-  //     //     const resp = await Service.postApiWithToken(
-  //     //         userToken,
-  //     //         Service.LOGOUT,
-  //     //         {},
-  //     //     );
-  //     //     if (resp?.data?.status) {
-  //     //         closeDrawer();
-  //     //         navigation.dispatch(gotoWelcome);
-  //     //         dispatch(logOutUser());
-  //     //         await AsyncStorage.clear();
-  //     //     }
-  //     // } catch (error) {
-  //     // }
-  //     const {res, err} = await postAPI({endPoint: APIEndPoints.logout});
-  //     if (res) {
-  //       // await AsyncStorage.clear()
-  //       // dispatch(clearToken())
-  //       //   const resetIndexGoToWelcome = CommonActions.reset({
-  //       //     index: 1,
-  //       //     routes: [{ name: 'SignIn' }],
-  //       //   });
-  //       // // navigation.dispatch(resetIndexGoToWelcome);
-  //       // navigateAndDispatchFromRef(resetIndexGoToWelcome)
-  //     }
-  //   };
+  //function : serv func
+  const getProfile = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const {response, status} = await Service.getAPI(
+        API_Endpoints.profile,
+        token,
+      );
+      console.log('response', response);
+      if (status) {
+        setProfileData(response.data);
+      }
+    } catch (error) {
+      console.error('error in getProfile', error);
+    }
+  };
+  //hook : useEffect
+  useEffect(() => {
+    getProfile();
+
+    return () => {};
+  }, [isDrawerOpen === 'open']);
 
   //UI
   return (
-    <View style={[styles.container]}>
-      <ScrollView contentContainerStyle={{}}>
-      
-        <View style={[styles.profileView,{alignSelf:'center',width:'100%',justifyContent:'center',backgroundColor:Colors.DARK_PURPLE}]}>
-       
-           
-            <View style={styles.info}>
-            <Logo height={59}  style={{marginTop:55,alignItems:'center',}}></Logo>
-         
-            <TouchableOpacity>
-              {/* <LinearGradient
-                colors={['#060606', '#393939']}
-                start={{x: 0, y: 0}}
-                end={{x: 1, y: 0}}
-                style={styles.gradientBackground}>
-                <Text
-                  style={{color: '#D7BC70', fontSize: 14, fontWeight: '700'}}>
-                  View
-                </Text>
-              </LinearGradient> */}
-            </TouchableOpacity>
+    <View style={styles.container}>
+      <View style={styles.logoStyle}>
+        <Logo height={59}></Logo>
+      </View>
+      <ScrollView>
+        <View style={styles.mainView}>
+          <DrawerItem
+            title={'Home'}
+            icon={<HomeSvg />}
+            onPress={() => gotoHome()}
+          />
+          <DrawerItem
+            title={'My Wishlist'}
+            icon={<HeartSvg />}
+            onPress={() => gotoWishlist()}
+          />
+          <DrawerItem
+            title={'My Courses'}
+            icon={<BookSvg />}
+            onPress={() => gotoMyCourses()}
+          />
+          <DrawerItem title={'About us'} icon={<InfoSvg />} />
+          <DrawerItem
+            title={'Chat'}
+            icon={<HeadPhoneSvg />}
+            onPress={() => gotoChatScreen()}
+          />
+          <DrawerItem title={'Terms & Conditions'} icon={<NoteSvg />} />
+          <DrawerItem title={'Privacy Policy'} icon={<PrivacySvg />} />
+          <DrawerItem
+            title={'Logout'}
+            icon={<LogoutSvg />}
+            onPress={() => logoutUser()}
+          />
+          <SizeBox height={20} />
+          <MyText text={'Follow Us!'} fontSize={12} />
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              columnGap: 10,
+              marginVertical: 5,
+            }}>
+            <FBSvg />
+            <YTSvg />
+            <INSTASvg />
           </View>
         </View>
-        <View style={{padding: 10, marginVertical: 10}}>
-          <DrawerItemList
-            Title="Home"
-            // image={require('../../assets/Images/homeDrawer.png')}
-            // onPress={gotoHome}
-          />
-          <DrawerItemList
-            Title="Appointments"
-            // image={require('../../assets/Images/appointment.png')}
-            //  onPress={()=>{navigation.navigate('Appointments')}}
-            //  onPress={() => {
-            //   navigation.navigate('MyListing');
-            // }}
-            onPress={() =>
-              navigation.navigate('AuthStack', {
-                screen: 'Appointments', // Target screen name inside AuthStack
-                params: {
-                  /* optional parameters */
-                },
-              })
-            }
-            // onPress={gotoMyOrders}
-          />
-          <DrawerItemList
-            Title="Select Plan"
-            // image={require('../../assets/Images/appointment.png')}
-            //  onPress={()=>{navigation.navigate('Appointments')}}
-            //  onPress={() => {
-            //   navigation.navigate('MyListing');
-            // }}
-            onPress={() =>
-              navigation.navigate('AuthStack', {
-                screen: 'Plans', // Target screen name inside AuthStack
-                params: {onlyForPayment: true},
-              })
-            }
-            // onPress={gotoMyOrders}
-          />
-          <DrawerItemList
-            Title="Terms & Conditions"
-            // image={require('../../assets/Images/stickynote.png')}
-            // onPress={() => { }}
-          />
-          <DrawerItemList
-            Title={`Chat Support `}
-            // image={require('../../assets/Images/privacy.png')}
-            onPress={() => {
-              navigation.navigate('Chat');
-              // You can add additional logic here if needed
-            }}
-          />
-          <DrawerItemList
-            Title="Logout"
-            // image={require('../../assets/Images/logout.png')}
-            // onPress={logout}
-          />
-        </View>
-        <View style={styles.socialMedia}>
-          <Text style={{fontSize: 12, fontWeight: '400', color: 'white'}}>
-            Follow Us!
-          </Text>
-          <View style={styles.iconRow}>
-            {/* <Image source={require('../../assets/Images/Facebook.png')} />
-            <Image source={require('../../assets/Images/Instagram.png')} />
-            <Image source={require('../../assets/Images/Youtube.png')} /> */}
+        <View style={styles.profileContentStyle}>
+          <View style={styles.flexRowView}>
+            <Image
+              source={{
+                uri: 'https://plus.unsplash.com/premium_photo-1689568126014-06fea9d5d341?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D',
+              }}
+              style={styles.profileImgStyle}
+            />
+            <View>
+              <MyText text={'John'} fontFamily={BOLD} textColor="white" />
+              <MyText text={'Katty@yopmail.com'} textColor="white" />
+            </View>
           </View>
-        </View>
-     
-      </ScrollView>
 
-      {/* <CustomLoader text="Logging Out...." showLoader={showLoader} /> */}
+          <TouchableOpacity style={styles.viewProfileBtn}>
+            <MyText text={'View Profile'} fontFamily={BOLD} fontSize={10} />
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+      <View style={styles.versionText}>
+        <MyText text={'App Version: V1.0'} fontSize={10} />
+      </View>
     </View>
-  
   );
 };
 export default CustomDrawer;
-export const DrawerItemList = ({Title = '', image, onPress = () => {}}) => {
+
+const DrawerItem = ({title, icon, onPress = () => {}}) => {
   return (
     <TouchableOpacity
-      onPress={onPress}
       style={{
-        // width: '90%',
-        paddingBottom: 20,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        backgroundColor: 'white',
-        backgroundColor:'red'
-      }}>
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
-        <Image
-          source={image}
-          style={{width: 24, height: 24, marginRight: 10}}
-        />
-        {/* <MyText
-            text={Title}
-            fontSize={14}
-            textColor="white"
-            fontFamily="medium"
-            style={{marginLeft: 14}}
-          /> */}
-        <Text
-          style={{
-            fontFamily: 'Roboto',
-            fontSize: 14,
-            fontWeight: '500',
-            color: 'black',
-          }}>
-          {Title}
-        </Text>
-      </View>
-      {/* <Image source={require('assets/images/white-right.png')} /> */}
+        columnGap: 10,
+        marginVertical: 10,
+      }}
+      onPress={onPress}>
+      {icon}
+      <MyText text={title} />
     </TouchableOpacity>
   );
 };

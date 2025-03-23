@@ -17,16 +17,24 @@ import Drawer from './src/navigation/Drawer/Drawer';
 const App = () => {
   //function
   const navigationRef = createNavigationContainerRef();
+  const publishable =
+    'pk_test_51QyUTWAld9cSunswPAQF50ugZhqbxAdjEzISyxeOnKk7CcFuEZZErc9cAqCwC3AsaBM7xmb1KvbtlA8CsJAWuIlt00oXjFil7t';
+
   //UI
   return (
     <>
-      <Provider store={store}>
-        <NavigationContainer ref={navigationRef}>
-          {/* <AuthStack /> */}
-          <Drawer />
-          <Toast />
-        </NavigationContainer>
-      </Provider>
+      <StripeProvider
+        publishableKey={
+          'pk_test_51QyUTWAld9cSunswPAQF50ugZhqbxAdjEzISyxeOnKk7CcFuEZZErc9cAqCwC3AsaBM7xmb1KvbtlA8CsJAWuIlt00oXjFil7t'
+        }>
+        <Provider store={store}>
+          <NavigationContainer ref={navigationRef}>
+            {/* <AuthStack /> */}
+            <Drawer />
+            <Toast />
+          </NavigationContainer>
+        </Provider>
+      </StripeProvider>
     </>
   );
 };

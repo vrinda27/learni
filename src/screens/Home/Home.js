@@ -1,6 +1,6 @@
 //import : react components
 import React, {useEffect, useState} from 'react';
-import {View, FlatList, StyleSheet} from 'react-native';
+import {View, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
 // import : custom components
 import Header from 'component/Header/Header';
 import ViewAll from 'component/ViewAll/ViewAll';
@@ -17,18 +17,22 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Background from 'assets/svgs/background.svg';
 import {dimensions} from 'global/Constants';
 import {ScreenNames, Service} from 'global/index';
-import {API_Endpoints} from 'global/Service';
+import {API_Endpoints, GetApiWithToken, PostApiWithToken} from 'global/Service';
 //import : styles
 import {styles} from './HomeStyle';
+import {useDispatch, useSelector} from 'react-redux';
+import {setCartCount} from 'reduxTooklit/CountSlice';
+import {useIsFocused} from '@react-navigation/native';
 
 const Home = ({navigation}) => {
   //hook : states
+  const dispatch = useDispatch();
+  const focused = useIsFocused();
   const [homeData, setHomeData] = useState({
     categories: [],
     courses: [],
     products: [],
     sub_categories: [],
-    suggested_courses: [],
   });
   const [showLoader, setShowLoader] = useState(false);
   const [showBaseLoader, setShowBaseLoader] = useState(false);
@@ -42,8 +46,8 @@ const Home = ({navigation}) => {
   const gotoCourseDetails = id => {
     navigation.navigate(ScreenNames.COURSE_DETAIL, {id});
   };
-  const gotoCourseListing = data => {
-    navigation.navigate(ScreenNames.COURSE_LISTING, {data});
+  const gotoCourseListing = () => {
+    navigation.navigate(ScreenNames.COURSE_LISTING);
   };
   //function : imp func
   const initLoader = async () => {
@@ -59,23 +63,47 @@ const Home = ({navigation}) => {
         API_Endpoints.home,
         token,
       );
+      console.log('response home', response);
+
       if (status) {
         setHomeData({
           categories: response?.data?.category,
           courses: response?.data?.course,
           products: response?.data?.product,
           sub_categories: response?.data?.subCategory,
-          suggested_courses: response.data.suggested_course,
         });
       }
     } catch (error) {
       console.error('error in getHome', error);
     }
   };
+
+  const getCartCount = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const response = await GetApiWithToken(API_Endpoints?.cartList, token);
+      if (response?.data?.status) {
+        dispatch(
+          setCartCount({cartCount: response?.data?.data?.items?.length}),
+        );
+      }
+    } catch (err) {
+      console.log('error in getting cart count home', err);
+    }
+  };
+
   //hook : useEffect
   useEffect(() => {
-    initLoader();
-  }, []);
+    if (focused) {
+      initLoader();
+      getCartCount();
+    }
+  }, [focused]);
+
+  const goToSearchScreen = () => {
+    navigation.navigate(ScreenNames.SEARCH);
+  };
+
   //UI
   if (showBaseLoader) {
     return <HomePageLoader />;
@@ -91,10 +119,12 @@ const Home = ({navigation}) => {
         <ScrollView>
           <View style={{marginHorizontal: 10}}>
             <View style={{marginVertical: 12}}>
-              <MySearchBarForHome
-                disabled
-                placeHolder={'Search by course or product name'}
-              />
+              <TouchableOpacity onPress={goToSearchScreen}>
+                <MySearchBarForHome
+                  disabled
+                  placeHolder={'Search by course or product name'}
+                />
+              </TouchableOpacity>
               <View style={{marginHorizontal: 12}}>
                 <View style={{}}>
                   <ViewAll
@@ -122,9 +152,7 @@ const Home = ({navigation}) => {
                     <View>
                       <ViewAll
                         text="Trending Courses"
-                        onPress={() =>
-                          gotoCourseListing({title: 'Trending', trending: true})
-                        }
+                        onPress={() => gotoCourseListing()}
                         style={{marginTop: 4}}
                       />
                       <FlatList
@@ -157,20 +185,15 @@ const Home = ({navigation}) => {
                   )}
                 </View>
                 <View>
-                  {homeData?.suggested_courses?.length > 0 ? (
+                  {homeData?.courses?.length > 0 ? (
                     <View>
                       <ViewAll
                         text="Suggested Courses"
-                        onPress={() =>
-                          gotoCourseListing({
-                            title: 'Suggested',
-                            trending: false,
-                          })
-                        }
+                        onPress={() => gotoCourseListing()}
                         style={{marginTop: 25}}
                       />
                       <FlatList
-                        data={homeData?.suggested_courses || []}
+                        data={homeData?.courses || []}
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         style={{marginTop: 15}}
